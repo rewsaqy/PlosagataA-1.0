@@ -1,16 +1,16 @@
 # PlosagataA-1.0
 
-**Sagi — AI validator hoaks Bahasa Indonesia, dibangun dari nol.**
+**Sagi: AI validator hoaks Bahasa Indonesia yang kami bangun dari nol.**
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue)](https://www.python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange)](https://pytorch.org)
 [![Models](https://img.shields.io/badge/Models-12M_%7C_92M_%7C_912M_%7C_1.5B-green)](#model)
-[![License](https://img.shields.io/badge/License-MIT-lightgrey)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/rewsaqy/PlosagataA-1.0)](https://github.com/rewsaqy/PlosagataA-1.0/graphs/contributors)
 [![Last Commit](https://img.shields.io/github/last-commit/rewsaqy/PlosagataA-1.0)](https://github.com/rewsaqy/PlosagataA-1.0/commits)
 [![Stars](https://img.shields.io/github/stars/rewsaqy/PlosagataA-1.0?style=social)](https://github.com/rewsaqy/PlosagataA-1.0/stargazers)
 
-Proyek lomba AI terapan: sistem validasi hoaks end-to-end — klasifikasi teks,
+Proyek lomba AI terapan: sistem validasi hoaks end-to-end untuk klasifikasi teks,
 OCR poster, cek fakta heuristik + sumber internet, dan chatbot khusus berita.
 Seluruh arsitektur dan bobot model ditulis dan dilatih sendiri, tanpa memakai
 model unduhan dari pihak mana pun.
@@ -34,6 +34,8 @@ model unduhan dari pihak mana pun.
 - [Struktur Repositori](#struktur-repositori)
 - [Peta Jalan](#peta-jalan)
 - [Kontributor](#kontributor)
+- [Berkontribusi](#berkontribusi)
+- [Lisensi](#lisensi)
 
 ---
 
@@ -76,9 +78,9 @@ via `deteksi_fiksi` agar tidak dinilai sebagai berita faktual.
 | Model | Parameter | Peran | Status |
 |---|---|---|---|
 | Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | Terlatih (val 94,9%, probe regresi 6/6) |
-| Plosagata_Go | **91.593.216** | Chat ringan — CPU/laptop | Pra-latih + instruction-tune (eksperimental) |
-| Plosagata_More | **912.008.192** | Chat utama Sagi — target training GPU | Arsitektur siap |
-| Plosagata_Next | **1.549.927.424** | Varian besar — GPU 12 GB+ / klaster | Arsitektur saja |
+| Plosagata_Go | **91.593.216** | Chat ringan untuk CPU/laptop | Pra-latih + instruction-tune (eksperimental) |
+| Plosagata_More | **912.008.192** | Chat utama Sagi, target training GPU | Arsitektur siap |
+| Plosagata_Next | **1.549.927.424** | Varian besar untuk GPU 12 GB+ / klaster | Arsitektur saja |
 
 Verifikasi mandiri:
 
@@ -97,7 +99,7 @@ Detail matematis tiap lapisan: `docs/ARSITEKTUR.md`.
 ## Mulai Cepat
 
 **Prasyarat:** Python 3.12+, sekitar 4 GB ruang kosong. GPU NVIDIA opsional
-(Torch harus build CUDA agar GPU terpakai — build `+cpu` tidak menyentuh VRAM).
+(Torch harus build CUDA agar GPU terpakai. Build `+cpu` tidak menyentuh VRAM).
 Tanpa GPU tetap berjalan di CPU.
 
 ```bash
@@ -121,7 +123,7 @@ Opsional (OCR poster): `sudo pacman -S tesseract tesseract-data-ind`
 
 ## Penggunaan
 
-### Terminal — perintah `sagi`
+### Terminal: perintah `sagi`
 
 ```bash
 sagi                             # mode interaktif (Plosagata_More)
@@ -163,9 +165,9 @@ Dataset `data/contoh_dataset.csv` (`text,label` → valid/hoaks/meragukan):
 # → checkpoints/best.pt + checkpoints/vocab.json
 ```
 
-Validasi dipisah **sebelum** augmentasi — angka akurasinya jujur.
+Validasi dipisah **sebelum** augmentasi, jadi angka akurasinya jujur.
 
-### Plosagata — pra-latih lalu instruction-tuning (GPU disarankan)
+### Plosagata: pra-latih lalu instruction-tuning (GPU disarankan)
 
 ```bash
 # 1. Korpus Wikipedia Indonesia (sumber: wikimedia/wikipedia):
@@ -185,7 +187,7 @@ Setiap `--out X.pt` otomatis menyimpan `X.pt.vocab.pt` di sebelahnya, dan
 checkpoint val terbaik (`X-best.pt` + `X-best.pt.vocab.pt`). Jangan pernah
 memisahkan `.pt` dari `.vocab.pt` pasangannya.
 
-Bobot `.pt` tidak masuk Git (lihat `.gitignore`) — bagikan via
+Bobot `.pt` tidak masuk Git (lihat `.gitignore`). Bagikan via
 Release/Drive. Panduan pindah PC: `howitworks/cara_pindahinIQsagi.md`.
 
 Mode berpikir-murni (semua pesan lewat model, perlu model terlatih):
@@ -206,7 +208,7 @@ SAGI_PURE_THINK=1 .venv/bin/python web/app.py
 | `data/train_chat.jsonl` | 701 (gabungan + generate) | Instruction-tuning |
 | `data/vocab_seed.txt` | Bank kata inti | Build vocab otomatis |
 
-- `plosagata/slang.py` — 199 entri slang → formal, diterapkan saat
+- `plosagata/slang.py` berisi 199 entri slang → formal yang dipakai saat
   training **dan** inferensi agar konsisten.
 - Tokenizer BPE mengeja kata asing per potongan (tanpa OOV); vocab lebih
   besar via `--vocab-size` + latih ulang.
@@ -247,10 +249,12 @@ PlosagataA-1.0/
 ├── docs/         ARSITEKTUR.md, PANDUAN_FINETUNE.md
 ├── sagi.sh       Peluncur (mis. SUPER+S di Hyprland)
 ├── requirements.txt
+├── CONTRIBUTING.md
+├── LICENSE
 └── README.md
 ```
 
-Seluruh skrip kembali otomatis ke akar repo — dapat dijalankan dari direktori
+Seluruh skrip kembali otomatis ke akar repo, jadi dapat dijalankan dari direktori
 mana pun. Dokumentasi arsitektur per berkas: [`docs/ARSITEKTUR.md`](docs/ARSITEKTUR.md).
 
 ---
@@ -269,9 +273,23 @@ mana pun. Dokumentasi arsitektur per berkas: [`docs/ARSITEKTUR.md`](docs/ARSITEK
 
 ## Kontributor
 
-- **rewsaqy** — arsitektur, model, dan training awal
-- **ZxWyvern** — training GPU, data, dan pengembangan lanjutan
+- **rewsaqy**: arsitektur, model, dan training awal
+- **ZxWyvern**: training GPU, data, dan pengembangan lanjutan
 
 Lihat riwayat kontribusi lengkap via `git shortlog -sne`.
+
+---
+
+## Berkontribusi
+
+Kontribusi terbuka. Baca [`CONTRIBUTING.md`](CONTRIBUTING.md) dulu:
+alur fork/branch/PR, evaluasi wajib (`eval_verdict.py`, `eval_fiksi.py`,
+lapor train + val loss), dan aturan bobot (tidak ada `.pt` di Git).
+
+---
+
+## Lisensi
+
+Proyek ini berlisensi MIT, lihat [`LICENSE`](LICENSE).
 
 > *Saring sebelum Sharing.*
