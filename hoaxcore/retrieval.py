@@ -65,6 +65,16 @@ def link_cek_fakta(teks: str) -> list[dict]:
 def cari_sumber(teks: str) -> dict:
     """Return {'kueri', 'wikipedia': [...], 'cek_fakta': [...]}."""
     kueri = kata_kunci(teks)
+    wiki = []
+    try:
+        from hoaxcore.rag import rag_search
+        lokal = rag_search(teks, k=3)
+        for h in lokal:
+            wiki.append({"judul": h["judul"], "url": "", "cuplikan": h["cuplikan"]})
+    except Exception:
+        lokal = []
+    if not wiki:
+        wiki = cari_wikipedia(kueri)
     return {"kueri": kueri,
-            "wikipedia": cari_wikipedia(kueri),
+            "wikipedia": wiki,
             "cek_fakta": link_cek_fakta(teks)}
