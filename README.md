@@ -1,18 +1,21 @@
-# PlosagataA-1.0 🛡️
+# PlosagataA-1.0
 
 **Sagi — AI validator hoaks Bahasa Indonesia, dibangun dari nol.**
 
-[![Python](https://img.shields.io/badge/Python-3.12-blue)]()
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange)]()
-[![Models](https://img.shields.io/badge/Models-12M_%7C_92M_%7C_912M_%7C_1.5B-green)]()
-[![License](https://img.shields.io/badge/License-MIT-lightgrey)]()
+[![Python](https://img.shields.io/badge/Python-3.12-blue)](https://www.python.org)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange)](https://pytorch.org)
+[![Models](https://img.shields.io/badge/Models-12M_%7C_92M_%7C_912M_%7C_1.5B-green)](#model)
+[![License](https://img.shields.io/badge/License-MIT-lightgrey)](https://opensource.org/licenses/MIT)
+[![Contributors](https://img.shields.io/github/contributors/rewsaqy/PlosagataA-1.0)](https://github.com/rewsaqy/PlosagataA-1.0/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/rewsaqy/PlosagataA-1.0)](https://github.com/rewsaqy/PlosagataA-1.0/commits)
+[![Stars](https://img.shields.io/github/stars/rewsaqy/PlosagataA-1.0?style=social)](https://github.com/rewsaqy/PlosagataA-1.0/stargazers)
 
 Proyek lomba AI terapan: sistem validasi hoaks end-to-end — klasifikasi teks,
 OCR poster, cek fakta heuristik + sumber internet, dan chatbot khusus berita.
 Seluruh arsitektur dan bobot model ditulis dan dilatih sendiri, tanpa memakai
 model unduhan dari pihak mana pun.
 
-> 📚 **Peta dokumen:** `README.md` (kamu di sini) · `howitworks/Cara_kerja_sagi.md`
+> **Peta dokumen:** `README.md` (dokumen ini) · `howitworks/Cara_kerja_sagi.md`
 > (penjelasan santai) · `docs/ARSITEKTUR.md` (teknis) · `docs/PANDUAN_FINETUNE.md`
 > (training) · `howitworks/cara_pindahinIQsagi.md` (pindah PC) ·
 > `howitworks/Cara_nambah_file.md` (nambah file)
@@ -30,6 +33,7 @@ model unduhan dari pihak mana pun.
 - [Penyebaran & Akses Jarak Jauh](#penyebaran--akses-jarak-jauh)
 - [Struktur Repositori](#struktur-repositori)
 - [Peta Jalan](#peta-jalan)
+- [Kontributor](#kontributor)
 
 ---
 
@@ -61,16 +65,20 @@ Lapisan **guard** (`plosagata/guard.py`) memastikan Sagi hanya melayani topik
 berita: sapaan dibalas identitas, off-topic ditolak sopan, klaim diproses penuh
 (slang → tokenizer → model → verdict 12M + sumber).
 
+Label final ditentukan satu pintu via `final_label` (heuristic menang saat
+kuat: skor >= 60 selalu HOAKS), dan konten deklarasi fiksi/simulasi dideteksi
+via `deteksi_fiksi` agar tidak dinilai sebagai berita faktual.
+
 ---
 
 ## Model
 
 | Model | Parameter | Peran | Status |
 |---|---|---|---|
-| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | ✅ Terlatih (val 97%) |
-| Plosagata_Go | **91.593.216** | Chat ringan — CPU/laptop | 🟡 Arsitektur siap |
-| Plosagata_More | **912.008.192** | Chat utama Sagi — target training GPU | 🟡 Arsitektur siap |
-| Plosagata_Next | **1.549.927.424** | Varian besar — GPU 12 GB+ / klaster | ⚪ Arsitektur saja |
+| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | Terlatih (val 94,9%, probe regresi 6/6) |
+| Plosagata_Go | **91.593.216** | Chat ringan — CPU/laptop | Pra-latih + instruction-tune (eksperimental) |
+| Plosagata_More | **912.008.192** | Chat utama Sagi — target training GPU | Arsitektur siap |
+| Plosagata_Next | **1.549.927.424** | Varian besar — GPU 12 GB+ / klaster | Arsitektur saja |
 
 Verifikasi mandiri:
 
@@ -78,6 +86,8 @@ Verifikasi mandiri:
 .venv/bin/python scripts/gpt_pure.py Plosagata_Go
 .venv/bin/python scripts/gpt_pure.py Plosagata_More
 .venv/bin/python scripts/gpt_pure.py Plosagata_Next
+.venv/bin/python scripts/eval_verdict.py   # akurasi + probe regresi klasifier
+.venv/bin/python scripts/eval_fiksi.py     # uji deteksi fiksi/simulasi
 ```
 
 Detail matematis tiap lapisan: `docs/ARSITEKTUR.md`.
@@ -86,17 +96,23 @@ Detail matematis tiap lapisan: `docs/ARSITEKTUR.md`.
 
 ## Mulai Cepat
 
-**Prasyarat:** Linux, Python 3.12, (±4 GB ruang). Tanpa GPU tetap berjalan.
+**Prasyarat:** Python 3.12+, sekitar 4 GB ruang kosong. GPU NVIDIA opsional
+(Torch harus build CUDA agar GPU terpakai — build `+cpu` tidak menyentuh VRAM).
+Tanpa GPU tetap berjalan di CPU.
 
 ```bash
 git clone git@github.com:rewsaqy/PlosagataA-1.0.git
 cd PlosagataA-1.0
 uv venv --python 3.12
 uv pip install -r requirements.txt
+# Untuk GPU (contoh CUDA 12.6):
+.venv/bin/pip install --force-reinstall torch --index-url https://download.pytorch.org/whl/cu126
 .venv/bin/python scripts/infer.py --text "Giveaway iPhone, klik link ini!"
 .venv/bin/python web/app.py
 # → http://localhost:5000  (validator)  +  /chat  (chatbot)
 ```
+
+Windows: ganti `.venv/bin/python` dengan `.venv\Scripts\python.exe`.
 
 Opsional (OCR poster): `sudo pacman -S tesseract tesseract-data-ind`
 (Debian/Ubuntu: `tesseract-ocr tesseract-ocr-ind`).
@@ -120,7 +136,7 @@ klaim berita → diproses model + verdict 12M.
 | Rute | Fungsi |
 |---|---|
 | `/` | Validator: tempel teks / unggah poster → label, skor, riwayat, statistik |
-| `/chat` | Chatbot ala ChatGPT: sidebar, riwayat tersimpan, tombol cepat, indikator mengetik, badge verdict, tombol salin, pemilih model, dukungan token remote |
+| `/chat` | Chatbot: sidebar, riwayat tersimpan, tombol cepat, indikator mengetik, badge verdict, tombol salin, pemilih model, dukungan token remote |
 | `/api/check` · `/api/chat` · `/api/history` · `/api/stats` | API JSON |
 
 Stabilitas server: reloader nonaktif bawaan (konflik thread PyTorch),
@@ -149,29 +165,33 @@ Dataset `data/contoh_dataset.csv` (`text,label` → valid/hoaks/meragukan):
 
 Validasi dipisah **sebelum** augmentasi — angka akurasinya jujur.
 
-### Plosagata — rencana 5 hari di GPU (RTX 3080 disarankan; 2060 mode hemat)
+### Plosagata — pra-latih lalu instruction-tuning (GPU disarankan)
 
 ```bash
-# Hari 1 — korpus Wikipedia Indonesia:
-.venv/bin/python scripts/build_corpus.py --out data/korpus.txt
-# Hari 1–4 — pra-latih dari nol:
-.venv/bin/python scripts/train_pure.py --size Plosagata_More --corpus data/korpus.txt \
-  --epochs 1 --batch 2 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
-  --out pure-Plosagata_More-pretrain.pt
-# Hari 5 — instruction-tuning menjadi Sagi:
-.venv/bin/python scripts/train_pure.py --size Plosagata_More --data data/train_chat.jsonl \
-  --epochs 5 --batch 1 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
-  --ckpt pure-Plosagata_More-pretrain.pt --out pure-Plosagata_More.pt
+# 1. Korpus Wikipedia Indonesia (sumber: wikimedia/wikipedia):
+.venv/bin/python scripts/build_corpus.py --out data/korpus.wiki.txt --limit 2000
+cat data/korpus.txt data/korpus.wiki.txt > data/korpus.full.txt
+# 2. Pra-latih dari nol (ada split validasi otomatis):
+.venv/bin/python scripts/train_pure.py --size Plosagata_Go --corpus data/korpus.full.txt \
+  --epochs 1 --batch 16 --fp16 --val-split 0.02 --out pure-Go-pretrain.pt
+# 3. Instruction-tuning menjadi Sagi (WAJIB pakai vocab pretrain agar embedding cocok):
+.venv/bin/python scripts/train_pure.py --size Plosagata_Go --data data/train_chat.jsonl \
+  --epochs 5 --batch 8 --fp16 --lr 2e-4 --val-split 0.1 \
+  --ckpt pure-Go-pretrain-best.pt --vocab-file pure-Go-pretrain.pt.vocab.pt \
+  --out pure-Go-sagi.pt
 ```
 
-Panduan per OS (CachyOS/Ubuntu/Windows/WSL2), darurat OOM, dan checklist
-bawa pulang 3 berkas (`pure-*.pt`, `*.vocab.pt`, `checkpoints/`) — lihat
-bagian tutorial di riwayat README atau `docs/PANDUAN_FINETUNE.md`.
+Setiap `--out X.pt` otomatis menyimpan `X.pt.vocab.pt` di sebelahnya, dan
+checkpoint val terbaik (`X-best.pt` + `X-best.pt.vocab.pt`). Jangan pernah
+memisahkan `.pt` dari `.vocab.pt` pasangannya.
+
+Bobot `.pt` tidak masuk Git (lihat `.gitignore`) — bagikan via
+Release/Drive. Panduan pindah PC: `howitworks/cara_pindahinIQsagi.md`.
 
 Mode berpikir-murni (semua pesan lewat model, perlu model terlatih):
 
 ```bash
-.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --pure-think
+.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --pure-think
 SAGI_PURE_THINK=1 .venv/bin/python web/app.py
 ```
 
@@ -181,26 +201,30 @@ SAGI_PURE_THINK=1 .venv/bin/python web/app.py
 
 | Dataset | Isi | Untuk |
 |---|---|---|
-| `data/contoh_dataset.csv` | 215 baris, seimbang 75/75/65 | Klasifier |
-| `data/contoh_chat.jsonl` | 132 percakapan (slang, penolakan, sapaan) | Gaya Sagi |
-| `data/train_chat.jsonl` | 347 (gabungan + generate) | Instruction-tuning |
-| `data/vocab_seed.txt` | 400+ kata inti | Build vocab otomatis |
+| `data/contoh_dataset.csv` | 514 baris (tumbuh via `auto_collect.py`) | Klasifier |
+| `data/contoh_chat.jsonl` | 187 percakapan (slang, penolakan, sapaan) | Gaya Sagi |
+| `data/train_chat.jsonl` | 701 (gabungan + generate) | Instruction-tuning |
+| `data/vocab_seed.txt` | Bank kata inti | Build vocab otomatis |
 
 - `plosagata/slang.py` — 199 entri slang → formal, diterapkan saat
   training **dan** inferensi agar konsisten.
 - Tokenizer BPE mengeja kata asing per potongan (tanpa OOV); vocab lebih
   besar via `--vocab-size` + latih ulang.
-- Regenerasi: `python3 scripts/csv_to_chat.py && cat data/chat_hoaks.jsonl data/contoh_chat.jsonl > data/train_chat.jsonl`
+- Koleksi data otomatis (TurnBackHoax + RSS, ada dedupe):
+  `python scripts/auto_collect.py --tbh-pages 2 --rss 1`
+- Regenerasi chat: `python3 scripts/csv_to_chat.py` lalu gabung
+  `data/chat_hoaks.jsonl` + `data/contoh_chat.jsonl` menjadi
+  `data/train_chat.jsonl`.
 
 ---
 
 ## Penyebaran & Akses Jarak Jauh
 
-Jalankan Sagi di komputer GPU, akses dari mana saja seperti ChatGPT:
+Jalankan Sagi di komputer GPU, akses dari mana saja:
 
 ```bash
 # Komputer teman (server):
-SAGI_SIZE=Plosagata_More SAGI_CKPT=pure-Plosagata_More.pt SAGI_TOKEN=RAHASIA \
+SAGI_SIZE=Plosagata_Go SAGI_CKPT=pure-Go-sagi-best.pt SAGI_TOKEN=RAHASIA \
   .venv/bin/python web/app.py
 ```
 
@@ -233,11 +257,21 @@ mana pun. Dokumentasi arsitektur per berkas: [`docs/ARSITEKTUR.md`](docs/ARSITEK
 
 ## Peta Jalan
 
-- [x] Klasifier 12M terlatih (val 97%) + web validator + OCR poster
+- [x] Klasifier 12M terlatih (val 94,9%, probe 6/6) + web validator + OCR poster
 - [x] Arsitektur Plosagata Go/More/Next + guard topik + slang + retrieval sumber
 - [x] Web chatbot + API + akses remote bertoken
+- [x] Pra-latih Go di GPU (korpus Wikipedia 2000 artikel) + instruction-tuning bervalidasi
 - [ ] Pra-latih More di GPU (korpus Wikipedia, ±5 hari)
 - [ ] Instruction-tuning → `pure-Plosagata_More.pt` rilis pertama
 - [ ] Evaluasi: matriks konfusi, uji 100 klaim nyata, demo poster
+
+---
+
+## Kontributor
+
+- **rewsaqy** — arsitektur, model, dan training awal
+- **ZxWyvern** — training GPU, data, dan pengembangan lanjutan
+
+Lihat riwayat kontribusi lengkap via `git shortlog -sne`.
 
 > *Saring sebelum Sharing.*
