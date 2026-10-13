@@ -65,12 +65,15 @@ class SagiEngine:
         return {"label": ID2LABEL[max(range(3), key=lambda i: probs[i])], "probs": probs}
 
     def reply(self, text, max_new=60):
+        import os as _os
+        pure_think = _os.getenv("SAGI_PURE_THINK", "0") == "1"
         clean = normalize_slang(text)
         topic = is_news_topic(clean)
-        if topic == "offtopic":
-            return {"reply": sagi_redirect(text), "topic": topic, "verdict": None}
-        if topic == "greeting":
-            return {"reply": sagi_hello(text), "topic": topic, "verdict": None}
+        if not pure_think:
+            if topic == "offtopic":
+                return {"reply": sagi_redirect(text), "topic": topic, "verdict": None}
+            if topic == "greeting":
+                return {"reply": sagi_hello(text), "topic": topic, "verdict": None}
         ids, _ = self.tok.encode(clean)
         real = [i for i in ids if i != self.tok.pad_id][:64]
         out = self._get_model().generate(torch.tensor([real]).to(self.device),

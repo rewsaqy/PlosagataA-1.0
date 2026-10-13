@@ -41,6 +41,10 @@ def main():
     ap.add_argument("--ckpt", default="")
     ap.add_argument("--prompt", default="")
     ap.add_argument("--max-new", type=int, default=40)
+    ap.add_argument("--pure-think", action="store_true",
+                    help="Tanpa template: SEMUA pesan (termasuk halo/off-topic) "
+                         "lewat tokenizer -> model -> decode. Butuh model TERLATIH, "
+                         "kalau tidak output ngawur.")
     a = ap.parse_args()
 
     cfg = CONFIGS[a.size]
@@ -67,12 +71,15 @@ def main():
         return _model
 
     def answer(prompt: str) -> str:
-        topic = is_news_topic(normalize_slang(prompt))
-        if topic == "offtopic":
-            return sagi_redirect(prompt)
-        if topic == "greeting":
-            return sagi_hello(prompt)
-        ids, _ = tok.encode(normalize_slang(prompt))
+        clean = normalize_slang(prompt)
+        topic = is_news_topic(clean)
+        if not a.pure_think:
+            if topic == "offtopic":
+                return sagi_redirect(prompt)
+            if topic == "greeting":
+                return sagi_hello(prompt)
+        # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode
+        ids, _ = tok.encode(clean)
         real = [i for i in ids if i != tok.pad_id][:64]
         out = get_model().generate(torch.tensor([real]), max_new=a.max_new,
                                    ignore_ids=ign)[0].tolist()
