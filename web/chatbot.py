@@ -4,7 +4,8 @@ import os
 import torch
 import torch.nn.functional as F
 
-from hoaxcore import ID2LABEL, TinyHoaxTransformer, WordTokenizer, local_verdict
+from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
+                      local_verdict)
 from plosagata import (CONFIGS, PureGPT, is_news_topic, normalize_slang,
                        sagi_hello, sagi_redirect)
 
@@ -76,6 +77,11 @@ class SagiEngine:
                                          max_new=max_new, ignore_ids=self.ign)[0].tolist()
         v = self.verdict(text)
         lv = local_verdict(text, v)
+        try:
+            sumber = cari_sumber(text)
+        except Exception:
+            sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
         return {"reply": self.tok.decode(out[len(real):]), "topic": topic,
                 "verdict": {**v, "skor": lv["skor_hoaks"],
-                            "kesimpulan": lv["kesimpulan"]}}
+                            "kesimpulan": lv["kesimpulan"]},
+                "sumber": sumber}

@@ -3,6 +3,7 @@ from .dataset import ID2LABEL, LABEL2ID, HoaxDataset, load_csv
 from .factcheck import heuristic_signals, llm_crosscheck, local_verdict
 from .model import TinyHoaxTransformer, count_params
 from .ocr_poster import ocr_poster
+from .retrieval import cari_sumber, kata_kunci, link_cek_fakta
 from .tokenizer import WordTokenizer, basic_clean, tokenize_words
 
 __all__ = [
@@ -11,4 +12,5 @@ __all__ = [
     "HoaxDataset", "load_csv", "LABEL2ID", "ID2LABEL",
     "local_verdict", "heuristic_signals", "llm_crosscheck",
     "ocr_poster",
+    "cari_sumber", "kata_kunci", "link_cek_fakta",
 ]

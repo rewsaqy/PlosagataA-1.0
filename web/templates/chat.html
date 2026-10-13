@@ -109,6 +109,8 @@ const j=await r.json();lod.remove();
 if(!j.ok){const h='⚠️ '+esc(j.error||'Gagal');bubble('a',h);push('a',h);return;}
 let extra='';
 if(j.verdict)extra=`<div class="verd"><span class="badge ${j.verdict.label}">${j.verdict.label.toUpperCase()}</span> skor ${j.verdict.skor} • ${esc(j.verdict.kesimpulan)} <button class="copy" onclick="navigator.clipboard.writeText(this.parentNode.innerText)">salin</button></div>`;
+if(j.sumber){(j.sumber.wikipedia||[]).forEach(s=>{extra+=`<div class="meta">📖 <a href="${s.url}" target="_blank">${esc(s.judul)}</a> — ${esc(s.cuplikan||'')}</div>`;});
+(j.sumber.cek_fakta||[]).forEach(s=>{extra+=`<div class="meta">✅ <a href="${s.url}" target="_blank">${esc(s.judul)}</a></div>`;});}
 const h=esc(j.reply)+extra;
 bubble('a',h,`<span class="mini">${sel.value} • ${now()}</span>`);push('a',h,sel.value);
 }catch(e){lod.remove();const h='⚠️ Server tidak merespons.';bubble('a',h);push('a',h);}
