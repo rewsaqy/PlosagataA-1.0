@@ -44,7 +44,8 @@ GREETING_ONLY = ["halo", "halo halo", "hallo", "helo", "hai", "hi", "hello",
                  "hey", "hei", "pagi", "siang", "sore", "malam",
                  "assalamu", "assalamualaikum", "tes", "permisi", "permisi",
                  "bang", "kak", "bro", "sis", "kawan", "kawan", "mas",
-                 "mbak", "mba", "pak", "bu", "loh", "p", "oy", "woy"]
+                 "mbak", "mba", "pak", "bu", "loh", "p", "oy", "woy",
+                 "haha", "hehe", "hihi"]
 
 OFFTOPIC_KEYWORDS = [
     # Coding / IT teknis
