@@ -21,4 +21,6 @@ CONFIGS: dict[str, GPTConfig] = {
     "small": GPTConfig(vocab=8000, dim=768, layers=12, heads=12, ff=3072, max_len=512),
     # target ~900M — training di device GPU lain
     "b1": GPTConfig(vocab=16000, dim=2048, layers=22, heads=16, ff=5632, max_len=1024),
+    # varian dalam (~1.15B): hanya jika GPU 10GB+ (RTX 3080) + data besar
+    "b1deep": GPTConfig(vocab=16000, dim=2048, layers=28, heads=16, ff=5632, max_len=1024),
 }
