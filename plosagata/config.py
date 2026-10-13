@@ -23,4 +23,8 @@ CONFIGS: dict[str, GPTConfig] = {
     "b1": GPTConfig(vocab=16000, dim=2048, layers=22, heads=16, ff=5632, max_len=1024),
     # varian dalam (~1.15B): hanya jika GPU 10GB+ (RTX 3080) + data besar
     "b1deep": GPTConfig(vocab=16000, dim=2048, layers=28, heads=16, ff=5632, max_len=1024),
+    # EKSPERIMEN cluster (BUKAN untuk RTX 2060/3080):
+    # 38 layer ~1.55B butuh ~10GB VRAM mode hemat; 48 layer ~1.95B butuh ~12GB+.
+    "b1x38": GPTConfig(vocab=16000, dim=2048, layers=38, heads=16, ff=5632, max_len=1024),
+    "b1x48": GPTConfig(vocab=16000, dim=2048, layers=48, heads=16, ff=5632, max_len=1024),
 }
