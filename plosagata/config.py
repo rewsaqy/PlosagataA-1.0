@@ -1,0 +1,24 @@
+"""Konfigurasi arsitektur Plosagata — murni buatan sendiri."""
+from dataclasses import dataclass
+
+
+@dataclass
+class GPTConfig:
+    vocab: int = 5000
+    dim: int = 256
+    layers: int = 6
+    heads: int = 8
+    ff: int = 1024
+    max_len: int = 256
+    dropout: float = 0.0
+    tie_weights: bool = True  # head pinjam bobot embedding (hemat ~32M di b1)
+
+
+CONFIGS: dict[str, GPTConfig] = {
+    # latihan di CPU sini
+    "tiny": GPTConfig(),
+    # latihan GPU menengah (~65M dengan tie, hemat dari 98M)
+    "small": GPTConfig(vocab=8000, dim=768, layers=12, heads=12, ff=3072, max_len=512),
+    # target ~900M — training di device GPU lain
+    "b1": GPTConfig(vocab=16000, dim=2048, layers=22, heads=16, ff=5632, max_len=1024),
+}

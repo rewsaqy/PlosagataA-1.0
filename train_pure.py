@@ -1,10 +1,10 @@
-"""Training GPT murni dengan data chat + berita ( causal LM ).
+"""Training GPT murni Plosagata (causal LM) dengan data chat + berita.
 
 CPU sini (tanpa GPU):
   python3 train_pure.py --size tiny --epochs 3
   -> menghasilkan pure-tiny.pt (bukti training jalan)
 
-Device GPU lain (untuk small / b1 1B):
+Device GPU lain (untuk small / b1 ~900M):
   copy folder ini ke sana, lalu:
   python train_pure.py --size small --epochs 5 --batch 8
   python train_pure.py --size b1 --epochs 3 --batch 1 --grad-accum 16
@@ -14,10 +14,9 @@ import argparse
 import json
 
 import torch
-import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
-from gpt_pure import CONFIGS, PureGPT, count_params
+from plosagata import CONFIGS, PureGPT, count_params
 from tokenizer import WordTokenizer
 
 
@@ -33,9 +32,7 @@ class ChatLMDataset(Dataset):
         text = "\n".join(f"{m['role']}: {m['content']}" for m in msgs)
         ids, _ = self.tok.encode(text)
         ids = ids[:self.L]
-        x = torch.tensor(ids[:-1])
-        y = torch.tensor(ids[1:])
-        return x, y
+        return torch.tensor(ids[:-1]), torch.tensor(ids[1:])
 
 
 def main():
@@ -53,17 +50,15 @@ def main():
     rows = [json.loads(l) for l in open(a.data, encoding="utf-8") if l.strip()]
     print(f"Data: {len(rows)} contoh chat")
 
-    # bangun vocab dari data (murni lokal, tanpa internet)
     texts = ["\n".join(f"{m['role']}: {m['content']}" for m in r["messages"]) for r in rows]
-    tok = WordTokenizer.build(texts, vocab_size=cfg["vocab"], max_len=cfg["max_len"])
+    tok = WordTokenizer.build(texts, vocab_size=cfg.vocab, max_len=cfg.max_len)
     print(f"Vocab: {len(tok.vocab)}")
 
-    ds = ChatLMDataset(rows, tok, cfg["max_len"])
-    ld = DataLoader(ds, batch_size=a.batch, shuffle=True)
+    ld = DataLoader(ChatLMDataset(rows, tok, cfg.max_len), batch_size=a.batch, shuffle=True)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print("device:", device)
-    model = PureGPT(**cfg).to(device)
+    model = PureGPT(cfg).to(device)
     print(f"Parameter: {count_params(model):,}")
     torch.save(tok.vocab, (a.out or f"pure-{a.size}") + ".vocab.pt")
 

@@ -14,16 +14,20 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import torch
 
-from gpt_pure import CONFIGS, PureGPT
+from plosagata import CONFIGS, PureGPT
 from tokenizer import WordTokenizer
 
 
 def build_tokenizer(vocab_size: int):
-    # tokenizer kata kecil untuk demo murni (tanpa internet)
     seeds = ["halo", "hai", "pagi", "bang", "berita", "hoaks", "bener", "gak",
              "giveaway", "klik", "link", "covid", "vaksin", "pemerintah", "cek"]
-    tok = WordTokenizer.build(seeds, vocab_size=vocab_size, max_len=256)
-    return tok
+    return WordTokenizer.build(seeds, vocab_size=vocab_size, max_len=256)
+
+
+def ignore_ids_for(tok: WordTokenizer) -> set[int]:
+    # jangan pernah generate token sampah padding/unknown
+    return {i for t, i in tok.vocab.items()
+            if t.startswith("<pad") or t in ("<unk>", "<cls>", "<sep>")}
 
 
 def main():
@@ -36,31 +40,33 @@ def main():
 
     cfg = CONFIGS[a.size]
     if a.size == "b1":
-        print("size b1 (~1B) jangan di-load di CPU sini — pindah ke device GPU. "
+        print("size b1 (~900M) jangan di-load di CPU sini — pindah ke device GPU. "
               "Gunakan --size tiny untuk buktikan arsitektur nyala.")
         return
 
-    tok = build_tokenizer(cfg["vocab"])
-    model = PureGPT(**cfg)
+    tok = build_tokenizer(cfg.vocab)
+    ign = ignore_ids_for(tok)
+    model = PureGPT(cfg)
     if a.ckpt and os.path.exists(a.ckpt):
-        model.load_state_dict(torch.load(a.ckpt, map_location="cpu"))
-        print(f"[ckpt dimuat: {a.ckpt}]")
+        try:
+            model.load_state_dict(torch.load(a.ckpt, map_location="cpu"))
+            print(f"[ckpt dimuat: {a.ckpt}]")
+        except RuntimeError as e:
+            print(f"[ckpt lama tak cocok dengan arsitektur baru, pakai bobot acak: {e}]")
     else:
         print("[bobot ACAK — output awal ngawur itu normal sebelum training]")
 
     def answer(prompt: str) -> str:
         ids, _ = tok.encode(prompt)
-        # buang padding untuk generate
         real = [i for i in ids if i != tok.pad_id][:64]
-        inp = torch.tensor([real])
-        out = model.generate(inp, max_new=a.max_new)[0].tolist()
-        words = [tok.inv.get(i, "?") for i in out[len(real):]]
-        return " ".join(words)
+        out = model.generate(torch.tensor([real]), max_new=a.max_new,
+                             ignore_ids=ign)[0].tolist()
+        return " ".join(tok.inv.get(i, "?") for i in out[len(real):])
 
     if a.prompt:
         print(answer(a.prompt))
         return
-    print(f"PureGPT-{a.size} siap (murni kodinganmu). Ketik 'keluar' untuk berhenti.")
+    print(f"Plosagata-{a.size} siap (murni kodinganmu). Ketik 'keluar' untuk berhenti.")
     while True:
         try:
             u = input("kamu> ").strip()
