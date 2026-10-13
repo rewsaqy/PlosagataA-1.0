@@ -90,6 +90,16 @@ def model_predict(text):
     return {"label": ID2LABEL[pred], "probs": probs, "mode": "model-12M"}
 
 
+@app.after_request
+def _cors(resp):
+    # Biar browser di rumah bisa akses server teman (beda origin).
+    # Token tetap wajib — CORS bukan pengganti auth.
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Sagi-Token"
+    resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return resp
+
+
 @app.route("/")
 def index():
     return render_template("index.html")

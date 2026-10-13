@@ -128,6 +128,17 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 - Sampai di rumah: taruh ketiganya Sejajar di folder proyek, jalan seperti biasa —
   Sagi langsung sepintar di komputer teman.
 
+**Migrasi: Sagi jalan di komputer jauh, dichat dari rumah kayak ChatGPT:**
+```bash
+# di komputer teman (GPU, setelah training): server + token
+SAGI_SIZE=Plosagata_More SAGI_CKPT=pure-Plosagata_More.pt SAGI_TOKEN=ISI_RAHASIA \
+  .venv/bin/python web/app.py
+```
+Lalu dua-duanya install Tailscale (gratis) dengan akun yang sama, dan dari
+browser rumah buka `http://100.x.y.z:5000/chat`, isi Token sekali (tersimpan
+otomatis). Tampilannya sama persis kayak ChatGPT: chips, typing, badge verdict.
+Alternatif terminal: `SAGI_URL=... SAGI_TOKEN=... python scripts/sagi_remote.py`.
+
 **Kalau OOM (CUDA out of memory):** urutan darurat: `--batch 1` → `--max-len 512` →
 `--max-len 256` → ganti `--optim adamw`. Jangan naikkan batch dulu.
 

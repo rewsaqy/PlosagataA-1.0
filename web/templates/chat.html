@@ -36,7 +36,7 @@ a{color:#8fb0ff}
 </head>
 <body>
 <header><div class="dot"></div><div><h1>Sagi</h1><small>Chatbot validator berita • <a href="/">validator</a></small></div></header>
-<div class="toolbar"><small id="st">Siap. Model: <b id="mnow">Plosagata_Go</b></small><button id="clear">🧹 Bersihkan</button></div>
+<div class="toolbar"><small id="st">Siap. Model: <b id="mnow">Plosagata_Go</b></small><span><input id="tok" type="password" placeholder="Token (isi jika server remote)" style="width:180px;padding:.4rem;border-radius:8px;border:1px solid #33405f;background:#101728;color:var(--txt)"><button id="clear">🧹 Bersihkan</button></span></div>
 <div id="box"></div>
 <div id="chips"></div>
 <div id="bar">
@@ -50,7 +50,10 @@ a{color:#8fb0ff}
 </div>
 <script>
 const box=document.getElementById('box'), inp=document.getElementById('m'),
-      btn=document.getElementById('send'), sel=document.getElementById('model');
+      btn=document.getElementById('send'), sel=document.getElementById('model'),
+      tok=document.getElementById('tok');
+tok.value=localStorage.getItem('sagi_token')||'';
+tok.onchange=()=>localStorage.setItem('sagi_token',tok.value);
 const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const now=()=>new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
 function add(who,html,meta=''){
@@ -63,6 +66,8 @@ const chips=document.getElementById('chips');
 CHIPS.forEach(c=>{const b=document.createElement('button');b.innerText=c;
   b.onclick=()=>{inp.value=c.replace(/^[👋🔍📰⛔] /,'');kirim();};chips.appendChild(b);});
 add('ai','Halo! Saya <b>Sagi</b>. Tempel berita yang mau dicek, atau pencet tombol cepat di bawah.',now());
+// ?api=https://... untuk menembak server lain (migrasi/remote). Default API lokal.
+const API=new URLSearchParams(location.search).get('api')||'/api/chat';
 async function kirim(){
   const t=inp.value.trim(); if(!t)return; inp.value=''; btn.disabled=true;
   document.getElementById('mnow').innerText=sel.value;
@@ -71,7 +76,7 @@ async function kirim(){
   lod.innerHTML='<div class="b typing"><span></span><span></span><span></span></div>';
   box.appendChild(lod); box.scrollTop=box.scrollHeight;
   try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','X-Sagi-Token':tok.value},
       body:JSON.stringify({message:t,model:sel.value})});
     const j=await r.json(); lod.remove();
     if(!j.ok){add('ai','⚠️ '+esc(j.error||'Gagal'),now());return;}
