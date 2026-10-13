@@ -36,6 +36,58 @@ def ignore_ids_for(tok: WordTokenizer) -> set[int]:
             if t.startswith("<pad") or t in ("<unk>", "<cls>", "<sep>")}
 
 
+def load_ckpt_vocab(ckpt_path: str):
+    """Muat kamus .vocab.pt pasangan checkpoint (wajib cocok pairs)."""
+    import torch
+    vp = ckpt_path + ".vocab.pt"
+    if ckpt_path and os.path.exists(vp):
+        v = torch.load(vp, map_location="cpu", weights_only=False)
+        if isinstance(v, dict) and len(v) > 100:
+            return v
+    return None
+
+
+def piece_encode(text: str, vocab: dict, max_len: int = 256) -> tuple[list[int], list[int]]:
+    """Encode longest-match untuk vocab BPE tanpa backend (darurat ckpt lama)."""
+    pad_id, unk_id = vocab.get("<pad>", 0), vocab.get("<unk>", 1)
+    cls_id, sep_id = vocab.get("<cls>", 2), vocab.get("<sep>", 3)
+    ids = [cls_id]
+    for wi, w in enumerate(text.split()):
+        for form in ([w, "Ġ" + w] if wi == 0 else ["Ġ" + w, w]):
+            cur, i, ok = [], 0, True
+            while i < len(form):
+                best = next((form[i:j] for j in range(len(form), i, -1)
+                             if form[i:j] in vocab), None)
+                if best is None:
+                    ok = False
+                    break
+                cur.append(vocab[best])
+                i += len(best)
+            if ok:
+                ids.extend(cur)
+                break
+        else:
+            ids.append(unk_id)
+        if len(ids) >= max_len - 1:
+            break
+    ids = (ids + [sep_id])[:max_len]
+    mask = [1] * len(ids)
+    while len(ids) < max_len:
+        ids.append(pad_id)
+        mask.append(0)
+    return ids, mask
+
+
+def piece_decode(ids: list[int], inv: dict) -> str:
+    toks = [inv.get(i, "") for i in ids]
+    out = ""
+    for t in toks:
+        if not t or t.startswith("<pad") or t in ("<pad>", "<unk>", "<cls>", "<sep>"):
+            continue
+        out += t[1:] if t.startswith("Ġ") else t
+    return out.replace("  ", " ").strip()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--size", default="Plosagata_More", choices=list(CONFIGS.keys()))
@@ -56,6 +108,7 @@ def main():
     if a.vocab_file and os.path.exists(a.vocab_file):
         vocab = torch.load(a.vocab_file, map_location="cpu")
         tok = WordTokenizer(vocab, max_len=cfg.max_len)
+        use_pieces = True  # dict mentah tanpa backend BPE -> longest-match
         print(f"[vocab dimuat: {a.vocab_file}]")
     elif a.ckpt and os.path.exists(a.ckpt):
         # tebak pasangan vocab: X.pt -> X.pt.vocab.pt (format train_pure --out X.pt)
@@ -68,13 +121,16 @@ def main():
             if os.path.exists(cand):
                 vocab = torch.load(cand, map_location="cpu")
                 tok = WordTokenizer(vocab, max_len=cfg.max_len)
+                use_pieces = True
                 print(f"[vocab otomatis: {cand}]")
                 break
         else:
             tok = build_tokenizer(cfg.vocab)
+            use_pieces = False
             print("[PERINGATAN: vocab pasangan tidak ketemu, pakai tebakan seed — output bisa sampah]")
     else:
         tok = build_tokenizer(cfg.vocab)
+        use_pieces = False
     ign = ignore_ids_for(tok)
     _model = None
     sess = {"topik": None}  # memori topik sesi terminal
@@ -150,11 +206,17 @@ def main():
                                   lv["sinyal"].get("fiksi_hits"))
             return ("Merujuk berita tadi:\n" + isi) if rujuk else isi
         # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode
-        ids, _ = tok.encode(kueri if rujuk else clean)
+        src = kueri if rujuk else clean
+        if use_pieces:
+            ids, _ = piece_encode(src, tok.vocab, tok.max_len)
+        else:
+            ids, _ = tok.encode(src)
         real = [i for i in ids if i != tok.pad_id][:64]
         out = get_model().generate(torch.tensor([real]), max_new=a.max_new,
                                    ignore_ids=ign)[0].tolist()
         # BPE: decode via tokenizer (mapping id->kata mentah menghasilkan byte sampah)
+        if use_pieces:
+            return piece_decode(out[len(real):], tok.inv)
         return tok.decode(out[len(real):])
 
     if a.prompt:
