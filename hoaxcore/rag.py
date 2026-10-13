@@ -90,8 +90,9 @@ def rag_search(query: str, k: int = 3):
         return []
     scores = idx["bm25"].get_scores(qtok)
     top_n = min(20, len(scores))
-    top_idx = np.argsort(scores)[::-1][:top_n]
-    top_idx = [int(i) for i in top_idx if scores[i] > 0][:top_n]
+    # Catatan: jangan filter scores>0 — IDF BM25 bisa 0 untuk term yang muncul
+    # di setengah korpus (mis. demo kecil), kandidat tetap di-rerank TF-IDF.
+    top_idx = [int(i) for i in np.argsort(scores)[::-1][:top_n]]
     if not top_idx:
         return []
     qvec = idx["vectorizer"].transform([" ".join(qtok)])
@@ -100,6 +101,8 @@ def rag_search(query: str, k: int = 3):
     order = np.argsort(cos)[::-1][:k]
     out = []
     for j in order:
+        if cos[int(j)] <= 0:
+            continue  # tidak relevan → biarkan fallback live yang bicara
         ci = top_idx[int(j)]
         teks = idx["chunks"][ci]
         out.append({"id": ci, "judul": f"Korpus#{ci}", "cuplikan": teks[:220], "skor": float(cos[int(j)])})
