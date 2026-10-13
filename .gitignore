@@ -11,6 +11,7 @@ lora-hoax-chat/
 
 # HF cache
 .cache/
+data/vocab_hf.json
 
 # RAG offline (besar, dibangun lokal)
 data/korpus.txt
