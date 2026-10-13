@@ -139,6 +139,30 @@ uv pip install torch scikit-learn datasets bitsandbytes
 # RTX 2060: sama tapi --batch 1 --grad-accum 32 --max-len 512
 ```
 
+**Hari 0 — setup Windows (pilih salah satu):**
+
+*Opsi A — WSL2 Ubuntu (disarankan, perintah sama persis dengan Linux):*
+```powershell
+wsl --install -d Ubuntu
+# buka Ubuntu, install driver NVIDIA Windows terbaru dulu, lalu ikut Hari 0 Linux di atas
+```
+
+*Opsi B — Windows native:*
+```powershell
+winget install Python.Python.3.12 Git.Git
+git clone https://github.com/rewsaqy/PlosagataA-1.0.git
+cd PlosagataA-1.0
+pip install torch scikit-learn datasets
+python -c "import torch; print(torch.cuda.is_available())"  # wajib True
+```
+Beda perintah di Windows native:
+- `bitsandbytes` TIDAK jalan di Windows → ganti `--optim adam8bit` jadi `--optim adamw` (butuh VRAM ~1GB lebih, turunkan `--batch 1 --max-len 512`)
+- Path: `.venv\Scripts\python.exe`, copy `pure-b1.pt` via flashdisk NTFS/exFAT biasa
+- `nvidia-smi` jalan di CMD/PowerShell kalau driver NVIDIA terinstal
+
+Sisa langkah (korpus, pretrain, instruction-tune) identik dengan Linux,
+ganti `.venv/bin/python` -> `python` dan slash `/` -> `\` bila perlu.
+
 **Hari 5 — instruction-tune (jadi Sagi) + bawa pulang:**
 ```bash
 .venv/bin/python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 5 \
