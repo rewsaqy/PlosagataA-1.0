@@ -1,5 +1,8 @@
 # Arsitektur Kode PlosagataA-1.0 (Penjelasan per Part)
 
+> Kembali: `README.md` · Santai: `howitworks/Cara_kerja_sagi.md` ·
+> Nambah file: `howitworks/Cara_nambah_file.md`
+
 Dokumen ini menjelaskan SEMUA file kode: gunanya apa dan cara kerjanya.
 Untuk cara install/training, baca `README.md`.
 

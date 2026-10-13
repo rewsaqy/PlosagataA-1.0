@@ -1,5 +1,9 @@
 # Cara Kerja Sagi — Penjelasan Semua Kode per Bab
 
+> Peta dokumen: `README.md` · teknis: `docs/ARSITEKTUR.md` ·
+> pindah PC: `cara_pindahinIQsagi.md` (folder ini) ·
+> nambah file: `Cara_nambah_file.md` (folder ini)
+
 > Ditulis untuk semua orang, bukan cuma programmer. Istilah sulit selalu
 > dijelaskan dulu dengan perumpamaan sehari-hari.
 

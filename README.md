@@ -12,6 +12,11 @@ OCR poster, cek fakta heuristik + sumber internet, dan chatbot khusus berita.
 Seluruh arsitektur dan bobot model ditulis dan dilatih sendiri, tanpa memakai
 model unduhan dari pihak mana pun.
 
+> 📚 **Peta dokumen:** `README.md` (kamu di sini) · `howitworks/Cara_kerja_sagi.md`
+> (penjelasan santai) · `docs/ARSITEKTUR.md` (teknis) · `docs/PANDUAN_FINETUNE.md`
+> (training) · `howitworks/cara_pindahinIQsagi.md` (pindah PC) ·
+> `howitworks/Cara_nambah_file.md` (nambah file)
+
 ---
 
 ## Daftar Isi

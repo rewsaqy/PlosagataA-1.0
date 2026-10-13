@@ -1,5 +1,8 @@
 # 📚 Panduan Fine-Tune Lengkap
 
+> Kembali: `README.md` · Pindah PC: `howitworks/cara_pindahinIQsagi.md` ·
+> Nambah file: `howitworks/Cara_nambah_file.md`
+
 ## Persiapan di Komputermu (Tanpa GPU)
 
 ### 1. Siapkan Data

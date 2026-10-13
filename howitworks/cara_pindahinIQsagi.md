@@ -1,5 +1,8 @@
 # Cara Pindahin IQ Sagi + Cara Kerja Sistemnya
 
+> Peta: `README.md` · cara kerja: `Cara_kerja_sagi.md` (folder ini) ·
+> nambah file: `Cara_nambah_file.md` (folder ini)
+>
 > IQ Sagi = **file**, bukan install-an. Pindahin file = pindahin kepintaran.
 
 ## 1. File apa saja yang membawa IQ?
