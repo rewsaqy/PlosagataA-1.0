@@ -78,6 +78,8 @@ const API=new URLSearchParams(location.search).get('api')||'/api/chat';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const now=()=>new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
 let chats=JSON.parse(localStorage.getItem('sagi_chats')||'[]'),cur=-1;
+let sid=localStorage.getItem('sagi_sid')||'';
+if(!sid){sid='s'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('sagi_sid',sid);}
 function save(){localStorage.setItem('sagi_chats',JSON.stringify(chats.slice(0,20)));}
 function renderList(){convs.innerHTML='';chats.forEach((c,i)=>{const b=document.createElement('button');
 b.className='conv'+(i===cur?' on':'');b.innerText=(c.title||'Chat '+(i+1));b.onclick=()=>{cur=i;paint();renderList();};convs.appendChild(b);});}
@@ -104,7 +106,7 @@ const lod=document.createElement('div');lod.className='msg ai';
 lod.innerHTML='<div class="who">◆ Sagi</div><div class="typing"><span></span><span></span><span></span></div>';
 box.appendChild(lod);box.scrollTop=box.scrollHeight;
 try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','X-Sagi-Token':tok.value},
-body:JSON.stringify({message:t,model:sel.value})});
+body:JSON.stringify({message:t,model:sel.value,session:sid})});
 const j=await r.json();lod.remove();
 if(!j.ok){const h='⚠️ '+esc(j.error||'Gagal');bubble('a',h);push('a',h);return;}
 let extra='';
@@ -118,7 +120,7 @@ btn.disabled=false;inp.focus();}
 btn.onclick=kirim;
 inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();kirim();}});
 inp.addEventListener('input',()=>{inp.style.height='auto';inp.style.height=Math.min(140,inp.scrollHeight)+'px';});
-document.getElementById('newchat').onclick=()=>{cur=-1;paint();renderList();};
+document.getElementById('newchat').onclick=()=>{cur=-1;sid='s'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem('sagi_sid',sid);paint();renderList();};
 renderList();paint();
 </script>
 </body>

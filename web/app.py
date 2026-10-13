@@ -117,10 +117,11 @@ def chat_api():
     data = request.get_json(silent=True) or {}
     text = (data.get("message", "") or request.form.get("text", "")).strip()
     size = data.get("model", "") or request.form.get("model", "")
+    session_id = (data.get("session", "") or request.form.get("session", "")).strip()
     if not text:
         return jsonify({"ok": False, "error": "Pesan kosong."}), 400
     try:
-        r = get_engine(size or None).reply(text)
+        r = get_engine(size or None).reply(text, session_id=session_id)
         return jsonify({"ok": True, "model_size": get_engine(size or None).size, **r})
     except Exception as e:
         return jsonify({"ok": False, "error": f"Engine gagal: {e}"}), 500

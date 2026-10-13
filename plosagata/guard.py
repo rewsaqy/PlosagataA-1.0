@@ -80,6 +80,44 @@ EVENT_MARKERS = [
     "hilang", "ditemukan", "razia", "sidak",
 ]
 
+# Penanda rujukan ke berita yg sedang dibahas (follow-up multi-turn).
+# Dipakai is_follow_up(): pesan yg merujuk topik aktif JANGAN ditolak
+# sebagai offtopic walau tanpa keyword berita. Regex word-boundary —
+# JANGAN pakai substring ("nya" ada di "hanya"/"tanya").
+RUJUKAN = [
+    "itu", "tersebut", "tadi", "dia", "mereka", "beliau",
+    "ini", "nya", "kan",  # "...kan?" ("bener kan?"), "nya" ("sumbernya mana?")
+    "kok", "sih", "dong",  # partikel lanjutan obrolan
+]
+
+PERINTAH_LANJUT = [
+    "jelaskan", "jelasin", "jabar", "kasih", "berikan", "tunjukkan",
+    "tunjukin", "lanjutkan", "lanjut", "detail", "sumbernya", "buktinya",
+]
+
+import re as _re
+
+_RUJUK_PAT = _re.compile(r"\b(" + "|".join(map(_re.escape, RUJUKAN)) + r")\b")
+_LANJUT_PAT = _re.compile(r"\b(" + "|".join(map(_re.escape, PERINTAH_LANJUT)) + r")")
+
+
+def is_follow_up(text: str) -> bool:
+    """True bila pesan tampak merujuk pembahasan berjalan.
+
+    Syarat: pertanyaan pendek, kata rujukan (itu/tersebut/nya/...),
+    atau perintah lanjutan (jelaskan/kasih sumbernya/...).
+    Penelepon WAJIB cek sesi punya topik aktif dulu — tanpa topik,
+    ini BUKAN follow-up.
+    """
+    t = (text or "").lower().strip()
+    if not t:
+        return False
+    if "?" in t and len(t) < 200:
+        return True
+    if _RUJUK_PAT.search(t) or _LANJUT_PAT.search(t):
+        return True
+    return False
+
 
 WAKE_WORD = "sagi"
 

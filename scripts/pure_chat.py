@@ -54,6 +54,7 @@ def main():
     tok = build_tokenizer(cfg.vocab)
     ign = ignore_ids_for(tok)
     _model = None
+    sess = {"topik": None}  # memori topik sesi terminal
 
     def get_model():
         nonlocal _model
@@ -71,13 +72,27 @@ def main():
         return _model
 
     def answer(prompt: str) -> str:
+        from plosagata import is_follow_up
         clean = normalize_slang(prompt)
         topic = is_news_topic(clean)
+        klaim, kueri, rujuk = prompt, prompt, False
+        topik = sess.get("topik")
         if not a.pure_think:
             if topic == "offtopic":
-                return sagi_redirect(prompt)
+                if topik and is_follow_up(clean):
+                    topic, rujuk = "followup", True
+                    klaim, kueri = topik, topik + " " + prompt
+                else:
+                    return sagi_redirect(prompt)
+            elif topic == "news" and topik and len(clean) < 80 and is_follow_up(clean):
+                from plosagata.guard import NEWS_KEYWORDS
+                if not any(k in clean.lower() for k in NEWS_KEYWORDS):
+                    topic, rujuk = "followup", True
+                    klaim, kueri = topik, topik + " " + prompt
             if topic == "greeting":
                 return sagi_hello(prompt)
+            if topic == "news":
+                sess["topik"] = prompt
         trained = bool(a.ckpt and os.path.exists(a.ckpt))
         if not trained and not a.pure_think:
             # Model belum terlatih (bobot acak) — jawab ekstraktif saja.
@@ -94,7 +109,7 @@ def main():
                                                       weights_only=True))
                         break
                 vm.eval()
-                _ids, _mask = vt.encode(prompt)
+                _ids, _mask = vt.encode(klaim)
                 with torch.no_grad():
                     _pr = _F.softmax(vm(torch.tensor([_ids]),
                                         torch.tensor([_mask])), dim=-1)[0].tolist()
@@ -102,15 +117,16 @@ def main():
                      "probs": _pr}
             except Exception:
                 pass
-            lv = local_verdict(prompt, v)
+            lv = local_verdict(klaim, v)
             try:
-                sumber = cari_sumber(prompt)
+                sumber = cari_sumber(kueri)
             except Exception:
                 sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
-            return ringkasan_hasil(v["label"], lv["skor_hoaks"],
-                                   lv["kesimpulan"], sumber)
+            isi = ringkasan_hasil(v["label"], lv["skor_hoaks"],
+                                  lv["kesimpulan"], sumber)
+            return ("Merujuk berita tadi:\n" + isi) if rujuk else isi
         # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode
-        ids, _ = tok.encode(clean)
+        ids, _ = tok.encode(kueri if rujuk else clean)
         real = [i for i in ids if i != tok.pad_id][:64]
         out = get_model().generate(torch.tensor([real]), max_new=a.max_new,
                                    ignore_ids=ign)[0].tolist()
