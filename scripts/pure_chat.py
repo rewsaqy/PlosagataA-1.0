@@ -19,7 +19,7 @@ import torch
 
 from plosagata import (CONFIGS, PureGPT, is_news_topic, sagi_hello,
                        sagi_redirect, normalize_slang)
-from hoaxcore import WordTokenizer
+from hoaxcore import WordTokenizer, cari_sumber, local_verdict, ringkasan_hasil
 
 
 def build_tokenizer(vocab_size: int):
@@ -78,6 +78,37 @@ def main():
                 return sagi_redirect(prompt)
             if topic == "greeting":
                 return sagi_hello(prompt)
+        trained = bool(a.ckpt and os.path.exists(a.ckpt))
+        if not trained and not a.pure_think:
+            # Model belum terlatih (bobot acak) — jawab ekstraktif saja.
+            v = {"label": "meragukan", "probs": [0.33, 0.33, 0.34]}
+            try:  # validator 12M bila ada (sama seperti SagiEngine)
+                from hoaxcore import ID2LABEL, TinyHoaxTransformer
+                import torch.nn.functional as _F
+                vt = WordTokenizer.load("checkpoints/vocab.json")
+                vm = TinyHoaxTransformer(len(vt.vocab), max_len=vt.max_len)
+                for n in ["best.pt", "last.pt"]:
+                    p = Path("checkpoints") / n
+                    if p.exists():
+                        vm.load_state_dict(torch.load(p, map_location="cpu",
+                                                      weights_only=True))
+                        break
+                vm.eval()
+                _ids, _mask = vt.encode(prompt)
+                with torch.no_grad():
+                    _pr = _F.softmax(vm(torch.tensor([_ids]),
+                                        torch.tensor([_mask])), dim=-1)[0].tolist()
+                v = {"label": ID2LABEL[max(range(3), key=lambda i: _pr[i])],
+                     "probs": _pr}
+            except Exception:
+                pass
+            lv = local_verdict(prompt, v)
+            try:
+                sumber = cari_sumber(prompt)
+            except Exception:
+                sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
+            return ringkasan_hasil(v["label"], lv["skor_hoaks"],
+                                   lv["kesimpulan"], sumber)
         # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode
         ids, _ = tok.encode(clean)
         real = [i for i in ids if i != tok.pad_id][:64]

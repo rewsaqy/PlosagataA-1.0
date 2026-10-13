@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 
 from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
-                      local_verdict)
+                       local_verdict, ringkasan_hasil)
 from plosagata import (CONFIGS, PureGPT, is_news_topic, normalize_slang,
                        sagi_hello, sagi_redirect)
 
@@ -29,6 +29,9 @@ class SagiEngine:
         self.model = None
         self.ckpt = ckpt
         self.ckpt_dir = Path(ckpt_dir)
+        # Model chat terlatih? Tanpa checkpoint, generate() = gibberish
+        # bobot acak — balas ekstraktif dari verdict + sumber saja.
+        self.trained = bool(ckpt and Path(ckpt).exists())
 
         # validator 12M (ringan, selalu aktif untuk label + skor)
         try:
@@ -74,17 +77,21 @@ class SagiEngine:
                 return {"reply": sagi_redirect(text), "topic": topic, "verdict": None}
             if topic == "greeting":
                 return {"reply": sagi_hello(text), "topic": topic, "verdict": None}
-        ids, _ = self.tok.encode(clean)
-        real = [i for i in ids if i != self.tok.pad_id][:64]
-        out = self._get_model().generate(torch.tensor([real]).to(self.device),
-                                         max_new=max_new, ignore_ids=self.ign)[0].tolist()
         v = self.verdict(text)
         lv = local_verdict(text, v)
         try:
             sumber = cari_sumber(text)
         except Exception:
             sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
+        verdict = {**v, "skor": lv["skor_hoaks"],
+                   "kesimpulan": lv["kesimpulan"]}
+        if not self.trained and not pure_think:
+            return {"reply": ringkasan_hasil(v["label"], lv["skor_hoaks"],
+                                             lv["kesimpulan"], sumber),
+                    "topic": topic, "verdict": verdict, "sumber": sumber}
+        ids, _ = self.tok.encode(clean)
+        real = [i for i in ids if i != self.tok.pad_id][:64]
+        out = self._get_model().generate(torch.tensor([real]).to(self.device),
+                                         max_new=max_new, ignore_ids=self.ign)[0].tolist()
         return {"reply": self.tok.decode(out[len(real):]), "topic": topic,
-                "verdict": {**v, "skor": lv["skor_hoaks"],
-                            "kesimpulan": lv["kesimpulan"]},
-                "sumber": sumber}
+                "verdict": verdict, "sumber": sumber}
