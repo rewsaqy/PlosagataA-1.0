@@ -17,13 +17,13 @@ from plosagata import CONFIGS, PureGPT, count_params  # noqa: F401
 
 if __name__ == "__main__":
     import sys
-    name = sys.argv[1] if len(sys.argv) > 1 else "tiny"
+    name = sys.argv[1] if len(sys.argv) > 1 else "Plosagata_Go"
     cfg = CONFIGS[name]
     m = PureGPT(cfg)
     total = count_params(m)
     print(f"PureGPT-{name}: {total:,} ({total/1e9:.3f}B / {total/1e6:.1f}M)")
     print(asdict(cfg))
-    if not name.startswith("b1"):
+    if name == "Plosagata_Go":
         x = torch.randint(0, cfg.vocab, (1, 17))
         logits, _ = m(x[:, :-1], x[:, 1:])  # geser: posisi i menebak token i+1
         import torch.nn.functional as F
@@ -31,4 +31,4 @@ if __name__ == "__main__":
         print("forward OK:", tuple(logits.shape), "loss:", float(loss))
         print("generate OK:", tuple(m.generate(x[:, :-1], max_new=10).shape))
     else:
-        print("Mode b1*: arsitektur dibuat di GPU saja (CPU terlalu berat untuk forward).")
+        print("Mode besar: konstruksi di GPU saja (CPU terlalu berat untuk forward).")

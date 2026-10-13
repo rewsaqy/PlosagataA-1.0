@@ -36,15 +36,15 @@ python scripts/train.py --data data/contoh_dataset.csv --epochs 20 --batch 32 --
 Ini model buatan sendiri (arsitektur di `plosagata/`). Butuh GPU 24GB+;
 di RTX 2060 6GB pakai `--batch 1 --grad-accum 16` dan bersabar (lambat).
 ```bash
-python scripts/train_pure.py --size b1 --data data/train_chat.jsonl --epochs 3 --batch 1 --grad-accum 16
+python scripts/train_pure.py --size Plosagata_More --data data/train_chat.jsonl --epochs 3 --batch 1 --grad-accum 16
 ```
-- Hasil: `pure-b1.pt` (~3.6GB)
+- Hasil: `pure-Plosagata_More.pt` (~3.6GB)
 - Waktu: berjam-jam di GPU kecil — wajar untuk 900M parameter dari nol
 
 ### 4. Copy Hasil Kembali
 Copy file ini ke komputermu:
 - `checkpoints/` (model 12M)
-- `pure-b1.pt` (model murni terlatih)
+- `pure-Plosagata_More.pt` (model murni terlatih)
 
 ## Setelah Copy Balik ke Komputermu
 
@@ -55,9 +55,9 @@ sagi
 sagi "Sagi"
 
 # Chat model murni:
-.venv/bin/python scripts/pure_chat.py --size tiny --prompt "Sagi"
-# Setelah training b1 di GPU dan copy pure-b1.pt balik:
-.venv/bin/python scripts/pure_chat.py --size b1 --ckpt pure-b1.pt
+.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --prompt "Sagi"
+# Setelah training b1 di GPU dan copy pure-Plosagata_More.pt balik:
+.venv/bin/python scripts/pure_chat.py --size Plosagata_More --ckpt pure-Plosagata_More.pt
 ```
 
 ### Jalankan Web

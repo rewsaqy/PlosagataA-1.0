@@ -1,10 +1,10 @@
 """Chat dengan GPT murni milikmu (bobot acak -> awalnya ngawur, wajar).
 
-  python3 pure_chat.py --size tiny --prompt "Halo bang!"
-  python3 pure_chat.py --size tiny   (interaktif)
+  python3 pure_chat.py --size Plosagata_Go --prompt "Halo bang!"
+  python3 pure_chat.py --size Plosagata_Go   (interaktif)
 
 Setelah training (lihat train_pure.py), muat checkpoint:
-  python3 pure_chat.py --size tiny --ckpt pure-tiny.pt --prompt "Halo!"
+  python3 pure_chat.py --size Plosagata_Go --ckpt pure-Plosagata_Go.pt --prompt "Halo!"
 """
 import argparse
 import os
@@ -37,16 +37,15 @@ def ignore_ids_for(tok: WordTokenizer) -> set[int]:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--size", default="tiny", choices=list(CONFIGS.keys()))
+    ap.add_argument("--size", default="Plosagata_More", choices=list(CONFIGS.keys()))
     ap.add_argument("--ckpt", default="")
     ap.add_argument("--prompt", default="")
     ap.add_argument("--max-new", type=int, default=40)
     a = ap.parse_args()
 
     cfg = CONFIGS[a.size]
-    if a.size == "b1":
-        print("[b1 ~912M di CPU: bisa jalan tapi lambat (3.6GB RAM), "
-              "untuk serius pakai GPU + checkpoint hasil training]")
+    if a.size != "Plosagata_Go":
+        print("[model besar di CPU lambat; untuk serius pakai GPU + checkpoint hasil training]")
 
     tok = build_tokenizer(cfg.vocab)
     ign = ignore_ids_for(tok)

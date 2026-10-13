@@ -7,14 +7,16 @@ Proyek lomba AI terapan: web + chatbot validator hoaks Bahasa Indonesia.
 
 | Model | Parameter | File | Fungsi | Status |
 |---|---|---|---|---|
-| Klasifier hoaks 12M | **11.584.515** (~11,6M) | `model.py`, `checkpoints/best.pt` | Nilai teks: Valid / Hoaks / Meragukan. Otak web + Sagi | Terlatih, val 97%, siap demo |
-| Plosagata b1 | **912.008.192** (~912M) | `plosagata/`, `pure-b1.pt` (nanti) | Chat bebas (ngobrol kayak ChatGPT khusus berita) | Arsitektur jadi, menunggu training GPU |
-| (Latihan) tiny / small | 6M / 92M | `plosagata/` | Bukti arsitektur nyala di CPU | Jalan |
+| Klasifier hoaks 12M | **11.584.515** (~11,6M) | `hoaxcore/`, `checkpoints/best.pt` | Nilai teks: Valid / Hoaks / Meragukan. Otak web + Sagi | Terlatih, val 97%, siap demo |
+| Plosagata_Go (small) — respon cepat | **91.593.216** (~92M) | `plosagata/` | Chat ringan di CPU/laptop | Jalan, menunggu training lanjutan |
+| Plosagata_More (B1) — medium | **912.008.192** (~912M) | `plosagata/`, `pure-Plosagata_More.pt` (nanti) | Chat utama Sagi, target training GPU | Arsitektur jadi, menunggu training |
+| Plosagata_Next (b1x38) — besar | **1.549.927.424** (~1,55B) | `plosagata/` | Cadangan cluster (GPU 12GB+) | Arsitektur saja |
 
 Cek sendiri jumlahnya:
 ```bash
-.venv/bin/python scripts/gpt_pure.py tiny   # 6.084.608
-.venv/bin/python scripts/gpt_pure.py b1     # 912.008.192
+.venv/bin/python scripts/gpt_pure.py Plosagata_Go    # 91.593.216
+.venv/bin/python scripts/gpt_pure.py Plosagata_More  # 912.008.192
+.venv/bin/python scripts/gpt_pure.py Plosagata_Next  # 1.549.927.424
 ```
 
 **Alur kerja:** user kirim teks/poster → `ocr_poster.py` (poster jadi teks)
@@ -60,9 +62,9 @@ sagi "Bener gak giveaway ini?"   # forward beneran via 912M (~7 dtk/token di CPU
 ```
 
 **Training = di komputer GPU teman (lihat tutorial 5 hari di bawah).**
-Hasilnya `pure-b1.pt` (~3,6GB) dicopy balik, lalu:
+Hasilnya `pure-Plosagata_More.pt` (~3,6GB) dicopy balik, lalu:
 ```bash
-.venv/bin/python scripts/pure_chat.py --size b1 --ckpt pure-b1.pt
+.venv/bin/python scripts/pure_chat.py --size Plosagata_More --ckpt pure-Plosagata_More.pt
 ```
 
 ## Tutorial training 5 hari di komputer teman (RTX 3080 disarankan, 2060 bisa)
@@ -98,9 +100,9 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 **Hari 1-4 — pretrain b1 dari nol (jangan dimatikan):**
 ```bash
 # RTX 3080:
-.venv/bin/python scripts/train_pure.py --size b1 --corpus data/korpus.txt --epochs 1 \
+.venv/bin/python scripts/train_pure.py --size Plosagata_More --corpus data/korpus.txt --epochs 1 \
   --batch 2 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
-  --out pure-b1-pretrain.pt
+  --out pure-Plosagata_More-pretrain.pt
 # RTX 2060: sama persis tapi --batch 1 --grad-accum 32 --max-len 512
 # Cek jalan: loss harus TURUN tiap jam (8.5 -> 6 -> 5...). Kalau stuck/nan = kabari saya.
 # Jangan tutup terminal; pakai tmux/screen biar aman ditinggal tidur.
@@ -108,16 +110,16 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 
 **Hari 5 — jadikan Sagi + bawa pulang:**
 ```bash
-.venv/bin/python scripts/train_pure.py --size b1 --data data/train_chat.jsonl --epochs 5 \
+.venv/bin/python scripts/train_pure.py --size Plosagata_More --data data/train_chat.jsonl --epochs 5 \
   --batch 1 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
-  --ckpt pure-b1-pretrain.pt --out pure-b1.pt
-# copy pure-b1.pt (~3,6GB) + pure-b1.vocab.pt + checkpoints/ ke flashdisk exFAT/NTFS, bawa pulang
-.venv/bin/python scripts/pure_chat.py --size b1 --ckpt pure-b1.pt   # tes ngobrol di sana
+  --ckpt pure-Plosagata_More-pretrain.pt --out pure-Plosagata_More.pt
+# copy pure-Plosagata_More.pt (~3,6GB) + pure-Plosagata_More.vocab.pt + checkpoints/ ke flashdisk exFAT/NTFS, bawa pulang
+.venv/bin/python scripts/pure_chat.py --size Plosagata_More --ckpt pure-Plosagata_More.pt   # tes ngobrol di sana
 ```
 
 **Kepintaran = 3 file, bukan install ulang (checklist bawa pulang):**
-1. `pure-b1.pt` (~3,6GB) — bobot 912M = otaknya. Wajib.
-2. `pure-b1.vocab.pt` (KB-an) — tokenizer yang dipakai saat training. Wajib,
+1. `pure-Plosagata_More.pt` (~3,6GB) — bobot 912M = otaknya. Wajib.
+2. `pure-Plosagata_More.vocab.pt` (KB-an) — tokenizer yang dipakai saat training. Wajib,
    kalau tidak cocok output jadi sampah walau bobot benar.
 3. `checkpoints/` (~90MB) — model 12M kalau ikut dilatih ulang di sana.
 - Flashdisk WAJIB exFAT/NTFS — FAT32 menolak file >4GB (b1 3,6GB mepet bahaya).

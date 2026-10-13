@@ -43,9 +43,9 @@ web/app.py (validator) / web/chatbot.py + /chat (ngobrol)
 | File | Perintah contoh | Input → Output |
 |---|---|---|
 | `train.py` | `python scripts/train.py --epochs 15` | CSV → `checkpoints/best.pt` + `vocab.json`. Split dulu baru augmentasi train (tidak bocor), AdamW + cosine, simpan terbaik |
-| `train_pure.py` | `python scripts/train_pure.py --size b1 --corpus data/korpus.txt --fp16 --grad-checkpoint --optim adam8bit` | Korpus/JSONL → `pure-b1.pt`. Mode hemat VRAM untuk GPU kecil, log token/detik + ETA, lanjutkan via `--ckpt` |
+| `train_pure.py` | `python scripts/train_pure.py --size Plosagata_More --corpus data/korpus.txt --fp16 --grad-checkpoint --optim adam8bit` | Korpus/JSONL → `pure-Plosagata_More.pt`. Mode hemat VRAM untuk GPU kecil, log token/detik + ETA, lanjutkan via `--ckpt` |
 | `infer.py` | `python scripts/infer.py --text "..."` | Teks → label + probabilitas 3 kelas |
-| `pure_chat.py` | `python scripts/pure_chat.py --size tiny` | Chat terminal: guard → Sagi/generate. Model di-load malas (hemat RAM) |
+| `pure_chat.py` | `python scripts/pure_chat.py --size Plosagata_Go` | Chat terminal: guard → Sagi/generate. Model di-load malas (hemat RAM) |
 | `gpt_pure.py` | `python scripts/gpt_pure.py b1` | Cetak jumlah parameter + tes forward (bukti arsitektur hidup) |
 | `csv_to_chat.py` | `python3 scripts/csv_to_chat.py` | CSV → `data/chat_hoaks.jsonl` (template jawaban per label) |
 | `build_corpus.py` | `python scripts/build_corpus.py` | Wikipedia Indonesia → `data/korpus.txt` (pretrain b1) |

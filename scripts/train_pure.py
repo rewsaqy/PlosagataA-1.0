@@ -1,17 +1,17 @@
 """Training GPT murni Plosagata (causal LM).
 
 CPU sini (tanpa GPU):
-  python train_pure.py --size tiny --epochs 3
+  python train_pure.py --size Plosagata_Go --epochs 3
 
 GPU teman RTX 2060 6GB — RENCANA 5 HARI untuk b1:
   Hari 1: setup + build korpus (lihat build_corpus.py)
   Hari 1-4: pretrain di teks Indonesia (korpus besar)
-    python train_pure.py --size b1 --corpus data/korpus.txt --epochs 1 \\
+    python train_pure.py --size Plosagata_More --corpus data/korpus.txt --epochs 1 \\
       --batch 1 --grad-accum 32 --fp16 --grad-checkpoint --optim adam8bit --max-tokens 0
   Hari 5: instruction-tune di data chat (317+ contoh)
-    python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 5 \\
+    python train_pure.py --size Plosagata_More --data data/train_chat.jsonl --epochs 5 \\
       --batch 1 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \\
-      --ckpt pure-b1-pretrain.pt --out pure-b1.pt
+      --ckpt pure-Plosagata_More-pretrain.pt --out pure-Plosagata_More.pt
 
 Catatan VRAM 6GB: full training fp32 TIDAK muat (~20GB).
 Kombinasi fp16 + grad-checkpoint + adam8bit + batch 1 ≈ 4.5-5.5GB: muat mepet.
@@ -95,7 +95,7 @@ def make_optimizer(name, params, lr):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--size", default="tiny", choices=list(CONFIGS.keys()))
+    ap.add_argument("--size", default="Plosagata_Go", choices=list(CONFIGS.keys()))
     ap.add_argument("--data", default="data/contoh_chat.jsonl", help="JSONL chat (instruction)")
     ap.add_argument("--corpus", default="", help="TXT korpus (pretrain). Menang atas --data.")
     ap.add_argument("--epochs", type=int, default=3)

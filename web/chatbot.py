@@ -13,7 +13,7 @@ class SagiEngine:
     def __init__(self, ckpt_dir="checkpoints", size=None, ckpt=""):
         from pathlib import Path
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        size = size or os.getenv("SAGI_SIZE", "tiny")
+        size = size or os.getenv("SAGI_SIZE", "Plosagata_Go")
         ckpt = ckpt or os.getenv("SAGI_CKPT", "")
         self.cfg = CONFIGS[size]
         self.size = size

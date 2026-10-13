@@ -11,20 +11,22 @@ class GPTConfig:
     ff: int = 1024
     max_len: int = 256
     dropout: float = 0.0
-    tie_weights: bool = True  # head pinjam bobot embedding (hemat ~32M di b1)
+    tie_weights: bool = True  # head pinjam bobot embedding (hemat ~32M di More)
 
 
+# Tepat 3 model (nama resmi):
 CONFIGS: dict[str, GPTConfig] = {
-    # latihan di CPU sini
-    "tiny": GPTConfig(),
-    # latihan GPU menengah (~65M dengan tie, hemat dari 98M)
-    "small": GPTConfig(vocab=8000, dim=768, layers=12, heads=12, ff=3072, max_len=512),
-    # target ~900M — training di device GPU lain
-    "b1": GPTConfig(vocab=16000, dim=2048, layers=22, heads=16, ff=5632, max_len=1024),
-    # varian dalam (~1.15B): hanya jika GPU 10GB+ (RTX 3080) + data besar
-    "b1deep": GPTConfig(vocab=16000, dim=2048, layers=28, heads=16, ff=5632, max_len=1024),
-    # EKSPERIMEN cluster (BUKAN untuk RTX 2060/3080):
-    # 38 layer ~1.55B butuh ~10GB VRAM mode hemat; 48 layer ~1.95B butuh ~12GB+.
-    "b1x38": GPTConfig(vocab=16000, dim=2048, layers=38, heads=16, ff=5632, max_len=1024),
-    "b1x48": GPTConfig(vocab=16000, dim=2048, layers=48, heads=16, ff=5632, max_len=1024),
+    # Plosagata_Go — respon cepat (CPU/laptop, demo kilat)
+    "Plosagata_Go": GPTConfig(vocab=8000, dim=768, layers=12, heads=12, ff=3072, max_len=512),
+    # Plosagata_More — medium, target training utama (~912M, GPU 6GB+)
+    "Plosagata_More": GPTConfig(vocab=16000, dim=2048, layers=22, heads=16, ff=5632, max_len=1024),
+    # Plosagata_Next — besar (~1.55B, butuh GPU 12GB+ / cluster)
+    "Plosagata_Next": GPTConfig(vocab=16000, dim=2048, layers=38, heads=16, ff=5632, max_len=1024),
+}
+
+# Nama tampilan untuk manusia
+DISPLAY = {
+    "Plosagata_Go": "Plosagata_Go (small) — respon cepat",
+    "Plosagata_More": "Plosagata_More (B1) — medium",
+    "Plosagata_Next": "Plosagata_Next (b1x38) — besar",
 }
