@@ -19,7 +19,8 @@ import torch
 
 from plosagata import (CONFIGS, PureGPT, is_news_topic, sagi_hello,
                        sagi_redirect, normalize_slang)
-from hoaxcore import WordTokenizer, cari_sumber, local_verdict, ringkasan_hasil
+from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
+                      final_label, local_verdict, ringkasan_hasil)
 
 
 def build_tokenizer(vocab_size: int):
@@ -144,8 +145,8 @@ def main():
                 sumber = cari_sumber(kueri)
             except Exception:
                 sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
-            isi = ringkasan_hasil(v["label"], lv["skor_hoaks"],
-                                  lv["kesimpulan"], sumber,
+            isi = ringkasan_hasil(final_label(v["label"], lv["skor_hoaks"]),
+                                  lv["skor_hoaks"], lv["kesimpulan"], sumber,
                                   lv["sinyal"].get("fiksi_hits"))
             return ("Merujuk berita tadi:\n" + isi) if rujuk else isi
         # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode

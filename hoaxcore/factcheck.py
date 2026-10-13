@@ -75,6 +75,22 @@ def heuristic_signals(text: str) -> dict:
     }
 
 
+def final_label(model_label: str, skor: int) -> str:
+    """SATU label final — badge & kesimpulan tidak boleh kontradiksi.
+
+    Aturan: heuristic menang saat kuat (skor>=60 -> hoaks),
+    model menang saat heuristic lemah. Mencegah kasus
+    'skor 100 tapi badge VALID'.
+    """
+    if skor >= 60:
+        return "hoaks"
+    if (model_label or "") == "hoaks":
+        return "hoaks"
+    if skor >= 30 or (model_label or "") == "meragukan":
+        return "meragukan"
+    return "valid"
+
+
 def local_verdict(text: str, model_result: dict) -> dict:
     sig = heuristic_signals(text)
     fiksi = deteksi_fiksi(text)
@@ -124,6 +140,7 @@ def local_verdict(text: str, model_result: dict) -> dict:
 
     return {
         "skor_hoaks": skor,
+        "label_final": final_label(model_result.get("label"), skor),
         "kesimpulan": kesimpulan,
         "sinyal": sig,
         "saran": saran,
