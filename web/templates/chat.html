@@ -20,6 +20,11 @@ a{color:#111}
 <p>Chatbot validator berita — hanya bahas berita & cek fakta. <a href="/">← ke validator</a></p>
 <div id="box"><div class="ai"><span>Halo! Saya Sagi. Tempel berita yang mau dicek.</span></div></div>
 <form id="f"><input id="m" placeholder="Ketik pesan..." autocomplete="off"><button>Kirim</button></form>
+<p>Model: <select id="model">
+<option value="Plosagata_Go">Plosagata_Go — cepat (92M)</option>
+<option value="Plosagata_More">Plosagata_More — medium (912M)</option>
+<option value="Plosagata_Next">Plosagata_Next — besar (1,55B)</option>
+</select> <small>Go siap pakai; More/Next butuh checkpoint training + lambat di CPU.</small></p>
 <script>
 const box = document.getElementById('box');
 document.getElementById('f').onsubmit = async (e) => {
@@ -28,7 +33,7 @@ document.getElementById('f').onsubmit = async (e) => {
   if (!t) return; inp.value = '';
   box.innerHTML += `<div class="user"><span>${t}</span></div>`;
   box.innerHTML += `<div class="ai" id="lod"><span>...</span></div>`; box.scrollTop = box.scrollHeight;
-  const r = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message:t})});
+  const r = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message:t, model: document.getElementById('model').value})});
   const j = await r.json(); document.getElementById('lod').remove();
   let extra = '';
   if (j.verdict) extra = `<div class="meta">12M: ${j.verdict.label} (skor ${j.verdict.skor}) — ${j.verdict.kesimpulan}</div>`;

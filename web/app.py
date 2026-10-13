@@ -13,6 +13,7 @@ import torch
 from flask import Flask, jsonify, render_template, request
 
 from hoaxcore import ID2LABEL, TinyHoaxTransformer, WordTokenizer, local_verdict, ocr_poster
+from plosagata import CONFIGS
 
 app = Flask(__name__)
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -30,15 +31,28 @@ _history: deque = deque(maxlen=20)  # riwayat 20 cek terakhir (in-memory)
 
 _model = None
 _tok = None
-_engine = None
+_engines = {}
 
 
-def get_engine():
-    global _engine
-    if _engine is None:
+def get_engine(size=None):
+    key = size or os.getenv("SAGI_SIZE", "Plosagata_Go")
+    if key not in CONFIGS:
+        key = "Plosagata_Go"
+    if key not in _engines:
         from chatbot import SagiEngine
-        _engine = SagiEngine()
-    return _engine
+        _engines[key] = SagiEngine(size=key)
+    return _engines[key]
+
+
+def warmup():
+    """Nyalakan AI 12M saat server start (bukan saat request pertama)."""
+    if os.getenv("SAGI_WARMUP", "1") != "1":
+        return
+    try:
+        get_model()
+        print("[sagi] validator 12M siap (auto-nyala).")
+    except Exception as e:
+        print(f"[sagi] warmup gagal: {e}")
 
 
 def get_model():
@@ -92,11 +106,12 @@ def chat_api():
         return jsonify({"ok": False, "error": "Token salah / hilang."}), 401
     data = request.get_json(silent=True) or {}
     text = (data.get("message", "") or request.form.get("text", "")).strip()
+    size = data.get("model", "") or request.form.get("model", "")
     if not text:
         return jsonify({"ok": False, "error": "Pesan kosong."}), 400
     try:
-        r = get_engine().reply(text)
-        return jsonify({"ok": True, **r})
+        r = get_engine(size or None).reply(text)
+        return jsonify({"ok": True, "model_size": get_engine(size or None).size, **r})
     except Exception as e:
         return jsonify({"ok": False, "error": f"Engine gagal: {e}"}), 500
 
@@ -149,4 +164,5 @@ def stats():
 
 
 if __name__ == "__main__":
+    warmup()
     app.run(host="0.0.0.0", port=5000, debug=True)
