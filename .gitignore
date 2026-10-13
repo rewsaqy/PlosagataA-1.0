@@ -1,0 +1,13 @@
+# environment & cache
+.venv/
+__pycache__/
+*.pyc
+
+# model weights (terlalu besar untuk GitHub, simpan di Release/GDrive)
+*.pt
+*.bin
+checkpoints/
+lora-hoax-chat/
+
+# HF cache
+.cache/

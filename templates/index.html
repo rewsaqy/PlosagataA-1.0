@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Validator Hoaks 12M</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem;background:#f7f7f8;color:#222}
+.card{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:1rem}
+textarea{width:100%;min-height:120px;padding:.7rem;border-radius:8px;border:1px solid #ccc}
+button{background:#111;color:#fff;border:0;padding:.7rem 1.2rem;border-radius:8px;cursor:pointer}
+pre{background:#111;color:#0f0;padding:1rem;border-radius:8px;overflow:auto}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:99px;font-weight:700}
+.hoaks{background:#ffdada;color:#a00}.valid{background:#d4f5d4;color:#0a5}.meragukan{background:#fff3bf;color:#7a5b00}
+</style>
+</head>
+<body>
+<h1>🛡️ Validator Hoaks + Poster</h1>
+<p>Model inti ~12M parameter (Transformer) + OCR poster + cek silang AI. Untuk lomba proyek terapan AI.</p>
+
+<div class="card">
+<h3>1. Cek teks / poster</h3>
+<form id="f">
+<textarea name="text" id="text" placeholder="Tempel teks berita / caption poster di sini..."></textarea><br><br>
+<label>Upload poster (opsional, akan di-OCR): <input type="file" name="poster" id="poster" accept="image/*"></label><br><br>
+<button type="submit">Cek Sekarang</button>
+</form>
+</div>
+
+<div class="card">
+<h3>2. Hasil</h3>
+<div id="hasil">Belum ada hasil.</div>
+<pre id="json"></pre>
+</div>
+
+<script>
+document.getElementById('f').onsubmit = async (e) => {
+  e.preventDefault();
+  const fd = new FormData();
+  fd.append('text', document.getElementById('text').value);
+  const pf = document.getElementById('poster').files[0];
+  if (pf) fd.append('poster', pf);
+  document.getElementById('hasil').innerText = 'Mengecek...';
+  const r = await fetch('/api/check', {method:'POST', body: fd});
+  const j = await r.json();
+  document.getElementById('json').innerText = JSON.stringify(j, null, 2);
+  if (j.ok) {
+    const lbl = j.model.label;
+    document.getElementById('hasil').innerHTML =
+      `<span class="badge ${lbl}">${lbl.toUpperCase()}</span> <b>${j.verifikasi.kesimpulan}</b><br>Skor hoaks: ${j.verifikasi.skor_hoaks}/100`;
+  } else {
+    document.getElementById('hasil').innerText = j.error || 'Gagal';
+  }
+};
+</script>
+</body>
+</html>
