@@ -61,8 +61,11 @@ NEWS_KEYWORDS = [
     "mundur", "meninggal", "tewas", "gratis", "ditangkap", "resmi",
     "dilarang", "dihapus", "naik", "turun",
 ]
-GREETING_ONLY = ["halo", "hai", "hello", "pagi", "siang", "sore", "malam",
-                 "assalamu", "tes", "permisi"]
+GREETING_ONLY = ["halo", "halo halo", "hallo", "helo", "hai", "hi", "hello",
+                 "hey", "hei", "pagi", "siang", "sore", "malam",
+                 "assalamu", "assalamualaikum", "tes", "permisi", "permisi",
+                 "bang", "kak", "bro", "sis", "kawan", "kawan", "mas",
+                 "mbak", "mba", "pak", "bu", "loh", "p", "oy", "woy"]
 
 OFFTOPIC_KEYWORDS = [
     # Coding / IT teknis
@@ -98,10 +101,19 @@ EVENT_MARKERS = [
 ]
 
 
+def _is_greeting(t: str) -> bool:
+    # cocok utuh atau kata pertama ("halo bang", "pagi kak").
+    # TIDAK pakai substring agar "nih" tidak dikira "hi".
+    if len(t) > 30:
+        return False
+    words = t.split()
+    return t in GREETING_ONLY or (bool(words) and words[0] in GREETING_ONLY)
+
+
 def is_news_topic(text: str) -> str:
     """Return 'greeting' | 'news' | 'offtopic'."""
     t = text.lower().strip()
-    if len(t) < 30 and any(g in t for g in GREETING_ONLY) and not any(k in t for k in NEWS_KEYWORDS):
+    if _is_greeting(t) and not any(k in t for k in NEWS_KEYWORDS):
         return "greeting"
     if any(k in t for k in NEWS_KEYWORDS):
         return "news"
