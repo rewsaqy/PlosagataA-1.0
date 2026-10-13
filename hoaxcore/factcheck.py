@@ -101,6 +101,23 @@ def local_verdict(text: str, model_result: dict) -> dict:
     }
 
 
+def ringkasan_hasil(label: str, skor: int, kesimpulan: str, sumber: dict | None = None) -> str:
+    """Balasan ekstraktif saat model chat belum terlatih: verdict + sumber RAG.
+
+    Dipakai SagiEngine/pure_chat ketika checkpoint Plosagata belum ada —
+    tanpa ini balasannya gibberish bobot acak.
+    """
+    baris = [f"Hasil cek Sagi: {label.upper()} (skor hoaks {skor}/100).",
+             kesimpulan]
+    wiki = (sumber or {}).get("wikipedia") or []
+    for h in wiki[:2]:
+        cupl = (h.get("cuplikan") or "")[:160]
+        if cupl:
+            baris.append(f"- {h.get('judul', 'Sumber')}: {cupl}...")
+    baris.append("Saring sebelum Sharing.")
+    return "\n".join(baris)
+
+
 def llm_crosscheck(text: str, api: str = "auto") -> dict:
     """Template integrasi LLM. Isi dengan API call kalau sudah punya key."""
     key = os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")
