@@ -17,6 +17,14 @@ from hoaxcore import ID2LABEL, TinyHoaxTransformer, WordTokenizer, local_verdict
 app = Flask(__name__)
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CKPT = Path(os.getenv("CKPT_DIR", "checkpoints"))
+SAGI_TOKEN = os.getenv("SAGI_TOKEN", "")  # kalau diisi, /api/chat wajib pakai token
+
+
+def _cek_token():
+    if not SAGI_TOKEN:
+        return True  # mode lokal terbuka
+    return (request.headers.get("X-Sagi-Token") == SAGI_TOKEN
+            or request.args.get("token") == SAGI_TOKEN)
 
 _history: deque = deque(maxlen=20)  # riwayat 20 cek terakhir (in-memory)
 
@@ -80,6 +88,8 @@ def chat_page():
 
 @app.route("/api/chat", methods=["POST"])
 def chat_api():
+    if not _cek_token():
+        return jsonify({"ok": False, "error": "Token salah / hilang."}), 401
     data = request.get_json(silent=True) or {}
     text = (data.get("message", "") or request.form.get("text", "")).strip()
     if not text:
