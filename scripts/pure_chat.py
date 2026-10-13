@@ -39,6 +39,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--size", default="Plosagata_More", choices=list(CONFIGS.keys()))
     ap.add_argument("--ckpt", default="")
+    ap.add_argument("--vocab-file", default="", help="Wajib jika ckpt dari train_pure --out X.pt (pasangannya X.pt.vocab.pt). Tanpa ini output jadi sampah.")
     ap.add_argument("--prompt", default="")
     ap.add_argument("--max-new", type=int, default=40)
     ap.add_argument("--pure-think", action="store_true",
@@ -51,7 +52,28 @@ def main():
     if a.size != "Plosagata_Go":
         print("[model besar di CPU lambat; untuk serius pakai GPU + checkpoint hasil training]")
 
-    tok = build_tokenizer(cfg.vocab)
+    if a.vocab_file and os.path.exists(a.vocab_file):
+        vocab = torch.load(a.vocab_file, map_location="cpu")
+        tok = WordTokenizer(vocab, max_len=cfg.max_len)
+        print(f"[vocab dimuat: {a.vocab_file}]")
+    elif a.ckpt and os.path.exists(a.ckpt):
+        # tebak pasangan vocab: X.pt -> X.pt.vocab.pt (format train_pure --out X.pt)
+        # atau X.pt -> X.vocab.pt (format lama), plus varian -best
+        cands = [a.ckpt + ".vocab.pt", a.ckpt.replace(".pt", ".vocab.pt")]
+        if "-best.pt" in a.ckpt:
+            base = a.ckpt.replace("-best.pt", ".pt")
+            cands += [base + ".vocab.pt", base.replace(".pt", ".vocab.pt")]
+        for cand in cands:
+            if os.path.exists(cand):
+                vocab = torch.load(cand, map_location="cpu")
+                tok = WordTokenizer(vocab, max_len=cfg.max_len)
+                print(f"[vocab otomatis: {cand}]")
+                break
+        else:
+            tok = build_tokenizer(cfg.vocab)
+            print("[PERINGATAN: vocab pasangan tidak ketemu, pakai tebakan seed — output bisa sampah]")
+    else:
+        tok = build_tokenizer(cfg.vocab)
     ign = ignore_ids_for(tok)
     _model = None
     sess = {"topik": None}  # memori topik sesi terminal

@@ -9,23 +9,30 @@
 
 | File | Isi | Ukuran | Wajib? |
 |---|---|---|---|
-| `pure-Plosagata_Go.pt` | Bobot Go 92M = otaknya | ±350 MB | Ya |
-| `pure-Plosagata_Go.vocab.pt` | Kamus saat training | KB-an | Ya (tanpa ini output sampah) |
+| `pure-Go-sagi-best.pt` | Bobot Go 92M terbaik (val 0.10) = otaknya | ±350 MB | Ya |
+| `pure-Go-sagi-best.pt.vocab.pt` | Kamus pasangan best | KB-an | Ya (tanpa ini output sampah) |
+| `pure-Go-pretrain-best.pt` + `.pt.vocab.pt` | Bobot pretrain Wiki (sebelum instruction-tune) | ±350 MB | Kalau mau tune ulang sendiri |
+| `pure-Plosagata_Go-10ep.pt` + `.pt.vocab.pt` | Bobot lama tanpa pretrain/val (jangan dipakai) | ±350 MB | Tidak |
 | `pure-Plosagata_More.pt` | Bobot More 912M | ±3,6 GB | Kalau training More |
-| `pure-Plosagata_More.vocab.pt` | Kamus More | KB-an | Kalau training More |
-| `checkpoints/` | Model 12M + vocab | ±90 MB | Kalau 12M ikut dilatih ulang |
+| `checkpoints/` | Model 12M + vocab | ±90 MB | Ya (validator web pakai ini) |
 
-Catatan nama: `--out X.pt` otomatis bikin `X.vocab.pt` di sebelahnya.
+Catatan nama: `--out X.pt` otomatis bikin `X.pt.vocab.pt` di sebelahnya
+(bukan `X.vocab.pt`), dan tiap best baru otomatis dicopykan
+`X-best.pt.vocab.pt`.
 **Jangan pernah** memisahkan `.pt` dari `.vocab.pt` pasangannya.
+Contoh benar: `pure-Go-sagi-best.pt` ↔ `pure-Go-sagi-best.pt.vocab.pt`.
 
 ## 2. Cara pindah (pilih satu)
 
 ### A. Flashdisk (paling gampang)
 1. Colok, pastikan format **exFAT/NTFS** (klik kanan → Properties).
    FAT32 **menolak** file > 4 GB — More 3,6 GB mepet bahaya.
-2. Copy 3 file di atas ke flashdisk.
+2. Copy pasangan best + validator: `pure-Go-sagi-best.pt`,
+   `pure-Go-sagi-best.pt.vocab.pt`, dan folder `checkpoints/`.
 3. Di komputer tujuan: copy ke **dalam folder proyek** (sejajar `scripts/`, `data/`).
-4. Tes: `.venv/bin/python scripts/pure_chat.py --size Plosagata_More --ckpt pure-Plosagata_More.pt --prompt "Sagi"`
+4. Tes: `.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --prompt "halo"`
+   (vocab pasangan terdeteksi otomatis; kalau mau eksplisit tambah
+   `--vocab-file pure-Go-sagi-best.pt.vocab.pt`).`
 
 ### B. Google Drive
 Upload → download di tujuan → taruh sejajar folder proyek → tes sama seperti di atas.
@@ -45,13 +52,21 @@ Di komputer tujuan (browser): `http://IP-SUMBER:8000` → download file → taru
 
 ```bash
 # 1. Ukuran wajar? (Go ±350MB, More ±3,6GB, vocab KB-an)
-ls -lh pure-*.pt
+ls -lh pure-*.pt*
 # 2. Sapa (harus identitas Sagi, instan):
-.venv/bin/python scripts/pure_chat.py --size Plosagata_More --ckpt pure-Plosagata_More.pt --prompt "Sagi"
-# 3. Berita (harus Bahasa Indonesia nyambung, bukan byte sampah):
-.venv/bin/python scripts/pure_chat.py --size Plosagata_More --ckpt pure-Plosagata_More.pt --prompt "Bener gak giveaway iPhone klik link ini?"
+.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --prompt "halo"
+# 3. Berita (masih word-salad Indonesia tahap ini, bukan byte sampah):
+.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --prompt "Bener gak giveaway iPhone klik link ini?"
 ```
 Gagal langkah 2-3 = salah pasangan vocab atau file korup saat copy → ulangi transfer.
+Tanda khas salah vocab: muncul `[PERINGATAN: vocab pasangan tidak ketemu...]`
+atau output byte sampah (`Ê Ī þ`). Obat: pastikan `X-best.pt.vocab.pt`
+ada di sebelah `X-best.pt`, atau ulang training yang menyimpan best+vocab
+otomatis (`train_pure.py --val-split 0.1`).
+
+> Alur training saat ini: pretrain Wiki (`--corpus data/korpus.full.txt`)
+> → tune (`--ckpt ...-best.pt --vocab-file ...pt.vocab.pt --val-split 0.1`).
+> Tune WAJIB pakai `--vocab-file` dari pretrain agar embedding cocok.
 
 ## 4. Cara kerja sistem Sagi (lengkap, berurutan)
 
@@ -78,8 +93,10 @@ begitu model cukup terlatih (mode `--pure-think` / `SAGI_PURE_THINK=1`).
 
 ## 5. Kalau pindah mesin, apa yang TIDAK perlu dibawa?
 
-- `.venv/` (install ulang via `requirements.txt`, 5 menit)
-- `data/korpus.txt` (bangun ulang via `scripts/build_corpus.py`)
+- `.venv/` (install ulang via `requirements.txt`, 5 menit;
+  ingat Torch harus versi CUDA `+cu126` agar GPU kepakai, bukan `+cpu`)
+- `data/korpus.wiki.txt`, `data/korpus.full.txt` (bangun ulang via
+  `scripts/build_corpus.py` — sumber `wikimedia/wikipedia`, bukan `wikipedia` lama)
 - `__pycache__/`, `web.log`, file `.tmp`
 - Kode jelas ikut via `git clone` (bukan copy manual)
 
@@ -87,7 +104,8 @@ begitu model cukup terlatih (mode `--pure-think` / `SAGI_PURE_THINK=1`).
 
 | Gejala | Sebab | Obat |
 |---|---|---|
-| Output byte sampah (`Ê Ī þ`) | Salah pasangan `.vocab.pt` | Samakan ckpt + vocab dari training yang sama |
+| Output byte sampah (`Ê Ī þ`) | Salah pasangan `.vocab.pt` | Samakan ckpt + vocab dari training yang sama (`X-best.pt` ↔ `X-best.pt.vocab.pt`) |
+| `[PERINGATAN: vocab pasangan tidak ketemu]` | File `.pt.vocab.pt` tidak di sebelah ckpt | Copy vocab-nya juga, atau pakai `--vocab-file` eksplisit |
 | `size mismatch` saat load | Vocab beda ukuran | Jangan campur ckpt Go dengan More |
 | Copy gagal di tengah | Flashdisk FAT32 / kabel lepas | exFAT + ulangi, cek `ls -lh` |
 | `git push` ditolak | File > 100 MB | Pakai Release/Drive, jangan push `.pt` |

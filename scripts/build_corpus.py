@@ -26,7 +26,10 @@ def main():
         raise SystemExit("pip install datasets  (di komputer GPU)")
 
     print("Download Wikipedia Indonesia ... (sekali saja, ~1GB)")
-    ds = load_dataset("wikipedia", "20231101.id", split="train", streaming=True)
+    try:
+        ds = load_dataset("wikimedia/wikipedia", "20231101.id", split="train", streaming=True)
+    except Exception:
+        ds = load_dataset("wikipedia", "20231101.id", split="train", streaming=True)
 
     n, chars = 0, 0
     with open(a.out, "w", encoding="utf-8") as o:
