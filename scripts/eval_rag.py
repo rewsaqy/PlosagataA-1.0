@@ -35,7 +35,7 @@ def mini_eval():
         lat.append((time.time() - t0) * 1000)
         cupl = " ".join(h.get("cuplikan", "") for h in res["wikipedia"]).lower()
         kw = [w for w in row["text"].lower().split() if len(w) > 4][:3]
-        if any(k in cupl for k in kw) or len(res["wikipedia"]) > 0:
+        if any(k in cupl for k in kw):
             hit += 1
     lat.sort()
     p95 = lat[int(len(lat) * 0.95)] if lat else 0

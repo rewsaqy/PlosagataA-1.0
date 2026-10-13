@@ -13,16 +13,25 @@ from hoaxcore.rag import build_bm25, build_tfidf, chunk_teks, save_index, tokeni
 
 
 def iter_articles(path, limit=0):
-    text = Path(path).read_text(encoding="utf-8")
     n = 0
-    for art in text.split("\n\n"):
-        art = art.strip()
-        if len(art) < 500:
-            continue
-        yield art
-        n += 1
-        if limit and n >= limit:
-            break
+    buf = []
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                buf.append(line)
+            elif buf:
+                art = "".join(buf).strip()
+                buf = []
+                if len(art) < 500:
+                    continue
+                yield art
+                n += 1
+                if limit and n >= limit:
+                    return
+        if buf:
+            art = "".join(buf).strip()
+            if len(art) >= 500:
+                yield art
 
 
 def main():

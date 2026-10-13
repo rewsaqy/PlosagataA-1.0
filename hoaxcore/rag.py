@@ -36,7 +36,8 @@ def build_bm25(tokenized):
 def build_tfidf(chunks):
     from sklearn.feature_extraction.text import TfidfVectorizer
     vec = TfidfVectorizer(token_pattern=r"(?u)\b\w+\b", lowercase=False)
-    mat = vec.fit_transform(chunks)
+    normed = [" ".join(tokenize_id(c)) for c in chunks]
+    mat = vec.fit_transform(normed)
     return vec, mat
 
 
