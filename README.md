@@ -111,9 +111,20 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 .venv/bin/python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 5 \
   --batch 1 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
   --ckpt pure-b1-pretrain.pt --out pure-b1.pt
-# copy pure-b1.pt (~3,6GB) + checkpoints/ ke flashdisk, bawa pulang
+# copy pure-b1.pt (~3,6GB) + pure-b1.vocab.pt + checkpoints/ ke flashdisk exFAT/NTFS, bawa pulang
 .venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt   # tes ngobrol di sana
 ```
+
+**Kepintaran = 3 file, bukan install ulang (checklist bawa pulang):**
+1. `pure-b1.pt` (~3,6GB) — bobot 912M = otaknya. Wajib.
+2. `pure-b1.vocab.pt` (KB-an) — tokenizer yang dipakai saat training. Wajib,
+   kalau tidak cocok output jadi sampah walau bobot benar.
+3. `checkpoints/` (~90MB) — model 12M kalau ikut dilatih ulang di sana.
+- Flashdisk WAJIB exFAT/NTFS — FAT32 menolak file >4GB (b1 3,6GB mepet bahaya).
+- Alternatif: Google Drive, atau LAN via `python3 -m http.server` + download.
+- DILARANG `git push` file `.pt` — GitHub menolak >100MB. Pakai Release/Drive.
+- Sampai di rumah: taruh ketiganya Sejajar di folder proyek, jalan seperti biasa —
+  Sagi langsung sepintar di komputer teman.
 
 **Kalau OOM (CUDA out of memory):** urutan darurat: `--batch 1` → `--max-len 512` →
 `--max-len 256` → ganti `--optim adamw`. Jangan naikkan batch dulu.
