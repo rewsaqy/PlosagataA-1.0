@@ -11,6 +11,7 @@ class PureGPT(nn.Module):
     def __init__(self, cfg: GPTConfig):
         super().__init__()
         self.cfg = cfg
+        self.use_checkpoint = False  # hemat VRAM: aktifkan di GPU kecil
         self.tok_emb = nn.Embedding(cfg.vocab, cfg.dim)
         self.pos_emb = nn.Embedding(cfg.max_len, cfg.dim)
         self.blocks = nn.ModuleList(
@@ -42,8 +43,13 @@ class PureGPT(nn.Module):
         assert L <= self.cfg.max_len, f"panjang {L} > max_len {self.cfg.max_len}"
         pos = torch.arange(L, device=ids.device).unsqueeze(0)
         x = self.tok_emb(ids) + self.pos_emb(pos)
-        for b in self.blocks:
-            x = b(x)
+        if self.use_checkpoint and self.training:
+            import torch.utils.checkpoint as ckpt
+            for b in self.blocks:
+                x = ckpt.checkpoint(b, x, use_reentrant=False)
+        else:
+            for b in self.blocks:
+                x = b(x)
         logits = self.head(self.ln(x))
         loss = None
         if targets is not None:
