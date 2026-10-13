@@ -141,7 +141,11 @@ class SagiEngine:
                     "verdict": verdict, "sumber": sumber}
         ids, _ = self.tok.encode(kueri if topic == "followup" else clean)
         real = [i for i in ids if i != self.tok.pad_id][:64]
-        out = self._get_model().generate(torch.tensor([real]).to(self.device),
-                                         max_new=max_new, ignore_ids=self.ign)[0].tolist()
+        out = self._get_model().generate(
+            torch.tensor([real]).to(self.device), max_new=max_new,
+            temperature=float(os.getenv("SAGI_TEMP", "0.7")),
+            top_k=int(os.getenv("SAGI_TOPK", "40")),
+            no_repeat_ngram=int(os.getenv("SAGI_NOREPEAT", "3")),
+            ignore_ids=self.ign)[0].tolist()
         return {"reply": self.tok.decode(out[len(real):]), "topic": topic,
                 "verdict": verdict, "sumber": sumber}

@@ -95,6 +95,9 @@ def main():
     ap.add_argument("--vocab-file", default="", help="Wajib jika ckpt dari train_pure --out X.pt (pasangannya X.pt.vocab.pt). Tanpa ini output jadi sampah.")
     ap.add_argument("--prompt", default="")
     ap.add_argument("--max-new", type=int, default=40)
+    ap.add_argument("--temp", type=float, default=0.7, help="<1 fokus, >1 liar")
+    ap.add_argument("--top-k", type=int, default=40)
+    ap.add_argument("--no-repeat", type=int, default=3, help="blokir frasa berulang (0=mati)")
     ap.add_argument("--pure-think", action="store_true",
                     help="Tanpa template: SEMUA pesan (termasuk halo/off-topic) "
                          "lewat tokenizer -> model -> decode. Butuh model TERLATIH, "
@@ -213,6 +216,8 @@ def main():
             ids, _ = tok.encode(src)
         real = [i for i in ids if i != tok.pad_id][:64]
         out = get_model().generate(torch.tensor([real]), max_new=a.max_new,
+                                   temperature=a.temp, top_k=a.top_k,
+                                   no_repeat_ngram=a.no_repeat,
                                    ignore_ids=ign)[0].tolist()
         # BPE: decode via tokenizer (mapping id->kata mentah menghasilkan byte sampah)
         if use_pieces:

@@ -58,7 +58,8 @@ class PureGPT(nn.Module):
 
     @torch.no_grad()
     def generate(self, ids, max_new: int = 50, temperature: float = 0.8,
-                 top_k: int = 40, ignore_ids=None, repetition_penalty: float = 1.2):
+                 top_k: int = 40, ignore_ids=None, repetition_penalty: float = 1.2,
+                 no_repeat_ngram: int = 3):
         self.eval()
         out = ids
         for _ in range(max_new):
@@ -73,6 +74,16 @@ class PureGPT(nn.Module):
                         next_logits[0, tok] /= repetition_penalty
                     else:
                         next_logits[0, tok] *= repetition_penalty
+            if no_repeat_ngram > 0:  # blokir frasa berulang (anti-ngelantur)
+                seq = out[0].tolist()
+                if len(seq) >= no_repeat_ngram - 1:
+                    prefix = tuple(seq[-(no_repeat_ngram - 1):]) if no_repeat_ngram > 1 else ()
+                    banned = set()
+                    for i in range(len(seq) - no_repeat_ngram + 1):
+                        if tuple(seq[i:i + no_repeat_ngram - 1]) == prefix:
+                            banned.add(seq[i + no_repeat_ngram - 1])
+                    if banned:
+                        next_logits[0, list(banned)] = float("-inf")
             if top_k and top_k < next_logits.size(-1):
                 v, _ = torch.topk(next_logits, top_k)
                 next_logits[next_logits < v[:, [-1]]] = float("-inf")
