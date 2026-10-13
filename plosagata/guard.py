@@ -80,6 +80,23 @@ EVENT_MARKERS = [
 ]
 
 
+WAKE_WORD = "sagi"
+
+SAGI_HELLO = (
+    "Halo! Saya Sagi, asisten validator berita Plosagata. "
+    "Tempel berita atau klaim yang mau dicek kebenarannya untuk mulai."
+)
+
+
+def strip_wake(text: str) -> tuple[bool, str]:
+    """Deteksi panggilan 'Sagi'. Return (disebut, sisa_pesan)."""
+    t = text.lower().strip()
+    if WAKE_WORD in t:
+        rest = " ".join(t.replace(WAKE_WORD, " ").strip(" ,.!?").split())
+        return True, rest
+    return False, t
+
+
 def _is_greeting(t: str) -> bool:
     # cocok utuh atau kata pertama ("halo bang", "pagi kak").
     # TIDAK pakai substring agar "nih" tidak dikira "hi".
@@ -91,7 +108,10 @@ def _is_greeting(t: str) -> bool:
 
 def is_news_topic(text: str) -> str:
     """Return 'greeting' | 'news' | 'offtopic'."""
-    t = text.lower().strip()
+    mentioned, rest = strip_wake(text)
+    if mentioned and not rest:
+        return "greeting"  # cuma manggil "Sagi!" -> sapa balik
+    t = rest if mentioned else text.lower().strip()
     if _is_greeting(t) and not any(k in t for k in NEWS_KEYWORDS):
         return "greeting"
     if any(k in t for k in NEWS_KEYWORDS):

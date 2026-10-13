@@ -67,6 +67,22 @@ GREETING_ONLY = ["halo", "halo halo", "hallo", "helo", "hai", "hi", "hello",
                  "bang", "kak", "bro", "sis", "kawan", "kawan", "mas",
                  "mbak", "mba", "pak", "bu", "loh", "p", "oy", "woy"]
 
+WAKE_WORD = "sagi"
+
+SAGI_HELLO = (
+    "Halo! Saya Sagi, asisten validator berita Plosagata. "
+    "Tempel berita atau klaim yang mau dicek kebenarannya untuk mulai."
+)
+
+
+def strip_wake(text: str) -> tuple[bool, str]:
+    """Deteksi panggilan 'Sagi'. Return (disebut, sisa_pesan)."""
+    t = text.lower().strip()
+    if WAKE_WORD in t:
+        rest = " ".join(t.replace(WAKE_WORD, " ").strip(" ,.!?").split())
+        return True, rest
+    return False, t
+
 OFFTOPIC_KEYWORDS = [
     # Coding / IT teknis
     "python", "javascript", "html", "css", "coding", "koding", "script",
@@ -112,7 +128,10 @@ def _is_greeting(t: str) -> bool:
 
 def is_news_topic(text: str) -> str:
     """Return 'greeting' | 'news' | 'offtopic'."""
-    t = text.lower().strip()
+    mentioned, rest = strip_wake(text)
+    if mentioned and not rest:
+        return "greeting"  # cuma manggil "Sagi!" -> sapa balik
+    t = rest if mentioned else text.lower().strip()
     if _is_greeting(t) and not any(k in t for k in NEWS_KEYWORDS):
         return "greeting"
     if any(k in t for k in NEWS_KEYWORDS):
@@ -212,6 +231,8 @@ def dummy_reply(user_text: str) -> str:
         return redirect_reply()
     t = user_text.lower().strip()
     sapaan = ["halo", "hai", "pagi", "siang", "sore", "malam", "assalamu", "bang", "kak", "tes"]
+    if "sagi" in t and len(t) < 30:
+        return SAGI_HELLO
     if any(s in t for s in ["halo", "hai", "hello", "pagi", "siang", "sore", "malam", "assalamu"]) and len(t) < 40:
         return (
             "Halo! Saya AI validator hoaks buatanmu (mode ringan, belum fine-tune 1B). "
