@@ -159,3 +159,10005 @@ bakso mie ayam soto rawon gudeg rendang sate padang madura lilit taichan
 nasi padang uduk kuning liwet tutug oncom kucing gudeg pecel lele lamongan
 jajanan pasar klepon onde lapis getuk cenil putu ayu bolu kukus brownies
 oleh oleh bakpia dodol geplak yangko amplang kerupuk emping peyek rengginang
+
+# --- Tambahan HF hndrbrm/indonesia_vocabulary ---
+a
+abah
+abang
+abdominal
+abidin
+abiturien
+abon
+abreaksi
+absente
+absorptif
+adaktil
+abuk-abuk
+acak
+acara
+aci-aci
+acung
+adang
+adar
+adempauze
+adibangkit
+adika
+adinamia
+adisiswa
+aerob
+adoptif
+adu
+adveksi
+aeolus
+aerologi
+afair
+afidavit
+aforisme
+agah
+butbut
+agape
+agio
+agogo
+agregasi
+agrobisnis
+aguk
+ahadiat
+ahlusuluk
+ainulbanat
+ajak
+ajek
+ajnas
+akor
+akademik
+akar
+akhtaj
+akli
+akriflavina
+aksarawan
+aksentuasi
+aksila
+akte
+aktivisme
+akualung
+akulturasi
+akupunktur
+al
+alai-belai
+alamanda
+alang
+alas wayah
+album
+aleksia
+alferes
+alhasil
+alifbata
+alim
+alip
+alizarin
+alkana
+alkoholisme
+almamater
+almukhlis
+alonim
+alpokat
+altokumulus
+alumina
+alusi
+amabakdu
+amanah
+amarah
+ambacang
+ambalang
+ambergris
+ambing
+ambring
+ambung
+amelioratif
+ametropia
+amfoterik
+amin-amin
+amit-amit
+amonia
+ampang
+amperemeter
+amprung
+ampun
+amunisi
+anaerob
+anak sungai
+analeptik
+anamorfosis
+anatase
+ancang
+andai
+andang
+andikara
+andrologi
+anekdot
+anestetis
+anggan
+anggit
+anggung
+angiosperma
+angkasa
+angkong
+angkusa
+angsoka
+anil
+anisogami
+anjangkarya
+anju
+anoksemia
+anorgastik
+antagonis
+antar
+antariksa
+antarras
+antediluvium
+antep
+antibeku
+antigravitasi
+antikristus
+antipati
+antisiklonis
+antonim
+antropobiologi
+antroposofi
+anugerah
+anyak-anyik
+apa
+aparatus
+apek
+apepsi
+apion
+aplus
+apokope
+aposematik
+apoteker
+apu-apu
+arah
+aram
+arbab
+ardi
+arerut
+argumen
+arif
+aris
+arkade
+arkileksem
+aron
+arta
+artik
+artona
+arun
+asa
+asal
+asar
+asese
+asi
+asimetris
+asistensi
+asmaradanta
+asosiasi
+aspirasi
+astadikpala
+astenopia
+astronautika
+asung
+atlas
+atas
+atma
+atomistis
+atrofi
+audio
+auditorium
+aural
+autisme
+autogen
+automaton
+aversi
+avontur
+awadara
+awamineral
+awat
+ayah
+ayam
+ayeng
+azam
+b
+babak
+babat
+bablas
+bacak
+bacut
+badan
+badi
+badur
+bagal
+bagea
+bagul
+bahala
+bahar
+bahasa
+bahu
+bais
+bajaj
+bajigur
+baka
+bakda
+bakhsis
+bakmi
+bakteriolisis
+bakti
+bal
+balam
+balas dendam
+balik
+balok
+baluk
+balut
+bana
+bancik
+bandar
+banditisme
+bandul
+bangar
+baronsai
+bangkang
+bangkis
+bangsai
+baroskop
+banjar
+bantah
+bantut
+bapang
+barah
+barangkali
+barbir
+barga
+baringan
+barkometer
+baru
+barut
+basah
+basi
+basket
+bata-bata
+batara
+batil
+batolit
+baud
+baut
+bawel
+bayangkara
+bayu
+be
+bebas murni
+bebenah
+becek
+bedama
+bedol
+begana-begini
+beguk
+bekah
+bekas
+bekleding
+bel
+belah
+belalah
+belanak
+belangkas
+belarak
+belati
+belebat
+belekek
+belengket
+beleter
+beligo
+beling
+belitung
+siam
+belongsong
+belubur
+beluku
+belur
+bembarap
+benak
+benci
+bendara
+bengap
+bendir
+bengal
+bengkal
+bengkatak
+bogot
+bengkung
+bengung
+bensin
+bentar
+bentoh
+benturung
+benyoh
+ber
+berakah
+berandang
+beronsang
+berapa
+berek-berek
+berentang
+berhana
+beringas
+berongkos
+berma
+beronang
+bersil
+berui
+berwari
+besi tua
+besot
+besut
+betara
+betik
+betonisasi
+bi
+biang
+biasa
+bibit
+bidah
+bido
+bifasial
+bijaksana
+bikarbonat
+biku
+bilamasa
+bilau
+billahi
+bincang-bincut
+binaragawan
+bingit
+binokular
+bintulbahar
+biogas
+biomassa
+biosfer
+bipatride
+birama
+birofaks
+bodong
+bisektris
+bison
+biumbai
+bogi
+blok
+bobato
+bobotok
+bohemian
+bokek
+boksu
+bolak
+bolot
+bon
+boncol
+bonggol
+bongkol
+bongsor
+bopeng
+borat
+borjuis
+bortel
+botak
+botulisme
+brahmin
+brangas
+brem
+brilian
+bromida
+brontosaurus
+bu
+buani
+bubar
+bubus
+buddhis
+bueng
+bui
+bujeter
+buka
+bukung
+buldan
+bulu
+bumantara
+bumiah
+buncang
+bung
+bungker
+buras
+buntat
+buntut
+burakah
+burdah
+bursa
+bus
+busi
+butala
+butun
+ca
+cabo
+cahar
+cacah jiwa
+caci
+cadir
+cagut
+cak
+cakap
+cakmar
+cakus
+caling
+camar
+camil
+campung
+cancan bulan
+candi
+candung
+cangga
+canggung
+cangkir
+cangkuk
+cantas
+caos
+cawat
+cape
+caplak
+caraka
+carter
+catat
+caturjalma
+cawi
+cebis
+cecawi
+cedera
+cegar
+cekah
+cekam
+cekek
+cekih
+ceking
+cekuk
+celaka
+anjing laut
+celepa
+celis
+enggak
+celurit
+ansori
+cemeh
+cemong
+cempana
+cempin
+cemuas
+cencala
+cengung
+cenderawasih
+cengbeng
+cengkau
+cengkerik
+cengkol
+centang
+cepal
+ceples
+ceracak
+cerakin
+cerau
+cerecek
+ceria
+cerkas
+cerobong
+cerpen
+ces
+ceteria
+ciak
+cibuk
+cicip
+cik
+cilawagi
+cincau
+cingah
+cingkrang
+cipan
+cola-cala
+citra
+coak
+compang-camping
+codak
+coket
+colok
+comel
+congget
+congkong
+conteng
+copot
+coret
+crat-crit
+cuca
+cucur
+cuil
+cukong
+culiah
+cumi-cumi
+cung
+cup
+cupet
+curah
+curu
+dabal
+dacin
+dadali
+daduh
+dagang
+dahaga
+dahlia
+dajal
+dakik
+dakwah
+dalang
+dalung
+daman
+dambir
+dampeng
+danau
+dandi
+dangkal
+danta
+darab
+deaneksasi
+daro
+darusalam
+dasarian
+datang
+datum
+dawai
+dayuh
+debet
+debu
+derana
+dedak
+dedek
+deduksi
+definit
+deforestasi
+degenerasi
+dehem
+dek
+dekanal
+deklamator
+dekode
+dekorator
+dekunci
+delemak
+delinggam
+demabrasi
+dembun
+demiliterisasi
+demokrat
+demosi
+dempuk
+denasalisasi
+densitometri
+dengar
+dengkung
+denim
+dentin
+deoknumisasi
+departemental
+deponir
+deprotonasi
+derajat
+deras
+deret
+derit
+dermatologi
+derun
+desakralisasi
+deserebrasi
+desiliter
+deskriptif
+destruksi
+detap
+galagasi
+detik
+deuterokanonika
+dewa
+dewi-dewi
+diafon
+diaken
+dialisis
+diapositif
+diaterman
+didaktik
+dies natalis
+difusi
+digresi
+dikotomi
+dil
+diluvium
+dinamis
+diris
+dinosaurus
+dipan
+dipsomania
+dirgantara
+disertasi
+disiplin
+diskonto
+diskulpasi
+disolventia
+dispersal
+distilasi
+distrik
+diversitas
+dobrak
+doeloe
+dohyo
+doktor
+dolak-dalik
+dolomit
+dominan
+dompet
+dondon
+berat ekor
+donor
+dorna
+dosir
+dragon
+dungkul
+drat
+drip
+dualis
+dublir
+duga
+duilah
+duktus
+dulang-dulang
+dunia
+duplik
+durat
+durjana
+dus
+duta
+dwifungsi
+dwiwarna
+eco
+editor
+efektor
+egalitarianisme
+egosentrisitas
+ejakulasi
+ekamatra
+eklektikus
+ekoklimat
+ekonomis
+ekotipifikasi
+eksaminator
+eksentrik
+eksikator
+ekskavator
+eksobiotik
+eksogam
+eksotermik
+ekspedisi
+embih
+ekspor
+ekstasi
+ekstra
+ekstranei
+ekstrinsik
+ektoparasit
+ekuivalensi
+elang
+elegansi
+elektroforesis
+elektrometalurgi
+elektrostatika
+eliksir
+elitis
+eluen
+eluvium
+emat
+embara
+emblem
+embuai
+beroksigen
+emiten
+empik
+empek
+empo
+empul
+enam
+encel
+endasan
+endokrinologi
+endorfin
+endotermis
+energik
+enggok
+engku
+enjin
+ensefalitogen
+entak
+enteritis
+entogenus
+entri
+enzimologi
+epidemi
+epigastrium
+epileptik
+episode
+epitermal
+era
+ereh
+ergonomis
+erong
+erpak
+eselon
+eskatologis
+estriol
+etatisme
+etil
+etnobotani
+etologi
+eukaliptol
+eusinantropus
+evaporimeter
+eyel
+fadilat
+familier
+faktual
+fanatik
+fardu
+farmakologis
+fasih
+fatalis
+fatur
+federasi
+fenol
+feritin
+fertilitas
+fibrasi
+figur
+filamen
+film
+filsuf
+firasat
+fisik
+fiting
+fitosterol
+flamboyan
+flip-plop
+fluida
+fokstrot
+fon
+fonis
+formalitas
+formulir
+fosfor
+fotografer
+fotolisis
+fototaksis
+fraktur
+frekuensi
+daksa
+fulgurit
+fundamentalistis
+fungsionaris
+futuristik
+gabai
+gabuk
+gadang
+gadolinit
+gaflah
+gagas
+gail
+gakari
+galaktometer
+galat
+galih
+galvanis
+gamam
+gambling
+gamis
+gana-gini
+ganda
+gandasuli
+ganding
+gandul
+ganggu gugat
+gangster
+ganjar
+gantang
+gantole
+gapai
+garangan
+garindin
+garmen
+garut
+gasket
+gastronomi
+demam selesma
+gaung
+gaya
+gayuh
+ge
+gebos
+gedebak-gedebuk
+gedi
+gegadan
+gegat
+gejolak
+geladak
+gelagar
+gelandang
+gelantung
+gelatak
+gelebar
+geleding
+gelekek
+gelendong
+gelepot
+geletik
+gelicik
+gelimang
+gelingsir
+gelitik
+gelokak
+gelora
+gelugur
+gelundung
+gemang
+gembel
+avikultur
+gembus
+gemercik
+gemertak
+geminte
+gempur
+genahar
+gendam
+genderuwo
+genealogis
+genggang
+genital
+genjot
+gentas
+gentong
+geognosi
+geometri
+ambles
+ambulans
+ameboid
+ametabola
+amfiteater
+amina
+amko
+amonia
+ampang
+ampelam
+amprung
+amputir
+amunisi
+anaerob
+anak tiri
+analgesik
+ananda
+anastomosis
+ancala
+andai
+andam
+anderik
+androgini
+anemer
+aneuploid
+anggap
+angkuh
+anggung
+angit
+angkel
+angkul-angkul
+anglung
+angur
+animo
+anja
+anjat
+anjur
+anom
+anotasi
+antagonistis
+antar
+antarlingkungan
+antawacana
+antemeridiem
+anteseden
+antidiuretik
+antikatalis
+antimuntah
+apikultur
+antitesis
+antraks
+antropolog
+anturium
+anuria
+anyelir
+apar
+apatis
+apendektomi
+apikal
+aplikatif
+apokaliptik
+apomorfin
+apostrof
+apron
+arbitrasi
+arah
+ardi
+ararut
+arem-arem
+argari
+ari
+arik
+aristokrat
+arkeolog
+arku
+arsenik
+arteriola
+artileri
+aruan
+arya
+asad
+asam
+asbes
+asetimeter
+asibilasi
+asimilasi
+askar
+asli
+asong
+asprak
+astana
+astral
+asu
+aswasada
+avesta
+ati
+atmosfer
+atraktif
+atur
+audiograf
+auksi
+aurikularia
+autentisitas
+autogen
+autologi
+aven
+awaair
+awak
+awang
+awet
+ayah
+ayang-ayang
+azab
+aziz
+baba
+babar
+babet
+babun
+bacik
+badai
+badari
+badui
+bagal
+bagat
+baguk
+bahagia
+bahana
+bahasa
+bahu
+bait
+bajaj
+bal
+baka
+bakat
+bakhil
+bako
+bakteri
+baku
+balad
+balam
+balas
+balian
+balneoterapi
+baluarti
+balur
+ban
+bancar
+bandan
+bandea
+bandos
+bangai
+bangga
+bangkang
+bangkrut
+bangsai
+bangus
+barbur
+baras
+banting
+banyo
+barbel
+baplang
+barakatuh
+barga
+barion
+barli
+barong
+baruje
+barzanji
+basanit
+basirah
+basuh
+batak
+batekeng
+batila
+batu bara
+baung
+bawah
+bayak
+bayata
+bayung
+bebal
+bebat
+beberas
+becus
+bedawi
+bekel
+begana-begini
+begu
+beka
+bekasam
+beku
+belacu
+belak
+belam
+belanga
+belantik
+belasting
+belatuk
+beleda
+belelang
+belengkong
+beliak
+belik
+belingut
+beliut
+belokok
+bendalu
+beludak
+beluluk
+belut
+bena
+benara
+bendara
+benderung
+bonbon
+bengek
+bengkah
+bengkarap
+bengkil
+bengkung
+bengul
+bensin
+bentar
+bentoh
+bentul
+benyai
+bertam
+beraksa
+berangai
+berangkal
+berapa
+beremban
+berentang
+beri tahu
+bering-bering
+berkelium
+beroci
+beronok
+bertam
+beruk
+besalen
+besikal
+besot
+besuta
+betak-betak
+betik
+betonisasi
+biadat
+biar
+bibliomania
+bibit
+bidak
+bidas
+bienial
+bija
+bik
+biksu
+bilai
+bilau
+biliun
+bimbit
+binari
+bincu
+bingka
+binjat
+bintit
+biogenesis
+bioluminesensi
+biosekuen
+biotron
+birama
+biro
+bis
+biseksual
+bisnis
+biumbai
+blastostil
+bocong
+blustru
+bocor
+bogem
+bois
+boks
+bolang-baling
+bolong
+bombardemen
+bonceng
+bongak
+bongkong
+bongsor
+bopeng
+bordir
+borok
+bosor
+boto
+boyo-boyo
+brakisefalik
+brankas
+brengsek
+brisan
+bromocorah
+bruder
+buak
+buari
+bubo
+bubung
+budi daya
+bugar
+bujam
+bujuk
+bukit
+bulang
+buleng
+bulug
+bumantara
+bumiah
+bunda
+bunga
+bungkul
+bunker
+buntil
+bunyi
+buram
+buret
+bursa
+bus
+busik
+butana
+butun
+byarpet
+cabuh
+cacah
+cacengklok
+cadang
+cam
+cah
+camar
+cakak
+cakawari
+cakra
+cakus
+calempong
+campak
+campur
+cancut
+candi
+cangkring
+cangam
+canggih
+cangkang
+cangkol
+cantas
+capelin
+capa
+ekstin
+carak
+caturwangsa
+carut
+catuk
+catut
+cawis
+cebok
+ceceh
+cedera
+cegar
+cekakak
+cekarau
+cekel
+cekikik
+cekrem
+celaga
+celampak
+celatuk
+celi
+celopar
+celupak
+cema
+cembung
+cemeti
+cempana
+cemperai
+cempuling
+cenayang
+cendang
+cendok
+cengar-cengir
+cengis
+cengkeling
+cengkiwing
+cengkuyung
+centil
+cepeng
+cepol
+ceracau
+cerakin
+cerau
+cercap
+cergas
+cerkas
+cerocok
+cerpu
+cespleng
+ceti
+ci
+cibuk
+ciduk
+cikal
+cili
+ciprat
+cing
+cingkrang
+ciplak
+ciriwangi
+ciut
+coblos
+cogah
+cokok
+coli
+combong
+compreng
+congkah-mangkih
+congo
+copak-capik
+cor
+cowok
+cuang
+cuci
+cucur
+cuil
+cukong
+culik
+cumil
+cungak
+cupak
+cupu
+curiah
+cutel
+dabik
+dada ruah
+dadek
+daerah
+dag-dig-dug
+dahagi
+dahriah
+daing
+dakocan
+dakwat
+dalem
+dam
+damba
+dampak
+dampung
+dandang
+dangau
+dangkar
+dapat
+darab
+daripada
+daru-daru
+das
+dastar
+datif
+dawai
+dayu
+debam
+dedah
+debum
+decap
+dedak
+dedemit
+defaitisme
+definisi
+deforestasi
+degeneratif
+deifikasi
+dekah
+demam
+deklaratif
+dekongestan
+dekstrin
+delap
+delik
+delman
+demabrasi
+demek
+demisioner
+den
+demonstratif
+dempir
+denawa
+dendrologi
+dengkel
+dengu
+denominasi
+dentat
+deoknumisasi
+departementalisasi
+deportasi
+depus
+derajat
+deras
+deres
+derit
+dermatofitosis
+derum
+desainer
+desentralisasi
+desil
+desit
+destabilisasi
+detak
+detensi
+detik
+deuterium
+dewadaru
+dewasa
+dia
+diakon
+dialinguistik
+dialogis
+diar
+diatonis
+didong
+difraksi
+digitalin
+dikau
+doksologi
+diler
+dina
+dinas
+dini
+diorit
+diptera
+dirgahayu
+disbursemen
+disiden
+diskiasis
+diskredit
+diskusi
+disorientasi
+distal
+distributor
+divisi
+dobrak
+doeloe
+dogol
+ketam galah
+dol
+dolok
+dominan
+dompet
+dondon
+dongkrak
+dop
+dorsopalatal
+drem
+draf
+dramaturg
+drip
+duaja
+duble
+duga
+duilah
+duktus
+dup
+dum
+dungu
+duplikator
+duren
+durno
+dustur
+dwidarma
+dwitarung
+ebro
+edar
+efek
+egah
+egomania
+eikosan
+ekabahasawan
+ekdisis
+eklosi
+ekon
+ekor
+ekrinologi
+eksantem
+ekses
+eksipien
+eksklusivisme
+eksodus
+eksogin
+ekspansi
+eksper
+eksplorator
+eksposisi
+ekstensifikasi
+ekstraksi
+ekstrauterin
+ekstrusi
+ekuator
+el
+elastin
+elektorat
+elektrokusi
+elektronik
+elektrum
+eliminir
+elo
+elusi
+emanasi
+embalase
+embek
+embolus
+embung
+eminen
+emoh
+empar
+empenak
+employe
+empul
+enak
+enceh
+endang
+endoderma
+endomiokarditis
+endoskopi
+enes
+enggil
+engkong
+enjin
+ensefalitis
+ensopor
+enteritis
+entogenus
+entropi
+eolit
+epidemiologi
+epigenesis
+epimisium
+epistaksis
+epizoik
+eukariota
+ercis
+ergonomika
+erong
+erpah
+esek
+eskas
+estetika
+etana
+etikat
+etis
+etnologis
+eufonium
+eurihalin
+evaluatif
+evolusi
+fabula
+fahsya
+faktual
+famili
+fantom
+farisi
+fasakh
+fasilitator
+fatanah
+favorit
+felspar
+fenomenologi
+fermium
+feses
+fibrilasi
+fiil
+filantropi
+filo
+filsafat
+fiolaks
+fisibel
+fitnah
+fitosterol
+flamingo
+floem
+fluktuasi
+folder
+fondamen
+fonologis
+formalitas
+formulator
+fosfit
+fotograf
+fotolisis
+fototaksis
+fraktus
+frekuentatif
+frontal
+fumarol
+fungistatik
+furqan
+futurologi
+gabak
+gabuk
+gada-gada
+gado
+gafar
+gagap
+gaharu
+gaji
+galaganjur
+galaktosemia
+gali
+galu-galu
+gamak
+gambar
+gametofit
+gamping
+ganco
+gandar
+gandewa
+gandringan
+ganggang
+gangsi
+garib
+ganjur
+gantole
+gapah
+gara-gara
+garansi
+gari
+garpu
+gecer
+gasing
+gastrointestinal
+gatal
+gaut
+gaya
+gayuh
+gebang
+gebos
+gedebung
+gedong
+gegaokan
+gegisik
+gelabah
+geladir
+gelakak
+gelang
+gelar
+gelatik
+geleca
+gelekak
+gelendo
+gelepek
+geletar
+gelicik
+gelimang
+gelinggang
+gelitik
+gelogok
+geloneng
+gelosor
+gelumat
+gemah
+gendar
+gemblak
+gemi
+gembut
+gemercing
+gemertak
+gemit
+gemuk
+genap
+gendang
+gendong
+generatif
+gengsah
+genius
+genosida
+gentian
+geofisika
+geologi
+geostatika
+geprak
+geragap
+gerak
+geranggang
+gerau
+gerbong
+gereh
+gereng-gereng
+gerepe
+gerha
+geridit
+gerim
+gerinjam
+gerit
+gero
+gerogot
+geronium
+gerowot
+geru
+gerun
+gerus
+gesper
+getap
+getis
+gibas
+gigir
+gilir
+ginding
+gingsul
+girang
+giring
+gitapati
+gladiator
+glenoid
+gliserol
+glondongan
+gluten
+gobet
+godot
+gom
+golok
+gombrong
+gondong
+kerenyam
+gonore
+gopoh
+gorok
+gotong
+grad
+grafikawan
+grambyang
+gravimeter
+grip
+gua
+gubal
+gubris
+gudu-gudu
+gugur
+gulah
+guling
+guma
+gumpal
+guna
+gundi
+gunolugu
+gurah
+guring
+gus
+gusur
+ha
+habitus
+hadap
+hagiografi
+hajar
+hakikat
+halai-balai
+halia
+halofit
+halusinogen
+hamburger
+hampar
+hancur
+hansop
+hap
+harakat
+harga
+harmoni
+hartal
+hasad
+hasyiah
+haul
+hawari
+hebring
+heksahedron
+hela
+hemikordat
+heliotrop
+hematite
+jambon
+hemositometer
+hengkang
+heptameter
+herediter
+heroisme
+heterogamet
+heteroseksualitas
+hi
+hibrida
+hidraulika
+hidrogeologi
+hidrologi
+hidrosiklon
+hierarkis
+higrotermogram
+hilal
+himenium
+hingar
+hiosiamina
+hiperkelas
+hipersonik
+hipodermoklisis
+hipomastia
+hipotenusa
+hirap
+histamina
+historiografi
+hodadoda
+holistis
+holokrin
+homofoni
+homologi
+honae
+hopyes
+hortikultura
+hubar
+huh
+hukah
+huma
+humerus
+hunjam
+ibadurahman
+huyung
+ibadah
+ibra
+icip
+idas
+ideograf
+ideologis
+idu
+igau
+ijazah
+ikamah
+ikhtiar
+intertestial
+iktibar
+ikuh
+ilak
+ileum
+imajinatif
+imbal
+imbibisi
+impedans
+impersonalia
+imunologi
+impresif
+imun
+inang
+incer
+indap
+indigenos
+individualis
+indra
+induktansi
+infanteri
+inferensial
+inflasi
+informatif
+inggris
+inklusif
+injak
+inkompatibilitas
+inkulturasi
+insek
+insiden
+inspeksi
+instan
+intertidal
+integral
+interior
+inter
+interesan
+interkontinental
+internat
+interpretasi
+interyeksi
+intip
+intramolekul
+introduksi
+inventaris
+investigatif
+iota
+iradiasi
+iri
+iritatif
+isalohipse
+islah
+isobarik
+isoglos
+isokorik
+isomorf
+isotermal
+istazah
+istihadah
+istimna
+istri
+iterbium
+itrium
+jab
+jables
+naik derajat
+jagapati
+jahat
+jaja
+jaksa
+jalang
+jambe
+jaman
+jambulan
+jampi
+janabijana
+janggi
+jangkar
+jangkih
+janik
+jantina
+japu
+jarem
+jaring
+naik geram
+jati
+jawara
+jayastamba
+jegang
+jebrol
+jegung
+jejer
+jelagra
+jelanak
+jelata
+jelijih
+jelujur
+jemaat
+jembar
+jemparing
+jemuas
+jenang
+jendul
+jengger
+jeput
+jengking
+jera
+jentelmen
+jepret
+jerambang
+jerangkong
+jerembap
+jerigen
+jermal
+jerongkes
+jerumat
+jerungkup
+jib
+jidar
+jijitsu
+jimak
+jinayah
+jingkau
+jintan
+jiran
+jitu
+jogan
+jojing
+jolok
+jonggol
+jongos
+jorong
+juak
+juara
+judoka
+jujai
+julai
+julung
+jumawa
+jumpang
+jung
+jungkung
+junub
+juri
+juru
+jus
+kabar
+kabinet
+kabuki
+kabus
+kacak
+kadung
+kacip
+kada
+kaedah
+kadaver
+kadi
+kafan
+kagak
+kahat
+kail
+kala
+kakak
+kakap
+kakodil
+kal
+kalakanji
+kalambak
+kalang
+kalbu
+kalingan
+kalibut
+kaliki
+kalipso
+kalkosium
+kalor
+kalsit
+kama
+kambang
+kambrat
+kamfana
+kamisa
+kampang
+kampiun
+kamus
+kanaat
+kancap
+kanda
+kandil
+kangkung
+kanina
+kanker
+kansel
+kantil
+kantor
+kaos
+kapak
+kapar
+kapi
+kapitulum
+kapsel
+karang
+karaeng
+karapaks
+karau
+karkata
+kardamunggu
+kardiologi
+karet
+karikatural
+karitas
+karotin
+karsinologi
+kartonis
+karunkel
+kas
+kasai
+kasatmata
+kaset
+kasima
+kassia
+kasualitas
+kasut
+katah
+katalina
+katang-katang
+katebelece
+katekismus
+katibin
+katir
+katung
+kaula
+kausatif
+kawah
+kawi
+kaya
+kayu
+ke -- an
+kebam
+kebo
+kecai
+kecar
+pelayar
+kecimus
+kecombrang
+kecup
+kedam
+kedayan
+kedemplung
+kedidi
+kedul
+kejai
+kejer
+kejut
+kekar
+kekel
+kelabang
+kelai
+kelamai
+kelandera
+kelar
+kelasak
+kelayang
+keledar
+kelelot
+kelemban
+kelenggara
+kelentit
+kelepir
+keletah
+kelian
+kelijak
+kelikir
+kelincir
+kelintang
+kelis
+kelocak
+kelombeng
+kelonet
+kelor
+keluangsa
+kelukur
+kelung
+keluyuk
+kemang
+kembal
+kembayat
+kembut
+kemerakan
+kemit
+kempang
+kempit
+kemput
+kemul
+kemurgi
+kenang
+kencang
+kencong
+kendang
+kendit
+kenes
+kentut
+kenyut
+kepak
+kepar
+keperancak
+kepinding
+keplok
+kepris
+kepulaga
+kerabu
+kerajang
+kerama
+langsir
+kerangga
+kerantong
+keratin
+kerbat
+kerdom
+kerek
+keremus
+kerenggamunggu
+kerepes
+keretek
+kerical
+kerikit
+kerinjal
+kerisi
+kerja
+pinjak
+kerneli
+kero
+kerokot
+kerong
+keropeng
+kerot
+kerpus
+kertah
+kertau
+kerudung
+kerunkel
+kerutup
+kesang
+keseran
+kesip
+kesturi
+ketah
+ketek
+ketang
+ketaton
+keter
+ketiap
+ketimbul
+ketirah
+ketonemia
+ketuat
+ketumbar
+ketupuk
+khadim
+khalikul alam
+kharisma
+khatimah
+khiar
+khoja
+khurafat
+kiah
+kian
+kibar
+kicang-kicu
+kidal
+kijai
+kik
+kila
+kilas
+kili
+kilohertz
+kimbang
+kimpul
+kinasih
+kinematograf
+kinetokardiografi
+kintaka
+kipal
+kira
+kirap
+kirmizi
+kisai
+kismis
+kitang
+kits
+klakson
+klasik
+klem
+kleptoman
+klimakterium
+klinometer
+kliyengan
+klorida
+kloroformat
+knot
+sedap hati
+kobra
+kondektur
+kodifikasi
+koeksistensi
+kohabitasi
+koin
+kojor
+koki
+kontinen
+kolaborator
+kolaret
+sepak sila
+koleng
+kolina
+kolom
+kolonial
+kolostomi
+kom
+komaran
+komeng
+komikal
+komite
+komparator
+kompetensi
+komplemen
+komponis
+kompresor
+komunalistik
+komunistofobia
+kondensat
+kondroblas
+konfeksi
+konfrontatif
+kongkret
+konjugan
+konklusi
+konkurs
+konseling
+konseptualisasi
+konsesi
+konsol
+konstan
+konstitusi
+konsultan
+konte
+kontinu
+kontrak
+kooperatif
+konvergen
+konyol
+kop
+kopek
+koperasi
+kopolimer
+kopulatif
+kordial
+koreksi
+koreografis
+koroh
+korps
+korting
+kosak-kasik
+kosmetik
+kosmopolitanisme
+kotok
+kotaklema
+kowek
+krama
+kreatif
+krem
+kretin
+kriminologi
+kriptografi
+krista
+kuadratur
+kromat
+kromofil
+kronem
+kronoskop
+ku
+kuah
+kualon
+kuar
+kuartet
+kuasi
+kubang
+kubti
+lens
+kucil
+kuda-kuda
+kudung
+kuil
+kuintuplet
+lapad
+kukul
+legataris
+kulat
+kulir
+kultur
+kulut
+kumango
+kumbik
+kumpal
+kunani
+kuncir
+kunduran
+kunir
+kuntum
+kupang
+kuping
+kupu-kupu
+kuras
+kusir
+kurikuler
+kurkuma
+kuruyuk
+kuskus
+kusuma
+kuti
+kutin
+kutuk
+kuyam
+kwosien
+labelum
+laboratoris
+linuhung
+lacak
+ladang
+lafal
+lagiah
+lahan
+laik
+laju
+laklakan
+laksana
+laku lajak
+lalai
+lali
+lamat-lamat
+lambu
+lamin
+lampar
+lampir
+lanang
+lancang
+lancip
+landai
+landrad
+langak-longok
+langgam
+langir
+langkan
+langkau
+langsai
+lanjai
+lanjut
+lantah
+lantar
+lantun
+laocu
+laparoskop
+latam
+lapun
+larap
+larau
+laringoskop
+larut
+lasat
+lat
+latifundium
+lauh
+lawa
+lawang
+lawi
+layan
+layat
+lazat
+leban
+lebuk
+lecat
+lecun
+ledek
+legal
+legenda
+legislatif
+legok
+lehar
+lekak-lekuk
+lekat
+leksikolog
+lekum-lekum
+lelancur
+lembur
+lelet
+lem
+lemas
+lemban
+lembik
+lemes
+lempar
+lempuh
+lemuru
+lencit
+lenga
+lenger
+lenggundi
+lengkeng
+lengkuas
+lenguh
+lenjing
+lentik
+lentung
+lenyet
+lepak
+leper
+leptodos
+lerak
+lereng
+lesak
+lesbianisme
+lesplang
+letak
+leting
+letur
+leukonisia
+levirat
+liana
+libei
+libidis
+licin
+lifo
+ligih
+likat
+lila
+lillahi
+limbang
+limfadenitis
+limit
+limpau
+linang
+lindis
+lingga
+lingkup
+linguistik
+lintang
+liontin
+lipit
+lira
+lisah
+lisus
+litoral
+loncos
+loak
+locot
+logika
+loji
+lokananta
+lokawigna
+loklok
+loloh
+lomot
+loncer
+longok
+lontang-lantung
+lopak
+lorat
+los
+lotak
+loya
+lozenge
+luar biasa
+lubuk
+ludah
+luhmahful
+luku
+lulut
+lumbung
+mendeng
+lunau
+lung
+lungsung
+mairat
+lupuk
+luruh
+luti
+ma
+madmadah
+macet
+madar
+madu
+mafsadah
+magep-magep
+magnesium
+magnitudo
+mahadewa
+mahapatih
+mahasuci
+mahful
+mahkota
+mai
+majalah
+majikan
+majung
+makam
+makar
+makelar
+makin
+makota
+makrohistori
+makruf
+maksum
+mal
+malafide
+malak
+malan
+malatindak
+maliki
+malt
+mamai
+mamat
+mampai
+mana
+manakib
+mancit
+mandala
+mandelevium
+mandraguna
+manimba
+manggar
+mangkara
+mangkuk
+maniak
+manila
+manjakani
+mansiang
+mantisa
+manufakturing
+manyar
+mara
+maras
+maret
+margrit
+marikh
+mariyuana
+markis
+marmut
+martabat
+mas
+masala
+maser
+masinis
+maskon
+mason
+masterplan
+masyhaf
+matakao
+matematis
+matlak
+matrilokal
+maukhid
+maung
+mbakyu
+mayangda
+mayoritas
+mbok
+media
+medil
+medula
+megalomania
+megaspora
+megrek-megrek
+mejen
+mekar
+melamin
+melas
+melela
+melintir
+melor
+memek
+mempedal
+memutah
+menang
+menclok
+mendapa
+mendura
+menge
+mengiang
+mengkerang
+mengkudu
+meninjau
+menjarum
+mensiu
+mentari
+mergat
+mentol
+menur
+merah
+merana
+merbah
+mercapada
+merduk
+meriang
+merjan
+merlilin
+mersik
+meruap
+mesigit
+mesofit
+mesozoikum
+metabahasa
+metah
+metamorfosis
+meteorit
+metodis
+metronomis
+mezbah
+midodareni
+miiofili
+mikosis
+mikrobus
+mikrogram
+mikrometri
+mikser
+miliarwan
+militan
+mimeograf
+mina
+mineralisasi
+minibus
+mintak
+mioglobin
+miriapod
+misan
+misoa
+mistri
+mitosis
+mobilisasi
+model
+modernisme
+modus
+mojang
+molar
+molos
+moncong
+mongkok
+mono
+monogram
+monokromator
+monoteis
+montok
+moralis
+morf zero
+morfogenesis
+mortir
+motor
+muadin
+muamalat
+mubah
+muda
+mufarik
+muhajat
+muhit
+mujahidin
+mukadam
+mukhalaf
+mukjizat
+mukun
+mulhid
+mulsa
+multijutawan
+multiprosesor
+mumayiz
+mumur
+muncung
+mungkar
+munisi
+mupaham
+murakab
+murbei
+murtad
+musafir
+musikal
+muslih
+mustahil
+musyarakah
+mutabar
+mutasi
+mutu
+muzakar
+nabati
+nadirat
+naftalena
+nasel
+naik
+nakoda
+namaskara
+nanap
+nangkring
+nasut
+naqal
+narestu
+nasab
+nasi-nasi
+nativisme
+nau
+nawaitu
+nda
+nefrektomi
+negatif
+negus
+nekrofili
+nelangsa
+nenek
+neoiknologi
+neologisme
+neotipologi
+neritoplankton
+netralisir
+neurologis
+nganga
+ngeri
+niaga
+nifak
+niktigami
+nimfomania
+nipis
+nirselera
+nisbah
+nitrogen
+nodulus
+nominatif
+nona
+nong-nong
+nonkooperatif
+nonpolitik
+nonverbal
+nudisme
+notifikasi
+nrima
+nukleus
+nung
+nusantara
+nyai
+nyamplung
+nyapang
+o
+nyenyat
+nyiru
+nyungsung
+obituarium
+obor
+obstetri
+odekolonye
+oersted
+ogak-agik
+oi
+oknum
+oksigenase
+oktroi
+onomatologi
+olanda
+oleometer
+oligopolistis
+on
+omega
+onani
+onde-onde
+ong
+oniks
+onyak-anyik
+opal
+opsir
+operkulum
+oportunis
+opsiner
+opus
+orator
+order
+oren
+organis
+orien
+ornamen
+orok-orok
+ortopedi
+osilograf
+osteologi
+otentik
+otokrat
+otopsi
+oval
+oversimplifikasi
+oyak
+ozonometer
+pacal
+pacet
+pada
+padan
+padmi
+pagar
+pagut
+pahit
+pajak
+pakal
+pakau
+pakis
+pakta
+pancakara
+palapa
+palato-alveolar
+paleoantropologi
+pales
+palis
+palmit
+palut
+pampan
+pan
+pancalomba
+pancarona
+panci
+pandai
+pandom
+panewu
+panggih
+pangkal
+pangkur
+pangsek
+panili
+panjarwala
+pankreas
+panti
+pantek
+pantofel
+papa
+papan
+papila
+parabola
+parafemia
+parak
+paralitis
+parang
+paraplasme
+parasitisme
+parau
+pari
+paritas
+parkit
+parokialisme
+partenogenesis
+partus
+pas
+pasang
+pasca
+pascaperang
+pasif
+pasiva
+pasti
+pati
+patar
+patih
+patirasa
+patologis
+patriotisme
+pecel
+paus
+pawukon
+payu
+pecah
+pecut
+pedanda
+pedengan
+pedok
+pegah
+peguam
+peka
+pekasih
+pekir
+pekuk
+pelah
+pelang
+pelapah
+pelawa
+pelecet
+pelengkung
+pelet
+pelinggam
+pelit
+pelopak
+peluk
+pem
+pemidang
+penaga
+penatu
+pendahan
+pendok
+peng -- an
+pengat
+penggar
+pengulun
+penjara
+pensiun
+pentar
+pentol
+penyu
+pepaya
+pepet
+pepunden
+pera
+peraji
+perat
+peranggi
+perawan
+perbekel
+perdana
+perekik
+peres
+performa
+peri
+peridi
+perih
+perinci
+perintah
+peristalsis
+perji
+perkolator
+perli
+perlup
+permasan
+pernel
+perosok
+perselah
+persik
+personalia
+pertanda
+perudang
+perusi
+pesa
+pesara
+pesi
+pesona
+peta
+petang
+petel
+petus
+petisi
+petrokimia
+peyorasi
+pial
+pianola
+pica
+pidada
+pigmi
+pikap
+pikogram
+pilang
+pilot
+pina-pina
+pincut
+pinggah
+pingpong
+pintal
+pionir
+pipit
+pirau
+piza
+pirometalurgi
+plagiator
+pises
+pisuh
+pita
+pitiriasis
+planing
+plasma
+platelet
+plebisit
+pleura
+plonco
+pluralis
+pneumatika
+podak
+poin
+pokrol
+relban
+poldan
+poliandri
+polimer
+polisemi
+politeis
+polizoa
+polong
+pompa
+pondar
+ponggang
+ponten
+popok
+porak-parik
+porok
+pos
+poskar
+pot
+potong
+pradesa
+prahoto
+prakonsepsi
+prameswari
+pramupintu
+prangko
+prasaran
+prastudi
+preadvis
+prefiks
+premis
+presbiterium
+presidentil
+presumsi
+pribadi
+primordial
+privasi
+proaktif
+produsen
+profilaksis
+progresivitas
+proleksem
+promosi
+propelan
+prosedur
+prospeksi
+proteinuria
+protista
+protoraks
+provokatif
+psamolitoral
+psikofarmakologi
+psikoneurosis
+psikotes
+puah
+puan
+publisistik
+pucung
+pugak
+puitis
+pukul
+pungkir
+puling
+pulut
+punca
+pundung
+pungkang
+punjut
+puput
+pupur
+purba
+puring
+purnakarya
+purwa
+pusar
+puspa
+pustakaloka
+puti
+putri malu
+puyu
+qi
+rabak
+rabit
+rabung
+rad
+radang
+radif
+radiograf
+radiosonde
+rafe
+ragang
+ragu
+rahasia
+rahmatullah
+rais
+rajawali
+rakah
+raksa
+rakus
+ramah tamah
+rambah
+rambu
+ramirezi
+ramping
+ranca
+rancap
+randat
+rang
+ranggak
+rangka
+rapak
+rangkuh
+rangrang
+rangsuk
+ranjing
+rantam
+ranyah
+rapsodi
+raras
+rase
+rasional
+rasuli
+ratifikasi
+raung
+rawan
+rawit
+rayon
+reaksi
+realpolitik
+rebat
+rebok
+receh
+redaksional
+reduksi
+referensi
+refraktor
+regel
+register
+reguler
+reinterpretasi
+rejasa
+reka
+rekapitulasi
+reklasering
+relativisme
+rekuisitor
+relas
+religiositas
+remah
+remas
+rembet
+remedi
+remis
+rempuh
+renaisans
+renceh
+rendah
+rengadean
+renggang
+rengket
+rengus
+renovasi
+rentang
+renyah
+reporter
+repah
+repeten
+reposisi
+republiken
+rerongkong
+resan
+reserse
+residivisme
+resistans
+resorsinol
+restiformis
+resume
+retet
+retradisionalisasi
+retromandibuler
+ribu-ribu
+rewanda
+ria
+riam
+riba
+ricau
+rihal
+rim
+rimih
+rincu
+risak
+ringin
+rintang
+ripuk
+risik
+rituil
+robak-rabik
+roda
+roga
+rois
+rol
+romantika
+rombok
+rompang
+rona
+rongak
+rongkong
+rotograf
+roseng
+rotok
+ruah
+ruat
+rubela
+rubu
+rudu
+ruhban
+rukam
+rukyah
+rumbah
+rumi
+rumung
+rundu-rundu
+rungkuh
+runtuk
+rupee
+rutab
+ruyatulhilal
+saba
+sakai
+sabi
+sabotase
+sabut
+sadau
+sai
+safi
+sagang
+sagon
+sakristi
+sahdu
+sahih
+sair
+saka
+sakarida
+sakhi
+sakral
+saku
+salah
+salap
+sali
+salinisasi
+salmonela
+salut
+saman
+sambalewa
+sambau
+sambuk
+sampah
+sampang
+samping
+sampurna
+samum
+sanawiah
+sandar
+sandung
+sangar
+sanggan
+sanggurdi
+santam
+sangku
+sangsekerta
+sanjai
+sapu
+santonin
+sapu
+sapersi
+saptadarma
+sarakah
+sarat
+sarhad
+sarikan
+sarkasme
+sartan
+sarwa
+sasar
+sastrawi
+satinet
+satu
+sauk
+sauvinistis
+sawang
+sawut
+sayat
+sayup
+sebak
+sebar
+sebelas
+sebura
+sedam
+sedawai
+sedia
+sedot
+seg
+segar
+seguna sekaya
+seismograf
+sejingkat
+sekak
+sekalor
+sekat
+sekedidi
+sekeram
+seko
+sekors
+sekring
+seksologis
+sekuik
+sekuriti
+selabar
+selak
+selang
+selampit
+selang-seling
+selarak
+selawat
+seleder
+selembada
+selengat
+selepat
+semenjana
+selidik
+selir
+selingkit
+selisik
+seloka
+seluk
+seluar
+selukung
+seluncur
+selusuh
+semah
+setiga
+semang
+semantung
+semat
+sembagi
+sembat
+sembesi
+sembirat
+sempadan
+semek
+semenjak
+semi
+seminar
+sempal
+semplak
+semrawut
+sen
+sengked
+senator
+sendam
+sender
+sendok
+sengaja
+sengkayan
+senggau
+senggut
+sengkalan
+sengker
+sengsem
+seni
+senjak
+senoyong
+sensualitas
+sental
+senteri
+senting
+sentripetal
+senunggang
+seok
+sepul
+sepan
+sepasin
+sepele
+sepetir
+sepoi
+sepuit
+serabut
+serak
+serampang
+sereh
+seranometer
+serbakeemasan
+seraut
+serbaakal
+serbarumah
+serdam
+serembah-serembih
+serengeh
+serigala
+sergut
+seribulan
+serindai
+serium
+sernak
+serok
+seronok
+serpih
+sertu
+sesagon
+seruling
+seruni
+sesenap
+sesap
+sestina
+setai
+setandar
+setem
+seterip
+setik
+setoka
+setoter
+setrip
+setup
+sewot
+si
+sialit
+sianometer
+siar
+sidai
+sibuk
+sidi
+sif
+sigap
+signifikan
+sikak
+sikat
+siklis
+sikudomba
+silah
+silaturahmi
+silih
+silir
+siluet
+simbang
+simbukan
+simpang siur
+simpleks
+simulasi
+sinansari
+sineas
+sinkronis
+singelar
+sinkretisme
+singkeh
+singse
+sinkope
+sinom
+sintaksis
+sinting
+sinuhun
+siong
+sipatung
+sir
+sirat
+sirik
+sirkulasi
+siru
+sisik
+sistematis
+sit
+sitir
+situs
+siut
+skandal
+sketsa
+sklerosis
+skors
+slah
+slogan
+sobek
+sodomia
+sogo
+soka
+solak
+solfatara
+solois
+somasi
+somplak
+sondanco
+songket
+sonokeling
+sopak
+sorak-sorai
+sori
+sosiobiolog
+sosiopat
+sotor
+spasi
+spektograf
+spekulator
+spesial
+spina bifida
+spons
+spring
+srikandi
+stadion
+stambon
+staples
+statistika
+stek
+stenogram
+stereoisomerisme
+sterol
+stilistika
+stokastik
+stopkontak
+stratopause
+striptis
+struma
+sulbi
+suami
+suarawati
+subam
+subgeneralisasi
+sublimasi
+substandar
+subuh
+suda
+sudra
+sugi
+suhu
+suji
+sukarelawan
+sulup
+sulalat
+sulfonamida
+sultani
+sumanda
+sumbel
+sumbur
+suprasasti
+sumsum
+sunatullah
+sundik
+sungguh
+sungkit
+sungu
+suprarene
+supai
+superioritas
+superskrip
+suplesi
+supresor
+surat kabar
+suri
+surili
+survai
+susastra
+susuk
+swabela
+sutradara
+swadidik
+swakendali
+swasta
+syaban
+syahadatain
+syaitan
+syal
+syantung
+syariah
+syeti
+syufaat
+syuruk
+tabah
+tabel
+tabik
+tabula rasa
+taci
+taf
+tagar
+tahan
+tahil
+tahu
+taiko
+taksem
+tajribah
+tak
+takdir
+takrir
+taklik
+takrif
+takson
+tanah
+tala
+talang
+talenta
+talu
+tamar
+tamban
+temesar
+tambus
+tampan
+tampik
+tamtam
+tanbiat
+tandas
+tanfiziah
+tanwujud
+tanggetong
+tangki
+tangkar
+tanglung
+tanjak
+tanker
+tanzih
+tapa
+tapak liman
+tapin
+tapuk
+tarbil
+tarang
+tarhim
+tarkas
+tartir
+tarum
+tasai
+tasdik
+taswir
+tata laksana
+tatai
+tatar
+taufan
+taurit
+terkap
+tawarik
+tayang
+tebah
+tebang
+tebing
+tebus
+tegal
+tegil
+teisme
+tekam
+tekek
+teknifon
+tekoan
+tekstur
+tekuk
+tela
+telajak
+telangkup
+telat
+teledor
+telekan
+telempap
+telepok
+teler
+telinga
+teluh
+telusur
+temak
+temasya
+temenggung
+tembekar
+temberas
+tembilang
+tembra
+temiang
+tempang
+terlantar
+tempias
+tempolong
+tempui
+tempus
+temut-temut
+tendang
+teng
+tengara
+tenggat
+tengguli
+tengkar
+tengkolak
+tengteng
+tentara
+tenung
+teosofis
+tepat
+teplok
+tepurang
+terak
+terambu
+terapi
+teratai
+terka
+terenang
+wahid
+teritis
+termal
+termodinamis
+termolisis
+ternak
+terongko
+tertib
+teruna
+tes
+testosteron
+tetap
+tetelan
+tetra
+tiam
+tiban
+tijak
+tikar
+tilam
+timang
+timbel
+timbus
+timpuh
+tindan
+tinggir
+tingkas
+tinja
+tipak
+tipu
+tiras
+tirus
+titer
+titir
+tiung
+tokek
+toga
+tohor
+tokong
+tomat
+tolok
+tombong
+tonetika
+tonggong
+tongkor
+tonikum
+tonus
+topek
+topikalitas
+torek
+torso
+totau
+tra
+trampolin
+transformasi
+tribulan
+transmiter
+transposisi
+trayek
+trenggiling
+tributa
+trigraf
+trilomba
+tripleks
+tritunggal
+trokanter
+tropi
+truk
+tuala
+tuangku
+tubagus
+tuding
+tufah
+tuju
+tukang
+tukil
+tulah
+tuli
+tuma
+tumbuh
+tumpal
+tumplak
+tumpur
+tunagizi
+tunasosial
+tungau
+tungging
+tungkat
+tungu
+tuntun
+tupai-tupai
+turbogenerator
+turkuois
+tusir
+tutuk
+ua
+uar
+ubar
+ubrak-abrik
+ucok
+udar
+udet
+udut
+uih
+ujub
+uktab
+ulam
+ular
+ulat
+ulik
+ultra
+uluk salam
+umara
+umun
+umbra
+umbut
+umpat
+uncit
+undang
+unek-unek
+unggit
+ungkal
+ungsi
+unilateral
+universalia
+unjuk
+upar
+until
+air suci
+upajiwa
+urai
+urap
+ureter
+uring
+urolog
+urut
+usang
+ustad
+usut
+utar-utar
+utus
+vagina
+valensi
+vandel
+vas
+vaucer
+velar
+ventilator
+verbena
+verset
+veste
+vetsin
+videoklip
+violin
+virtuoso
+viskose
+vitamin
+vodka
+volt
+vrah
+vulvektomi
+wabakdu
+wadi
+wagu
+wai
+wajik
+waktu
+walangkopo
+wali
+wanawisata
+wantilan
+waslah
+wari
+warna
+warung
+wasilah
+watak
+wau
+wawas
+wedang
+welahar
+werak
+weselbor
+xerosis
+wih
+wiladah
+acuh
+wirang
+wirwir
+wisnu
+wolanda
+wregu
+wulung
+xantofil
+xeroftalmia
+xilosa
+yaitu
+yard
+yaumulkiamah
+yogi
+yu
+yunda
+yute
+zabaniah
+zakat
+zan
+zimotik
+zelot
+zet
+zimase
+zirkonia
+zona
+zuhur
+A
+abah
+abang
+abdi masyarakat
+abet
+abis
+abnormal
+abortiva
+abrit-abrit
+absolutisme
+abstrak
+abuk
+acala
+acara niaga
+aci-acian
+acuman
+ada nyawa
+ada-adanyakah
+adalat
+adaptasi kebudayaan
+adat bersendi syarak
+adat neolokal
+adati
+adenoid
+adiboga
+adik seibu
+adiktif
+adipositas
+adiwidia
+admiral
+adrenal
+aduhai
+adventisia
+aerob
+aerometer
+afal
+afidavit
+afotik
+agak-agih
+agan
+agen muatan
+agen wol
+agitator
+agogo
+agregat
+agripnia
+agrowisata
+Ahad
+ahli filsafat
+ahli kitab
+ahli patung
+ahli sunah
+ahlulkubur
+ain
+air alas
+air bah
+air bersih
+air emas
+air kandang
+air kumbahan
+air magma
+air oligotrofik
+air ruban
+air tanah bebas
+air terjun
+air wudu
+ajaran
+ajnas
+ajun peneliti madya
+akademisi
+akal keling
+akang
+akar cabang
+akar lekat
+akar parsi
+akar serabut
+akar tunjang
+akbar
+akhir zaman
+akhwat
+aklamasi
+akomodir
+akrobatik
+aksara fonemis
+aksarawan
+akseptasi
+aksiomatis
+akta mengajar tiga
+aktinometer
+aktor intelektual
+akua
+Akuarius
+akun biaya
+akuntansi
+al
+alah membeli menang memakai
+alalia
+alam malakut
+alamat
+alangkah
+alas kaki
+alas tilam
+alat bicara
+alat listrik
+alat pemanas
+alat pendobrak
+alat penyedot
+alat putar cepat
+alat ukur hujan
+albedometer
+aldehida
+alergis
+algojo
+alias
+alih bahasa
+alih teknologi
+alimiah
+aliran
+aliran tahunan
+Alkabir
+alkari
+alkoholometer
+Almalik
+almuazam
+aloleks
+alpaka
+alto
+alum
+alur air
+alur ketat
+aluvial
+amal ibadah
+amandel
+amarilis
+ambah-ambah
+ambang trofik
+ambeien
+ambiguitas
+ambing
+ambril
+amburadul
+amerisium
+amfiartrosis
+amil zakat
+amirulhaj
+amnion
+amuba
+ampe
+amplifikasi
+ampun
+amukan
+anafilaksis
+anak alang
+anak balam
+anak bilik
+anak Daud
+anak gugur
+anak kapal
+anak lombong
+anak muda
+anak perahu
+anak ronggeng
+anak sulung
+anak tiri
+anak-anakan
+analekta
+analisis deduktif
+analisis mekanis
+anamnesis
+anasional
+ancak
+ancol
+andalusit
+andesit
+androgen
+aneka jenis
+anemogram
+angah
+anggap
+anggaran pendapatan
+anggota gerak
+anggukan
+anggut
+angin bohorok
+angin gunung-gunungan
+angka biasa
+angin musim
+angin sakal
+angin tenggara mandi
+angin utara
+angka Arab
+angka halaman
+angka Romawi
+angkasa luar
+angkatan
+angkatan udara
+angkuh terbawa
+anglap
+angsa laut
+ani
+anion
+anjang
+anjing geladak
+anjung
+anode
+anopsia
+ansari
+antamir
+antardaerah
+antarplanet
+antawacana
+antemeridiem
+anteseden
+antidot
+antiklimaks
+anting
+antiproton
+antisipasi
+antosian
+antropofagi
+antroposofi
+anuitas
+anyak-anyik
+apa akal
+apa-apa
+aparatur
+apati
+apendektomi
+api padam puntung hanyut
+apitan
+apo- (ap-)
+apokrin
+aposisi
+apraksi
+aptasi
+arabes
+arak-arakan obor
+arang batok
+aras lutut
+arbitrer
+aren
+argentum
+arif
+aristotipe
+arkeologi
+arnal
+arsenal
+artefak
+artifisial
+artis tamu
+arun
+arus deras
+arus listrik
+arus uang
+asabat
+asal ayam pulang ke lumbung
+asam amino esensial
+asam format
+asam lambung
+asam sendawa
+asap racun
+asas patrilineal
+ase
+aseton
+asil
+asimilasi progresif
+asing
+asisten superintenden
+asli
+asong
+aspek
+aspek momentan
+aspirasional
+astaga
+asteositoma
+astronautika
+asung
+asuransi ternak
+atak kasar
+atas-mengatasi
+ati
+atmosfer
+atraksi wisata
+atung
+audiograf
+augmentatif
+aur ditarik sungsang
+aus
+autobiografi
+autokrasi
+autosom
+aviasi
+awaair
+awak darat
+awal larva
+awan bersilap
+awan jejak
+awan puncak
+awang-gemawang
+awet muda
+ayah permandian
+ayam bakaran
+ayam gorengan
+ayam koci
+ayam petelur
+ayam tedung
+ayat kitabullah
+ayun
+azamat
+ba
+baban
+Babet
+babi jalang
+babi murai
+babu
+bacang
+bacot
+badai tropis
+badak sumbu
+badan judikatif
+badan terkocak
+bade
+bafta(h)
+bagai beliung dengan asahan
+bagai bunyi siamang kenyang
+bagai getah dibawa ke semak
+bagai kambing dibawa ke air
+bagai langau di ekor gajah
+bagai menyandang galas tiga
+bagai rambut dibelah tujuh (seribu)
+bagaikan
+bagan alir
+bagasi
+bagi anak
+bagi penjilidan
+bagus
+bahalan
+bahan dasar
+bahan pakai
+bahan pemikiran
+bahan vulkanisasi
+bahariwan
+bahasa buatan
+bahasa isolatif
+bahasa kesat
+bahasa nasional
+bahasa rakitan
+bahasa standar
+bahaya api
+bahu baju
+baiduri pandan
+bait
+baju kurung
+bajau
+baju (belah) benian
+baju belah bakung
+baju hijau
+baju kemeja
+baju monyet
+baju sederiah
+baju toro
+bak tengguli ditukar cuka
+bakarat
+bakdu
+bakir
+bakteri denitrifikasi
+bakteriolog
+baku rebut
+bala
+balai agung
+balai diskonto
+balai latihan kerja bangunan
+balai pancapersada
+balai sidang
+balans
+balas salam
+balian
+balik kaji
+balik pulang
+balneoterapi
+balsem
+balut
+bambu betung
+bambu jepang
+bank devisa
+ban gundul
+banat
+bandan
+bandaran
+banding hukum tata negara
+bandrol
+bangar
+bangkai
+bangkit (naik marah
+bangku kaki
+bangsa murni
+bangun
+bangun sosial
+banjar tangki
+bank dalam bank
+bank tabungan
+bantal golek
+bantat
+bantu humaniter
+bantu rumah tangga
+banyak makan (asam) garam
+banyun
+bapak kecil
+baptis
+barai
+barang baku
+barang gelap
+barang makanan
+barang raja
+barang tentu
+barat
+barbiton
+bari
+baris belakang
+bariton
+barometer air raksa
+barongsai
+baru-baru ini
+barut panjang
+basalioma
+basir
+basuh
+bata api
+batalion
+batang kara
+batari
+batau
+batik Yogya
+batis
+batu amril
+batu bara putih
+batu canai
+batu ginjal
+batu kapur
+batu kubur
+batu malihan
+batu petir
+batu sendi
+batu topas
+batuk rejan
+baud
+baur kail
+bawah angin
+bawal tambak
+baya
+bayang-bayang hujan
+bayem
+bazar kue
+bea pelabuhan
+bebaru
+bebas pers
+beberan
+becek
+bedah buku
+bedama
+bederma
+bedolan
+begandering
+bego
+bejat
+bekas
+bekerja
+bekles
+benang putih
+belah
+belah sel
+belakang
+belalang
+belandar
+belangkon
+belantan
+belasting
+belatung
+beledi
+beleng
+belera
+belibas
+belimbing
+belit
+belolang
+beloon
+beluhan
+beluluk
+belum punya kuku hendak mencubit
+beluru
+bemper
+benang basah
+benang pengaman
+benaran
+benda hidup
+bendala
+bendera kebangsaan
+bendi
+bendung segitiga
+benggal
+bengkak bengkil
+bengkaras
+bengkerap
+bengoh
+benih bersih
+bensin campur
+bentangan
+bentangur mumut
+benteng
+bentuk
+bentuk terikat
+benuaron
+benzil asetat
+bera
+beradab
+beradu kening
+beragam-ragam
+berahi pertama kuda
+berakad
+berakit-rakit ke hulu
+beralamat
+beralih muka
+beramal
+beramuk
+berandal
+berangan-angan
+berangguk-angguk
+berangkap-rangkapan
+berani hilang tak hilang
+berantai-rantai
+berapi
+berargumen
+beras campur
+beras merah
+beras tumbuk
+berasas
+beraspirasi
+berat mata
+berat tulang
+berawan
+berbadan
+berbahaya
+berbala-bala
+berbangga
+berbapak
+berbatasan
+berbawang
+berbeda-beda
+berbelahan
+berbelit-belit
+berbendi
+berberani-berani
+berbidai-bidai
+berbilang dari esa
+berbilang kompleks
+berbilang tingkat
+berbintang
+berbisu
+berborok
+berbugil
+berbulu
+berburu selamat
+bercabiran
+bercak
+bercambang
+bercarang
+bercebar-cebur
+bercelah
+bercemetuk
+bercerai-cerai
+berciri
+bercoreng-moreng
+bercunduk
+berdagang
+berdalih
+berdangkung
+berdarah seni
+berdawat
+berdebut
+berdegap
+berdeklamasi
+berdendam-dendaman
+berdengus
+berdenyar-denyar
+berderang
+berderum
+berdesir
+berdiet
+berdoa
+berduit
+berdwifungsi
+bereda
+berekspansi
+berempati
+berenga
+berentetan
+berevolusi
+berfungsi
+bergala
+bergandeng renteng
+berganjur-ganjur surut
+bergarah-garah
+bergaya
+bergelantungan
+bergelimpangan
+bergempa
+bergentayangan
+bergiat
+bergonjong
+bergoyang
+bergulat
+berguna
+berguru dahulu sebelum bergurau
+berhajat
+berhampiran (dengan)
+berhari
+berhati bimbang
+berhati walang
+berhidung tinggi
+berhipotesis
+berhulu
+beria berbukan
+beribadah
+berijazah
+berilah
+berimpitan
+beringat
+berintegrasi
+beristibdad
+berita hangat
+berita rekaan
+berjagung-jagung
+berjalan kaki
+berjalur
+berjanjang
+berjasad
+berjejal-jejal
+berjenjang
+berjimat
+berjompakan
+berjulai
+berjurai
+berkaca-kaca
+berkajang
+berkamit-kamit
+berkantong
+berkarat
+berkas tersendiri
+berkeluh kesah
+berkawin
+berkecek-kecek
+berkecukupan
+berkeinginan
+berkeladak
+berkelana
+berkeliling
+berkelopak
+berkemeja
+berkendur-kendur
+berkepang
+berkerabu
+berkereta
+berkeriut
+berkesan
+berketakutan
+berketul-ketul
+berkial
+berkikir
+berkilo-kilo
+berkirai
+berkoak-koak
+berkolek-kolek
+berkonsultasi
+berkorespondensi
+berkualifikasi
+berkucak
+berkukuh negeri
+berlompatan
+berkurang
+berkutub
+berlain-lainan
+berlalu angan
+berlampu
+berlangsi
+berlapak memancing
+berlari perut
+berlawanan
+berlebih-lebihan
+berlela
+berlempuk
+berlengkok
+berleret-leret
+berlidah
+berlimpa
+berlistrik
+berlubang
+berlumutan
+bermacam-macam
+bermakna
+bermandi
+bermasak-masak
+bermazhab
+bermerger
+berminat
+bermobil
+bermuda-muda
+bermulut
+bernafiri
+bernas
+bernoda
+beroda
+beroleh lumpur di tempat yang kering
+berondongan
+beroperasi
+berotonomi
+berpadu-padu
+berpakankan
+berpamor
+berpangkal tolak
+berpantun-pantun
+berpaspor
+berpayung
+berpelitur
+berpembawaan
+berpending
+berpenghuni
+berperang-perangan
+berpesta-pesta
+berpidato
+berpikul-pikul
+berpinggang
+berpola
+berpotensi
+berprihatin
+berpucuk
+berpunya
+berpusu
+berputra
+bersaf-saf
+bersajak
+bersalaman
+bersama
+bersampan
+bersandar di lemang hangat
+bersangkutan
+bersarang
+bersayap
+bersenapan
+bersegeh
+berseketiduran
+berselang-seli
+berselimut
+berseluk-beluk
+bersemboyan
+bersempadan
+bersendeng
+bersenggat
+bersenyawa
+bersepi-sepi
+berserat
+bersesalan
+bersetubuh
+bersiap-siap
+bersidahulu
+bersih kuku
+bersila
+bersimbang
+bersinar
+bersiung
+bersorak
+berstruktur
+bersubang
+bersuka-sukaan
+bersuluhkan
+bersungkawa
+bersuruk-surukan
+bersusun
+bertabiat
+bertadah amin
+bertaharah
+bertakik
+bertali darah
+bertambun
+bertanam berurutan
+bertanduk
+bertani
+bertaraf
+bertasbih
+bertawar-tawaran
+bertegak nama
+bertekan pinggang
+bertelabat
+bertelinga
+bertempat
+bertemu lutut
+bertengger burung
+bertenung
+bertepung
+berteriak-teriak
+bertiga
+bertimbal balik
+bertimbun-timbun
+bertingkah-tingkah
+bertitik
+bertolak
+bertongkat senduk
+bertopik
+bertuankan
+bertukar akal
+bertukar pandang
+bertumbuh
+bertunda-tunda
+bertutur
+berubah pikiran
+beruju
+berulang tahun
+berumahkan
+berunai
+beruniform
+beruntusan
+beruras katang-katang
+berurutan
+bervariasi
+berwarna-warni
+berwiru-wiru
+besan
+besar hidung
+besar periuk besar kerak
+beserban
+besi batang
+besi merah
+besit
+bestel
+beta
+betatron
+betik bubur
+beton bertulang
+bhayangkara dua
+biak
+biang keladi
+biar lambat laga
+biarpet
+biawak serunai
+biaya ongkos
+biaya tak terduga
+bibir nya bergetah
+bibliografi pengarang
+bicara
+bidan
+bidara
+biduanda
+bihalal
+bijak moneter
+biji ratap
+bikin betul
+bila
+bilang
+bilineal
+bilyar
+bimetal
+binaragawan
+bincacau
+bineka
+bingkatak
+bini lari
+bintalak
+bintang di langit boleh dibilang
+bintang sayarah
+bintara
+biodin
+biografi
+biologis
+bioritmik
+biotin
+biram
+biro
+birokrat
+biru malam
+bisbol
+bismillah
+bisul sabut
+bius
+blek
+blok muat
+blustru
+bobot mati
+bodi
+bogi
+boi
+boks
+bola jangkar
+bolak-balik
+bolos
+bom hidrogen
+bombai
+bonafiditas
+bondong air bondong ikan
+bongkar-bangkir
+bongkrek
+bonsai
+bopong
+borak
+borek
+borongan
+bot
+botol
+bozah
+brakiurus
+braseri
+brewok
+briozoa
+bromocorah
+bruder
+buah beraksa
+buah hidup
+buah manis berulat di dalamnya
+buah pinggang
+buah-buahan
+buang air
+buang dadu
+buang malu 1
+buang sepanjang adat
+buang-buang air
+buatan
+bubuh
+bubur ayam
+bucu
+budaya malu
+budek
+budi pekerti
+bugi-bugi
+bujang andon
+bujukan
+buka rezeki
+bukat
+bukti hak
+buku dalam hati
+buku komik
+buku putih
+buku tamu
+bulan haji
+bulan sabit
+bulang hulu
+bulat buluh
+bulat tekad
+buleng
+bulu ayam
+bulu kening
+bulu sua
+buluh darah
+buluh-buluh
+bumbung
+bumiah
+buncit
+bung
+bunga campak
+bunga kertas
+bunga majemuk
+bunga rampai
+bungar
+bungkuk
+bungsil
+buntal pisang
+buntilan
+buntingan
+bunuh-membunuh
+bunyi-bunyian
+buras
+burik
+bursa saham
+buruh pabrik
+buruk perut
+burung cabai
+burung kuaran
+burung sikap
+bus antarkota
+busa alam
+bustan
+busung kulit
+buta aksara
+buta warna
+butuh
+buyutan
+cabik-mencabik
+cacah baku
+cacar monyet
+cacat wicara
+cacing gelang-gelang
+cacing kentar
+cacingan
+cadir
+cagar ikan
+cahaya
+caing
+cak raya
+cakap kosong
+cakep
+cakram benih
+cakus
+caling
+calon perwira
+cambang bauk
+campang
+campur kode
+cancut
+candi apit
+candu
+canggah
+cangkih
+cangkring
+cantelan
+canting telon
+cap jempol
+capcai
+capit
+caraka
+carik-carik bulu ayam lama-lama bercantum juga
+casis
+catatan
+catek
+caturwarna
+cawan pinggan
+ceban
+cecak tanah
+cecongor
+cegar
+cek lunas
+cekal
+cekcok
+cekiber
+cekrem
+celaga
+celana jengki
+celangap
+celeguri
+celep
+celis
+celum
+celurut
+cemas hati
+cemekian
+cempa
+cempe terlantar
+cemplang
+cena
+cencangan
+cendawan batang
+cendol
+cengeng
+cengkaman
+cengkerawak
+cengkol
+cengut
+cepaka
+ceper
+cerabih
+cerai susu
+ceranggah
+cerca maki
+cerdik busuk
+ceri
+cerita binatang
+cerita sejarah
+cermat
+cermin wasiat
+cerotok
+ceruk-menceruk
+cetak balik
+cetak lepas
+cetar
+cetusan
+cialat
+cicih
+cigak
+cikok
+cilukba
+cincin belah rotan
+cincin polos
+cindaku
+cingcing
+cintrong
+cir
+cirit pedet
+citra politik
+coba
+cocok tanam
+cok
+cola-cala
+comblang
+compes
+conet
+congkelang
+conteng
+copet
+coreng-moreng
+corong telepon
+cuaca baik
+cuban
+cuci tangan
+cucur
+cuh
+cukilan
+cula
+cuma-cuma
+cunam
+cungo
+cuping
+curah
+curam
+cus
+daayah
+dabit
+dada lapang
+dadar
+dadu pusing
+daerah haram
+daerah litoral
+daerah perbatasan
+daerah swapraja
+daerahisme
+daftar isian
+daftar pelajaran
+dagang piatu
+daging basah
+daging kering
+dahaga
+dahi layar
+dahulu-mendahului
+dakaik
+daktil
+dakwah
+dalam peninggal
+daltonisme
+damar batu
+dambaan
+dampak negatif
+damprat
+dana pelunas
+danau
+dandi
+dangkal
+dansanak kandung
+dapra
+dara
+darah tinggi
+dari situ
+darpana
+darwis
+dasar terikat
+dastar
+data primer
+datang-mendatangi
+dauk
+daun encok
+daun luah
+daun sinar
+daun-daunan
+dawai gelang
+daya cerna
+daya juang
+daya rem
+dayuk
+deaneksasi
+debet
+debitur
+debung
+decur
+dedara
+dedikasi
+deferens
+demam panas
+defonologisasi
+degenerasi
+deham
+demam panggung
+dekaliter
+dekat
+deklamator
+dekode
+dekoratif
+deku
+delapan tapak bayang-bayang
+delik
+delikates
+delinkuensi
+demabrasi
+demam esek
+demap
+demineralisasi
+demokrasi absolut
+demokrat
+demosi
+dempung
+dencing
+dendang laut
+dengih
+dengkung
+dengut
+densitometri
+dentung
+deodoran
+deparpolisasi
+depolarisasi
+depot logistik
+deputi
+derak
+derebar
+deria
+derivat
+dermis
+derut
+desa swasembada
+desegregasi
+desibel
+desinens
+desmonem
+destroyer
+detak hati
+detektofon
+determinan
+deting
+deuteron
+dewadaru
+dewan pemerintah daerah
+dewana
+di bawah
+di mana ranting dipatah
+diabetes
+diagnosa
+diagram lingkaran
+diakones
+dialektal
+dialog wisata
+diametral
+dias
+diatesis aktif
+dibawa (terbawa) arus
+dibujurkan
+didong
+dietetika
+difusi hukum
+digitalisasi
+dijual sayak
+dikau
+dikromat
+diktum
+dilasi
+diluvium
+diminta tebu diberi teberau
+dinamis
+dinas intelijen
+dinding sekat
+dini
+dioptase
+diperdanakan
+diplomasi megafon
+diraih siku ngilu
+dirgantara
+disangka tiada akan mengaram
+diserakkan padi awak diimbaukan orang lain
+disinfektan
+disjungtif
+diskonto obligasi
+diskriminasi rasial
+disleksia
+dispareunia
+disprosium
+dividen akhir tahun
+disunahkan
+ditimpa daulat
+diurnal
+dividen ekstra
+doa pengasih
+dodekagon
+dogeng
+dok tarik
+dokter gigi
+doktoranda
+dolanan
+domain
+domestik
+domino
+dompol
+dondon
+dongkol
+dor-doran
+dorongan nafsu mengembangkan diri
+dosen
+doyak
+draf
+drakula
+drama mini kata
+dramatik
+drem
+drumer
+dualisme
+dublir
+duduk bersimpuh
+duduk-duduk
+duh
+duka ria
+dukun
+dukungan
+dulur
+dungu
+dunia luar
+dup
+duralumin
+durian
+durometer
+duta besar berkuasa penuh
+dwifungsi
+dwisegi
+ebro
+edan
+edisi khusus
+editorial
+efek jenuh
+efek suara
+efisiensi skala
+ego
+eh
+ejaan Pembaharuan
+ejektor
+ekdemik
+ekliptika
+ekologi
+ekologi serangga
+ekonomi bentuk perusahaan
+ekopolitik
+ekor pipi
+ekotipe
+eksaminator
+eksenterasi
+ekshibitum
+eksitus pelvis
+eksobiologi
+eksogam
+eksotermik
+ekspeditor
+eksplisit
+ekspo
+ekspresif
+eksteriorisasi
+ekstraksi gigi
+ekstraversi
+ektohormon
+ekuivalen
+elang
+elat
+elektris
+elektrolit
+elektronika padat
+elektrum
+elips
+elok
+eluen
+email
+emas epitermal
+emas perak
+emas tulen
+embang
+ember
+emosi keagamaan
+embun di ujung rumput
+emendasi
+emirat
+emosionalisme
+empat likur
+empela
+emping berdadih
+empok
+empuk
+en- (em-)
+enau
+encok
+endasan
+endokrinologi
+endoplasma
+endotermis
+energetik
+energi nuklir
+enggan seribu daya
+engkoh
+enjut
+ensefalitogen
+entah
+enterograf
+entok
+entri pokok
+enzimologi
+epidemi
+epigastrium
+epileptik
+episodik
+epitet
+era telekomunikasi
+ercis
+ergasiofit
+eritrosit
+erosi lokal
+erotisisme
+esa
+eskader
+esot
+estrogen
+eter
+etimologi
+etnograf
+etologi
+euforian
+europium
+evaluasi penggamakan
+evokasi
+faali
+faedah
+fajar senja
+faktif
+faktor penggumpalan
+fam
+fantastis
+faringalisasi
+farmasi
+fasik
+fatalitas
+fatwa
+feko
+fenit
+feral
+fertilisasi
+fetus
+fidah
+fikrah
+filatelik
+filogeni
+filter biologis
+firasat
+fisik
+fitnah
+fitostrot
+flat
+flora
+fluoresen
+folio
+fonemik
+fonologi
+formalistis
+formulasi
+fosfor
+fotoemisi
+fotokonduksi
+foton
+foya
+frasa Adverbial
+frekuen
+fron
+fulgurit
+fundamentalis
+fungsi komunikatif
+furuk
+fuyonghai
+gabor
+gada
+gadis
+gadon
+gaflat
+gagal total
+gagu
+gain
+gajah hotong
+gajak
+gala-gala
+galaksi
+galanggasi
+gali lubang tutup lubang
+galon
+galvanoskop
+gamang
+gambar hidup
+gambir hutan
+gambyong
+gamit-gamitan
+gana
+ganda
+gandarukem
+gandi
+gandulan
+ganggang merah
+gangsing
+ganjal
+gantal
+ganti tikar
+gantungan baju
+gapai
+gapura kehormatan
+garam dapur
+garansi
+gardu
+garis balik selatan
+garis bujur
+garis horizontal
+garis lakon
+garis perforasi
+garis singgung kurva
+garnet
+garwa
+gas ikutan
+gas rawa
+gasolin
+gastrula
+gatuk
+gawang pintu
+gaya bentur
+gaya pusingan
+gayau
+gaz
+geblokan
+gebyah-uyah
+gedana-gedini
+gedempol
+gedung
+gegak gempita
+gegat
+gejala erosi
+geladah
+geladak tonase
+gelagat baik
+gelalar
+gelandot
+gelang untir
+gelanggang politik
+gelap gulita
+gelemprang
+gelatak
+geleber
+gelegar buluh
+gelembung kencing
+gelentar
+geleser
+geli geman
+gelimang
+gelinggam
+gelipang
+gelobok
+gelombang bunyi
+gelompar
+geloso
+gelulur
+gema duga
+gemas
+gembira ria
+gembreng
+gemeletek
+gemeresak
+gemi
+gempa bumi
+gemuk membuang lemak
+genahar
+gendak
+gendar
+gendong
+generalisasi metodologis
+generator
+gengsi
+genitif
+genjur
+geostatika
+genting menanti putus
+geofisis
+geologi
+geosinkronis
+gepokan
+geragapan
+gerai lapor masuk
+gerakan di bawah tanah
+gerangsang
+gerau
+gerbong
+gerecak
+gerencang
+gerenyam
+geresek
+gergajul
+gerhana total
+gerombongan
+gering
+gerip
+germinal
+gerobyak
+gerombol
+geronyot
+gersik
+geruh tak mencium bau
+gerunyam
+gesek
+getah keping
+getar
+getu
+gibas
+gigi dengan lidah adakalanya bergigit juga
+gigil
+gila di abun-abun
+gilap
+gilir-bergilir
+ginekolog
+ginkang
+giras
+giroskop
+gitaris
+gladiol
+glidik
+gliserida
+glomus
+glukosida
+gobek
+godek
+gohok
+golek jenggel
+gulai bagar
+golput
+gompal
+gondrong
+gonjak
+gontai
+gorap-gorap
+goroh
+gotik
+grad
+grafikawan
+gramatika sinkronis
+grapyak
+grecok
+gronjong
+guano
+gubit
+gude
+gugu
+gujirat
+gula kelapa
+gulali
+gulud
+gumam
+gumpil
+gundah gulana
+gunduk
+gunolugu
+gunting mesin
+gunung-gemunung
+gurau senda
+gurita
+guru lagu
+gurun pasir
+gusul
+ha
+habis manis sepah dibuang
+habitus
+hadang
+hadiah Natal
+hadis marfuk
+haid
+hajat
+haji laut
+hak amendemen
+hak guna air
+hak lisensi
+hak peserta
+hak substantif
+hakim
+halakah
+halba
+halo
+halotan
+halwa
+hamba Allah
+hamdalah
+hampang
+hana
+handai tolan
+hangat hangat tahi ayam
+hantai
+hantu aru-aru
+hantu pemburu
+hanyut
+harak
+harapan tak putus sampai jerat tersentak rantus
+harga banderol
+harga jadi
+harga perdana
+hari
+hari es
+hari kemudian
+hari Natal
+hari tarwiah
+harimau ditakuti karena giginya
+harit
+hart
+harta karun
+harta pencaharian
+harta tetap
+harum-haruman
+hasil
+hasil rotan
+hasta
+hati gajah sama dilapah
+hatta maka
+haustorium
+heban
+heiho
+hekto-
+heling
+helipad
+hematologi
+himenium
+hemostatik
+hendak mulia bertabur urai
+hentar
+heran
+hermafrodit
+hertz
+heterogenitas struktural
+heterospora
+hia
+hibiskus
+hidangan rohani
+hidrofili
+hidrograf
+hidrologi
+hidroskop
+hidung putih
+hidup kayu berbuah
+hieroglif
+higrometer serap
+hijau gadung
+hikmah
+hilang geli karena gelitik
+hilang rona karena penyakit
+hilir malam
+hina-menghinakan
+hinggap bak langau
+hiperemia
+hiperplasia
+hipervitaminosis
+hipofremia
+hiponim
+hipotesis alternatif
+hipotiroidisme
+hiruk pikuk
+histogeni
+historisitas
+hitam lotong
+hitam tahan tempa
+hiu
+hodometer
+holoenzim
+holozoik
+homofon
+homonim
+honcoe
+horak
+horor
+hotel
+hubaya-hubaya
+hubungan formal
+hubungan luar nikah
+hudud
+hujan beku
+hujan jatuh ke pasir
+hujan panas main hari
+huji
+hukum alam
+hukum gereja
+hukum negara
+hukum positif
+hukum yurisprudensi
+hula-hula
+hulubalang
+humaniter
+humorolog
+hunjin
+huruf awal
+huruf Jawi
+huruf pameran
+hus
+hutan buatan
+hutan pantai
+hutan tutupan
+ibadah haji
+ibarat menuang minyak ke api
+ibtidaiah
+ibu kota kabupaten
+ibu pungut
+ibunda
+idam
+idealistis
+ideologi politik
+idola
+iga selungkang
+ihtifal
+ijazah
+ikab
+ikan anadrom lakustrin
+ikan bembam
+ikan forare
+ikan kancera
+ikan laut
+ikan mua
+ikan pipih
+ikan sia-sia
+ikanan
+ikhlas
+ikhtisar penunjuk
+iklan udara
+iklim kuarterner
+iklim subtropis
+iktidal
+ikut
+ilai
+ileum
+ilmu agama
+ilmu batin
+ilmu dunia
+ilmu halimunan
+ilmu kasekten
+ilmu kiat
+ilmu padi
+ilmu pertanian
+ilmu saraf
+ilmu tauhid
+ilmu usuludin
+ilustrator
+imanen
+imbangan
+imitator
+imperatif
+impian
+impor gelap
+impresionis
+imunisasi
+inai
+inca-binca
+indap
+indeks refraksi
+indikator
+individuasi
+indra peraba
+induk buatan
+induk tentara
+industri
+industri perdesaan
+infantilisasi
+inferior
+inflasi lokal
+informasi
+inga
+inggu
+ingsut
+inisiator
+inkaso
+inkonstitusional
+insan
+insekta
+insiden
+inspeksi
+instalasi
+instruksi
+insubordinasi
+intan kar-bon
+integrasi wilayah
+intermolekuler
+interaksi
+interen
+interjeksi
+internasional
+interpelator
+intervensi
+intiha
+intonasi
+intrauniversiter
+intuitif
+inventarisasi
+investasi
+inyik
+ipon
+iras
+iring-iringan panjang jimat
+ironi dramatik
+isapan jempol
+isi negeri
+Islam
+isobron
+isogon
+isokronisme
+isomorfis
+isotop
+istazah
+istigasah sugra
+istilah umum
+istislam
+isytiak
+itihad
+itik serati
+iya
+jabang
+jabel
+jadi kain basahan
+jagalan
+jago kandang
+jaha
+jahit lilit ubi
+jais
+jajar
+jaksa tinggi
+jalad
+jalan belakang
+jalan kompromi
+jalan pedalaman
+jalan tengah
+jalangkote
+jalur cepat
+jam digital
+jam saku
+jamak takdim
+jambar
+jambu
+jambul
+jaminan hari tua
+jamrah aqabah
+jamuan teh
+jamur upas
+jangak
+jangar
+jangka pendek
+jangkar kuku tunggal
+jangkit
+janji sampai
+jantung pisang
+japu
+jarak estetik
+jaranan
+jari ampai
+jari renik
+jaring dorong
+jaringan adiposa
+jaru
+jarum layar
+jas hujan
+jasad penempel
+jatayu
+jatuh cinta
+jatuh semangat
+jauh panggang dari api
+jawer
+jayastamba
+jebakan
+jebolan
+jegal
+jejak-jejak bara
+jejunum
+jelah
+jelantah
+jelau
+jelimet
+jelujur
+jemaah
+jembar
+jembatan terapung
+jempalitan
+jemuas
+jenangau
+jendelan
+jengah
+jenggot kambing
+jengkek
+jengkoletan
+jenjang
+jenu
+jeruk siam
+jeram
+jerangkak
+jerawat
+jerembat
+jerih menentang boleh
+jeritan
+jerojol
+jeruk besar
+jeruk manis
+jerumus
+jetis
+Jibrail
+jidur
+jika
+jila
+jim
+jinak-jinak
+jingga
+jingu
+jiplakan
+jitak
+jogan
+johari
+jolong-jolong
+jongkah
+jonjot
+jota
+juak
+jual galah
+jual lembut
+jual sontak
+jubah
+judogi
+Juja
+jukut
+julo
+jumawa
+juru muda tingkat satu
+jumud
+jungkang
+junior
+juru padahi
+juri
+jurnalisme kuning
+juru buku
+juru lukis
+juru ramal
+juru sungging
+juru tulis
+jus
+kaba
+kabar dibawa pikat dan langau
+kabel laut
+kabinet gotong royong
+kabit
+kabus
+kabut sisa
+kaca mosaik
+kacamata plus
+kacang buncis
+kacang macan
+kacang-kacang
+kaci
+kacung
+kadang kala
+kademat
+Kadiriah
+kafaah
+kafir muahid
+kahang
+kaidah Behaghel kedua
+kain
+kain benang
+kain ihram
+kain mandar
+kain rentang
+kain takwa
+kais
+kakagau
+kakas emparan
+kaki gajah
+kaki sudah terlangkahkan
+kakologi
+kakus
+kalajengking
+kalamin
+kalau
+kalau sorok lebih dahulu daripada tokok
+kalebas
+kali
+kaligrafi
+kalimat bebas
+kalimat majemuk setara
+kalingan
+kalistenik
+kalkulus
+kalor jenis
+kalsifikasi
+kalut
+kamar baca
+kamar makan
+kamas
+kambing
+kambing kibas
+kambus
+kamfer
+kamisol
+kampang
+kampiun
+kamsen
+kamus istilah
+kanaah
+kanalisasi argumentasi
+kancah kehinaan
+kandang
+kandas
+kandung jantung
+kangmas
+kanjal
+kanon
+kantan
+kantong buah zakar
+kantong tinta
+kantor perwakilan
+kanya
+kapai
+kapal bantalan udara
+kapal kelotok
+kapal patroli
+kapal perang
+kapal tanker
+kaparan
+kapi
+kapital besar
+kapling
+kapster
+kapur hidup
+karabin
+karang keputraan
+karangwulu
+karat putih
+karbit
+karbonan
+karcis terusan
+kardiolog
+karet
+karibu
+karir
+karma
+karper
+karti
+kartu anggota
+kartu kendali surat masuk
+kartu rencana studi
+karuan
+karya rekam
+karyawati
+kasabandiah
+kasar tangan
+kaserin
+kasih sayang
+kaskade
+kasta kesatria
+kasual
+kasur cuki
+kasus ilatif
+kasus penderita
+kaswah
+kata bilangan
+kata gramatikal
+kata majemuk
+kata pinjaman
+kata tanya
+katai
+katakana
+katalisit
+katang-katang
+kategori
+katekis
+kati
+katir
+katul
+kaukasoid
+kaum eksekutif
+kaus kaki
+kaut
+kawakan
+kawanan
+kawat nyamuk
+kawin amanua
+kawin mutah
+kawul
+kayangan
+kayu bintang
+kayu keras
+kayu renceh
+kazanah
+ke mana angin yang deras ke situ condongnya
+ke sungai
+keadilan
+keajukan
+kealpaan
+keanggotaan
+keasaman
+keayapan
+kebaikan
+kebanditan
+kebaruan
+kebebalan
+kebeliaan
+keberaksaraan
+keberjayaan
+kebetulan
+kebingungan
+kebobrokan
+kebuasan
+kebun
+keburukan
+kecacatan
+kecampuradukan
+kecapi
+kecemaran
+kecepek
+keceriaan
+kecil dikandung ibu
+kecimpung
+kecoak
+kecu
+kecupetan
+kedahuluan
+kedalaman
+kedap
+kedaulatan
+kedek
+kedengaran
+kedewas
+kedinasan
+kedongkok
+keduniawian
+keekonomian
+keempat-empatnya
+kefasihan
+kegalakan
+kegegeran
+kegemuruhan
+kegetiran
+kegoblokan
+kegundahan
+kehambaran
+keharusan
+keheroikan
+kehiponiman
+kehutanan
+keimanan
+keinsafan
+kejahilan
+kejamas
+kejapan
+kejayaan
+kejengkolan
+kejohanan
+kejumudan
+kekafiran
+kekalutan
+kekariban
+kekebalan
+kekeh
+kekemben
+kekerapan
+kekikiran
+kekol
+kekristenan
+kekuatan fisik
+kekuning-kuningan
+kelabat
+kelahi
+kelak
+kelam bagai malam dua puluh tujuh
+kelambanan
+kelana alam
+kelangsingan
+kelapa dara
+kelapukan
+kelarutan
+kelas kapal
+kelas terbang
+kelasi kepala
+kelayuan
+keledai
+kelelahan
+kelemantang
+kelembekan
+keleneng
+kelening
+kelenjar hipofinis
+kelenjar pituitari
+kelenturan
+kelepir
+kelestarian
+kelewang
+kelian subak
+kelidai
+kelikat
+kelim pipih
+kelindan
+kelintasan
+kelis
+keloceh
+kelompang
+kelompok sekepentingan
+kelongsong paking
+kelopak jantung
+keloyor
+keluangsa
+keluarga berencana
+keluarga tradisional
+keluhan
+kelulut
+kelunturan
+kelut
+kemahalan
+kemala
+kemandang
+kemanjuran
+kemaritiman
+kemasyangulan
+kembal
+kembang laras
+kemerakan
+kemboja
+kemeja silir
+kemenakan di dagu
+kemenyan
+kemi
+kemiringan
+kemokinesis
+kempas
+kempuh
+kemudahan
+kemujizatan
+kemundir
+kemurnian
+kena andika
+kena si bengang
+kenakalan
+kenantan
+kenceng
+kencur
+kendangan
+kendit
+kenegaraan
+kengerian
+kenistaan
+kentang merah
+kenudisan
+kenyat
+keong
+kepadatan salju
+kepailitan
+kepala busung
+kepala negeri
+kepala surat
+kepalsuan
+kepang
+kepastian hukum
+kepedaran
+kepekatan asam
+kependetaan
+kepenontonan
+kepercayaan
+keperluan primer
+kepiawaian
+kepincangan
+kepinis
+keplastisan
+keponakan
+keprek
+kepuasan
+kepulaga
+kepurbakalaan
+kepuyuk
+kerabat sebagian
+kerah matros
+kerajaan konstitusional
+kerakah
+keraman
+kerampatan
+kerang bulu
+kerangkai
+kerap
+keras kepala
+kerat rotan
+kerawang
+kerbau jalang
+kercap-kercup
+kere
+kerek
+kerempeng
+kereneng
+kerenyam
+kerepotan
+kereta api
+kereta lereng
+keretan
+keriat-keriut
+kerikal
+kerinduan
+keringat dingin
+keris
+kerisauan
+keriut
+kerja medan
+kerjang
+kerlingan
+kernyat-kernyut
+keroco
+keroncang
+kerongsang
+kerosak
+keroyok
+kersang
+kertap-kertap
+kertas jernih
+kertas minyak
+kertas tekap
+kerubung
+kerukut
+kerun
+kerupuk palembang
+keruwetan
+kesak
+kesamaptaan
+kesandung
+kesastrawanan
+keseberangan
+kesejahteraan
+keselesaian
+kesementaraan
+kesenduan
+kesenjangan
+kesinian
+keserongan
+kesetanan
+kesialan
+kesimpatikan
+kesisipan
+kesosialan
+kesuburan
+kesultanan
+kesusahan
+ketaatasasan
+ketai
+ketam
+ketambak
+ketap-ketap
+ketatalaksanaan
+keteduhan
+ketek
+ketelitian
+ketengan
+keterampilan tematis
+keterdamparan
+keterkejutan
+keterpencilan
+keterusan
+keti
+ketidur-tiduran
+ketimbul
+ketinggian terbang
+ketogenesis
+ketombe kering
+ketrok
+ketuan-tuanan
+ketulahan
+ketumpahan
+ketupat
+keumatan
+keusrekan
+kewangsaan
+keweni
+khabar
+khalifah dabus
+khamar
+khatam Alquran
+khawatir
+khidmat
+khojah
+khusuk
+kidungan
+kiap
+kibaran
+kicang-kicu
+kidam
+kijil
+kikir parut
+kilang angin
+kilat dari awan ke bumi
+kilik
+kilokalori
+kima kelereng
+kimia inti
+kimo
+kinang
+kincir air
+kinesika
+kini
+kinyang
+kipas
+kira-kira
+kiranya
+kirim
+kiryat
+kisik
+kita semua mati
+kitar
+kiwi
+klarinet
+klausa pasif
+kleidotomi
+klepsidra
+klik-klikan
+klimosekuen
+klistron
+klop
+kloroform
+kluntang-klantung
+koak-koak
+kobalt
+kobra
+kocor
+kodi
+kodrati
+koefisien ketermampatan
+kognitif
+kohor
+kojah
+kokas
+kokon
+kol
+kolam kaca
+kolega
+kolektivisasi
+kolesom
+kolodion
+kolom rangkaian
+koloni jaringan
+kolosal
+kolusi
+komat-kamit
+komedian
+komidi gambar
+komisaris polisi
+komoditi
+kompatriot
+kompetisi sosial
+kompleks perumahan
+komplotan
+komposit
+komputer
+komunikasi dua arah
+komunitas desa
+konde
+kondisi sosial
+konduktivitas
+konfigurasi
+konfrontir
+kongkurs
+konjugasi
+konklusif
+konoid
+konsekuensi
+konsepsional
+konservatif
+konsiliasi
+konsonan silabis
+konstatasi
+konstitusi
+konstruksi koordinatif
+konsultasi
+kontak bahasa
+konteks budaya
+kontes ternak
+kontol
+kontraktor
+kontrol biologi
+konvensional
+konveyor sabuk
+kooperator
+kopal
+koperasi simpan pinjam
+kopi ekselsa
+kopi tubruk
+kopra
+kopulatif
+koran dinding
+koreferensialitas
+korelatif
+kredit penyimpanan
+korologi
+korporatisme
+korsleting
+korupsi
+kosek
+kosmogoni
+kosong
+kota mara
+kota udang
+kotak surat
+kotong
+kowek
+krakal
+krasis
+kredit jangka menengah
+krem
+kretin
+kriminal
+kriofit
+krisantemum
+krisolit
+Kristus
+kritikus
+krol
+kromo
+kronem
+kronosekuen
+ksi
+kuadriliun
+kuali
+kuantitatif
+kuartal
+kuasar
+kuatir
+kubik
+kubul
+kucel
+kucing siam
+kuda air
+kuda liak
+kuda sewa
+kudeta
+kudup
+kue sengkulun
+kuilu
+kuis
+kuk
+kukuh
+kulah
+kuli
+kuliah Ramadan
+kulit
+kulit daging
+kulit merah
+kulot
+kultus individu
+kumal
+kumba emas
+kumbang sagu
+kumis
+kumulasi objektif
+kunani
+kunci lutut
+kuncit
+kundur tidak melata pergi
+kuning langsat
+kuno
+kunyah
+kuotum
+kupel
+kupnat
+kupur
+kurang ajar
+kurang jadi
+kurang-kurang bubur
+kurban misa
+kurikulum cakupan
+kuririk
+kursi lontar
+kurun ke-20
+kutak
+kurva laktasi
+kurvatur
+kuskus
+kusut hati
+kutang
+kutilang
+kutu ternak
+kutubaru
+kuwur
+kwosien
+laba-laba
+labil
+laboratorium bahasa
+labu dewar
+labu tanah
+laci arsip
+ladam
+lading
+lagang
+lagu
+laguna
+lahar
+lahir mati
+laik udara
+lain gatal lain digaruk
+laju endapan
+laka
+laki-laki
+lakri
+laksana bunga dedap
+laktogen
+lakuna
+lalang es
+lalim
+lama
+lambang negara
+lambung
+laminah
+lampias
+lampoyang
+lampu gas
+lampu listrik
+lampu perangkap
+lampu sudut
+lamtoronisasi
+lancang
+lancia
+landahur
+landasan
+landung padi
+langendrian
+langgeng
+langit tertutup
+langkah kiri
+langkat
+langsang
+languh
+lanjau
+lansai
+lantah
+lantar
+lantung-lantang
+laocu
+lapang hati
+lapangan pacu
+lapat-lapat
+lapis penutup
+lapisan kabur
+laporan cuaca
+lapun
+laras
+lari dengan rintangan
+laring
+larut
+larutan Krebs-Ringer
+las isi
+laskar
+latang
+latihan
+latihan meja pasir
+latma
+laung
+laut madu berpantaikan sakar (gula)
+lawa
+lawang seketeng
+lawina serbuk
+layanan jasa boga
+layar baksi
+layar jib
+layar sabang
+layon
+laza
+leban
+lebaran Besar
+lebih-lebih
+lecap
+lecuh
+leding
+legal
+legato
+legio
+lego
+leha-leha
+lei
+lekang
+lekir
+leksikon
+lekuk
+lelabi
+lelangon
+leleh
+leluhur
+lema
+lemah pikiran
+lemak manis jangan ditelan
+lemari buku
+lembaga bisul
+lembaga Pemilihan Umum
+lembang
+lembaran buruh
+lembeng
+lembu laut
+lemes
+lempar batu sembunyi tangan
+lempenai
+lempung asam
+lemukat
+lencang kanan
+lendir
+lengai
+lengang
+lenggak
+lenggut
+lengkesa
+lengkung buka
+lengos
+lenjan
+lensa kontak
+lentang-lentok
+lentuk
+lenyap daratan
+lepak
+lepas kendali
+leperi
+leproma
+leraian
+lerengan
+lesa tulang
+lesehan
+lesplang
+lesut
+leter
+letoi
+letupan nasal
+leukopenia
+levitin
+lewat posisi
+liang jimak
+liaran
+liberalisme
+libur pajak
+licin licau
+lidah bajak
+lidah keras
+lidah rakyat
+lifter
+lignin
+likat
+lila
+lilin parafin
+liman
+limau kursi
+limbah padat
+limbung kapal
+limfoblartoma
+limnologi
+limpas
+limun
+lincir lidah
+lindu
+linggam
+lingkar pinggang
+lingkungan sosial
+linguistik historis
+lintabung
+lintang pukang
+lintas pintas
+lintup
+lipan bara
+lipatan
+lipur
+lirik dramatik
+lisis
+litah
+litotes
+liwa
+lobang
+log
+logika
+logotip
+lokalis
+lokatraya
+lokika
+lokus
+lombong
+lompat tiga
+loncat tinggi
+long
+longong
+lontang-lantung
+lopek
+lori
+loso
+lowong
+loyong
+luar bicara
+luasan
+lubang kulit
+lubuk
+ludah
+luhung
+lukah
+luluh lantak
+lulusan
+lumbal
+lumping
+lumuran
+lunasan
+lung
+lungsur
+manajemen kesehatan
+lupuh
+luruh bulu
+lusa
+luweng
+mabrur
+mabuk cendawan
+mabuk nasib
+macam-macam
+mace
+madarat
+madona
+maesenas
+magang
+magis
+magnetit
+mah
+mahal
+mahar misil
+mahatahu
+mahfuz
+mahkamah Militer
+mahkota negeri
+mahyong
+main budi
+main peran
+main tedeng aling-aling
+mairat
+majalah anak-anak
+majalah porno
+majelis Perubahan Undang-Undang Dasar
+majir
+mak
+mak su
+makan
+makan beku
+makan daging
+makan hati berulam jantung
+makan masak mentah
+makan serba guna
+makan tangan
+makan-makanan
+makbud
+makena
+maki-makian
+makmal
+makna intensi
+makna sempit
+makro
+makromolekul
+maksim
+makyong
+malahan
+malaikat Pelindung
+malakulmaut
+malam muda-mudi
+malang tak boleh ditolak
+malas-malasan
+mali-mali
+malin
+malt
+malu tercoreng pada kening
+mamak rumah
+mambang petang
+mampai
+man
+manajemen
+manajemen produksi
+manajer produk
+manasongo
+mandah
+mandau
+mandi bunting
+mandi junub
+mandi sedirus
+mandiri
+mandung
+mangas
+manggis
+mangkas
+mangkuk sabun
+mania
+manikur
+manis lebah
+manjakani
+manset
+manti
+mantri cacar
+manuk
+manuskrip
+manuwa
+mara bahaya
+maranta
+Maret
+marginalisasi
+marihuana
+maritim
+markah plimsol
+markusip
+marsekal besar TNI
+martandang
+mas tempawan
+masa kanak-kanak
+masa menganggur
+masa puber
+masak
+masak niat
+masap
+mashaf
+masir
+masker
+masohi
+massal
+masuk
+masuk meliang penjahit keluar meliang tabuh
+masya Allah
+masyhadat
+mata anggaran
+mata buatan
+mata gelap
+mata kail
+mata lipas
+mata penghidupan
+mata surat
+matahari
+matan
+materi
+mati beragan
+mati enau tinggal di rimba
+mati konyol
+mati percuma
+mati sirik
+matlak
+matris
+mauizah
+maulid
+mawar laut
+mayang mekar
+mayokratio
+medikamentosa
+meander
+medan pertempuran
+medial
+medio
+mega
+megalopolis
+megat
+meja bola
+mejan
+mekanisme kerja
+melabelkan
+melafalkan
+melaini
+melakoni
+melancungkan
+melambang
+melambungkan bola
+melampiaskan
+Melanesia
+melangkahi ular
+melanisme
+melantamkan
+melantunkan
+melapik perut
+melarah
+melarikan
+melasikan
+melati susun
+melawak
+melayang-layang
+Melayu
+melebih-lebihkan
+melecek
+melegendaris
+melekaskan
+melelaikan
+melemang
+melembungkan dada
+melendoti
+melengkapi
+melentikkan
+melepas nazar
+melepaskan diri
+melepaskan uang
+melereng
+meletak badan
+meletup
+meliberalisasikan
+melik
+melimpah
+melinggis
+melintangi
+melipur
+meliuri
+melokalkan
+melompong
+melonggokkan
+melowongkan
+meluat
+meluhurkan
+meluluhlantakkan
+melumer
+meluncungkan
+melur
+meluyut
+memacul
+memadat kasur
+memadukan
+memahat di dalam baris
+memajuh
+memakbulkan
+memaksimalkan
+memalang
+memalsu
+memampangkan
+memanaskan
+memandai
+memandulkan
+memasok
+memanipulasikan
+memanjat terkena seruda
+memantangkan
+memantulkan
+memar
+memaras
+memasakkan
+memaserasi
+memasyangulkan
+mematokkan
+mematut-matut
+membabat
+membaca naskah
+membadut
+membahu
+membakal
+membalah
+membalurkan
+membanding
+membangkit
+membanjarkan
+membanting kaki
+membaptiskan
+membarui
+membatak
+membatukkan
+membawa berunding
+membawa lagu
+membawa tempurung
+membayangi
+membebaskan
+membedil
+membekali budak lari
+membelakangi
+membelat
+membeli-beli
+membenahi
+membencah
+membengisi
+membentarkan
+memberakan
+memberentangkan
+memberi perlawanan
+memberolahragakan
+membesarkan
+membeton
+membiayai
+membilangkan
+membingas
+membisu
+membohong
+membongkahi
+membosankan
+membual
+membuat titian berakuk
+membubur
+memiat
+membuku
+membumbun
+membungai
+membuntungkan
+memburaskan
+membusung
+memecahbelahkan
+memedang
+memegang batang leher
+memegang tampuk
+memekatkan
+memelihara mulut
+memelupuh
+memendam diri
+memengkis
+mementung
+memerahi
+memeratakan
+memicakan
+memerlahan
+memersonifikasi
+memesani
+memesukkan
+memetiki
+memfatwakan
+memfungsikan
+memidana
+memijar-mijar
+memilih (memandang) bulu
+meminati
+meminikan
+memintal
+memisah-misahkan
+memobilisasi
+memokoki
+memondok
+memopulerkan
+memosisikan
+memparafrasakan
+mempening
+memperaman
+memperawak
+memperbarui
+memperboneka
+mempercapak
+memperdahsyat
+memperdewa
+memperenak
+mempergarahkan
+mempergunakan
+memperhebat
+memperimbang
+memperjelas
+memperkarakan
+memperkembangkan
+memperkuda
+memperlalaikan
+memperlebar sayap
+memperlepas
+mempermainkan
+mempermudah
+memperparah
+mempersalahkan
+mempersangatkan
+memperselangi
+mempersenang
+mempersiangi
+mempersudah
+mempertakut
+mempertaruhkan nyawa
+mempertemukan
+mempertimbangkan
+mempertuhankan
+memperulur
+memperwujudkan
+mempribadikan
+memprotes
+memubazirkan
+memuduri
+memuja-muja
+memukuli
+memulun-mulun
+memundurkan
+memunjungi
+memupus
+memusar
+memusut
+memutasikan
+memuyengkan
+menabelkan
+menabur (menanam) biji atas batu
+menafahus
+menahan gelak
+menahapkan
+menajin
+menakdirkan
+menaksir
+menakzirkan
+menamakan
+menambak gunung menggarami laut
+menambun
+menampan
+menampung hari
+menanak kentang
+menanami
+menandatangani
+menang tipis
+menangguk di air keruh
+menangis
+menangkapkan
+menanjakkan ilmu
+menantikan kuar bertelur
+menapakkan
+menara gading
+menarik akar
+menarik keris
+menarik pangkur ke dada
+menaruh di bawah paha
+menarungkan nyawa
+menasionalisasi
+menataki
+menawar
+mencabau
+mencabutkan
+mencacati
+mencaing-caing
+mencalarkan
+mencampakkan batu ke luar
+mencandui
+mencantumkan
+mencari bala
+mencari kesalahan
+mencari pasal
+mencari uang
+mencatatkan
+menceburkan
+mencekal
+mencelakai
+mencelur
+mencemoohkan
+menceng
+mencepuk
+mencerca
+mencerminkan
+menceti
+menciduk
+mencit seekor
+menciumkan
+mencobai
+mencogok
+mencong
+mencopot
+mencotok
+mencucuh-cucuhkan
+mencukupkan
+mencupang
+mencurigakan
+mendaftarkan
+mendahsyatkan hati
+mendalam
+mendalu
+mendangkalkan
+mendapat pisang berkubak
+mendarat
+mendatang
+mendayung
+mendecit
+mendekap
+mendelevium
+mendenda
+mendenging
+mendengus
+mendera
+menderetkan
+mendesak
+mendesuskan
+mendewasakan
+mendikai
+mendira
+mendoakan
+mendong
+mendua
+mendukai
+mendur
+menebahkan
+menebarkan
+menebuk
+menegak
+meneguhkan
+menekap
+menekurkan (kepala)
+meneledorkan
+menelungkupkan
+menembakkan pandangan
+menempel
+menempuhkan
+menenangkan hati
+menengahi
+menengkarkan
+menentu
+menepak-nepakkan
+menepung
+meneratak
+menerindili
+meneror
+menetal
+menewaskan
+mengabet
+mengabung
+mengacar
+mengacukan
+mengadimkan
+mengaduk-aduk
+mengagani
+mengagungkan
+mengairi sawah orang
+mengajarkan
+mengakap
+mengaksentuasi
+mengakukan
+mengalang
+mengali-ali
+mengalihtugaskan
+mengalokasikan
+mengamanati
+mengambi
+mengambil haluan
+mengambil marah
+mengambil risiko
+mengambili
+mengamkan
+mengampuhkan
+menganak semang
+mengancang-ancang
+mengandaskan
+menganekaragamkan
+menganggap
+mengangin
+mengangkat diri
+mengangkati
+menganju
+mengantar
+mengantre
+mengapa
+mengapit minyak
+mengarabkan
+mengarantinakan
+mengaribi
+mengartukan
+mengasadkan
+mengasam
+mengasi
+mengasongkan
+mengatak
+mengataskan
+mengaudit
+mengaveling
+mengawatkan
+mengayun
+mengebat
+mengecambahkan
+mengecengkan
+mengecualikan
+mengedik
+mengefisienkan
+mengejang
+mengejuti
+mengekor
+mengelabui
+mengelar
+mengelibat
+mengelite
+mengeluari
+mengemaskan
+mengembangkan hati
+mengembur
+mengempaskan
+mengemudikan
+mengenap-enapkan
+mengendalikan
+mengenkripsi
+mengenyangkan
+mengepang
+mengepukkan
+mengeramatkan
+mengerawan
+mengerikan
+mengeriting
+mengerna
+mengerpus
+mengeruk
+mengesakan
+mengesokkan
+mengetam mulut
+mengetengahi
+mengetok
+mengevaluasi
+menggadai
+menggagahi
+menggalak
+menggamak-gamak
+menggandar
+mengganggu hati
+mengganjur
+menggantung talak
+menggaramkan
+menggaruk
+menggaulkan
+menggegar
+menggelanggang
+menggelegakkan
+menggelepar-geleparkan
+menggelimuni
+menggelorakan
+menggemakan
+menggemburkan
+menggenapkan
+menggenggam tangan
+menggeprak
+menggerbangkan
+menggerinjam
+menggertak
+menggesa-gesakan
+menggidikkan
+menggirangkan
+menggolek batang terguling
+menggores hati
+menggoyangkan lidah
+menggulai
+menggunakan
+mengguntung
+menggurui
+menghadapi
+menghaki
+menghambai
+menghamilkan
+menghangat
+menghapus
+mengharmonikan
+menghasilkan
+menghela napas
+mengheningkan
+menghidung
+menghilirkan
+menghipnosis
+menghitamputihkan
+menghubungkan
+menghunjamkan lutut nan dua
+mengiaskan
+mengicu
+mengidolakan
+mengikat janji
+mengikir
+mengilai-ilai
+mengiles
+mengimak-imak
+mengimbuh
+mengimplisitkan
+mengindekoskan
+menginfiltrasikan
+mengingkari
+menginjeksi
+mengintegrasikan
+mengintimidasi
+mengipasi
+mengiras-iras
+mengiris
+mengisarkan
+mengislamkan
+mengisut
+mengkali
+mengkhalayak
+mengkhusus
+mengklasifikasikan
+mengkritis
+mengobral
+mengodol-odol
+mengolah pikir
+mengoleng
+mengomersialkan
+mengomuniskan
+mengongkosi
+mengontraskan
+mengoperasikan
+mengorbankan
+mengorkestrasikan
+mengotak
+mengoyak-ngoyakkan
+menguangi
+menguat
+menguber-uber
+mengucapkan
+mengudarakan
+menguik-uik
+mengukiri
+mengular
+mengulur lidah
+mengumbuk
+mengumpulkan
+mengundangkan
+mengungkapkan
+mengunjurkan
+mengupa-upa
+mengurai
+mengurasi
+mengurus diri
+mengusaikan
+mengusulkan
+mengutik-ngutik
+meniada
+menidurkan
+menikamkan
+menimbal
+menimbun
+meninabobokan
+meninggalkan
+meningkat-ningkat
+menira
+menistakan
+meniup-niup
+menjadikan
+menjagakan
+menjaili
+menjalankan
+menjampikan
+menjangka
+menjantur
+menjaring angin
+menjauh
+menjebrolkan
+menjelangi
+menjeluskan
+menjengeki
+menjengkot
+menjerit
+menjilat pantat
+menjolak
+menjual diri
+menjulat
+menjungur
+menjustifikasikan
+menokoh
+menolok
+menongkatkan
+menoragia
+menskedulkan
+menstandarkan
+mensyaki
+mentak
+mentega
+menteri Negara
+mentis
+mentransmigrasikan
+menu
+menuani
+menuding-nuding
+menuil
+menukari
+menukilkan
+menuliskan
+menumisi
+menumpas
+menumpurkan
+menundukkan
+menunggingkan
+menunjuk
+menuntaskan
+menurbakan
+menurutkan hati
+menutup diri
+menyabarkan
+menyaburkan
+menyahajakan
+menyakar
+menyalai
+menyalini
+menyamakkan
+menyambar-nyambar
+menyampai
+menyampul
+menyandari
+menyanggerah
+menyangkut
+menyantap
+menyaput
+menyarat-nyarat
+menyasak
+menyasar teliti
+menyauk
+menyayembarakan
+menyebelah
+menyedang-nyedangkan
+menyeduai
+menyejajarkan
+menyekat
+menyelakkan
+menyelang-nyelingkan
+menyelawat
+menyelewengkan
+menyelingkupi
+menyeludupkan
+menyemai
+menyembahkan
+menyembur
+menyempenakan
+menyemukan
+menyendat
+menyengal
+menyenggat
+menyeni
+menyentralisasi
+menyepakati
+menyerah
+menyerang balik
+menyerasikan
+menyerbukkan
+menyerikati
+menyerkapi
+menyeruit
+menyesal
+menyulangkan
+menyetrika
+menyiagakan
+menyiarkan kilat
+menyiarkan terbatas
+menyibur
+menyihiri
+menyilang
+menyimbang
+menyimpankan
+menyindirkan
+menyingkiri
+menyipatkan
+menyirepi
+menyisikan
+menyoalkan
+menyokomkan
+menyopankan
+menyoyak
+menyubal
+menyudi
+menyukakan
+menyulingkan
+menyumbui
+menyunatkan
+menyungguh-nyungguhi
+menyungkur
+menyuramkan
+menyurukkan
+menyusulkan
+menyuwir
+merabai
+meracang
+meraga
+merah dadu
+merah muka
+merahimi
+merajinkan diri
+merakyat
+merambakkan
+merampak
+merana
+merang
+merangkakan
+meranjangkan
+meranyah
+merarasi
+merasionalisasi
+meratib
+merawan
+merayau-rayau
+merbulan
+mercupada
+merdu bunyi
+merebut
+meredakan
+meregang badan
+merek air
+merekes
+merelung
+meremas mulut
+meremukkan
+merendam
+merenggangkan
+merentangi
+merepang
+meresapi
+meretakkan
+meriam buluh
+merica
+merikuhkan
+merindu
+merintang
+merintangkan
+merkah
+merobek-robek
+meromusakan
+merosokkan
+merpoyan
+meruah
+meruing
+merumpun
+merungkup
+merunut
+merusuhkan
+mesan
+mesin diesel
+mesin ketik
+mesin perum
+meskipun
+meson
+mestika gamat
+metabolisme
+metalografi
+metari
+meteoroid
+meteorologi terapan
+meterai efek
+metode deduktif
+metode kelompok
+metode tanya jawab
+metromini
+mewadahi
+mewarganegarakan
+mewataki
+mewiru
+mi ayam
+miang tergeser kena miang
+migrasi
+mihun
+mikosis
+mikroekonomi
+mikrografika
+mikrometer
+mikrovilus
+miliarder
+milimol
+milu
+mimpi
+mineral
+mineralogis
+minikomputer
+minta berhenti
+minta sedekah
+minterat
+minyak (air) mukanya
+minyak bayi
+minyak cat
+minyak goreng
+minyak kastor
+minyak liar
+minyak mineral
+minyak raksi
+minyak takmengering
+minyak zaitun
+mirakel
+mirmekologi
+misantrop
+miskin papa
+mistik
+mitologi
+mitra wicara
+mobil boks
+mobilitas
+modal bergerak
+modal tetap
+moderato
+modiste
+modus operandi
+mohon diri
+molar
+moluska
+momongan
+mongkok
+monofag
+monoklinal
+moron
+monosakarida
+monster
+monyet
+moralisasi
+morf zero
+morfemik
+mormon
+motif
+motorik
+muak
+muara
+muat kering
+mubtadi
+muda pikiran
+mudasir
+mufasir
+muhal
+muhsin
+mujtahid
+muka berbakat
+muka sabak
+mukah
+mukhlis
+muktabar
+mulai
+muliawan
+multifungsi
+multimedia
+multiprosesor
+mulut asin
+mulut di mulut orang
+mulut kulit
+mulut usil
+mumpuni
+muncikari
+mundur mental
+mungmung
+muntah berak
+muparik
+murai
+muri
+murus
+musala
+museum
+musibah
+musikal
+musim haji
+musim tumbuh
+musnah tanduk listrik
+mustakim
+musyarakah
+mutah
+mutasi adaptif
+mutu
+muzakarah
+nabi
+nafar
+nafsu amarah
+naftol
+nagari
+nahu saraf
+naik besar
+naik nobat
+naik turun
+nakal
+naluri
+nama lengkap
+nambi
+nanas
+nangkoda
+napal
+narapidana
+narkosis
+nasabah
+nasi gurih
+nasi pulut
+nasi tumpeng
+nasihat agama
+nasofaring
+natrium
+nau
+nawala
+naziisme
+neces
+negara bagian
+negara hukum
+negara konfederasi
+negara protektorat
+negasi
+negeri matahari terbit
+nek
+nekrofilia
+nelangsa
+nenek kebayan
+neodarwinisme
+neolitik
+neoprena
+neraca gen
+neritoplankton
+netralisir
+neurologis
+nganga
+ngiang
+niat hati
+nihilis
+nikotin
+nilai Nominal
+nilon
+ninitowong
+nirguna
+nisbah
+nitrat
+noa
+nol absolut
+Nominalisasi
+nomor induk
+nomor surat
+nondepartemen
+nonindustri
+nonoh
+nonsens
+norma sosial
+nota debit
+notasi analfabetis
+novelet
+nudisme
+nuklida
+nunsius
+nusantara
+nyah
+nyampang
+nyanyang
+nyaris
+nyenyat
+nyi
+nyonya besar
+O
+obat bius
+obat kampung
+obat pencahar
+obeng
+objek hukum pajak
+objekan
+obral
+obsolet
+ode
+odoran
+oga
+oh
+oklokrasi
+oksidator
+oktana
+olah data 1
+olak angin
+oleh-oleh
+oli
+Olimpiade
+ombak menebah pantai
+omnivor
+omset
+oncer
+ondok
+ongkos
+onta
+oposisi leksikal
+open
+operatif
+oplet
+oposisi
+oposisi terpencil
+optika
+orak
+orang tua diajar makan pisang
+orang berdendang di pentasnya
+orang gajian
+orang keblangsak
+orang ombak
+orang terpegang pada hulu nya
+oratoris
+ordinal
+oretan
+organisasi antarpemerintah
+organisme penyusup
+origami
+orkes tiup
+orok
+ortopedagogik
+osilograf
+osteologi
+otak miring
+otobiografi
+otomat
+otoritarian
+oval
+overpopulasi
+ovum
+pa
+pacaran
+pacok
+padah
+padang gembala temporer
+padang tekukur
+padat pengunjung
+padi lambat
+padi sipulut
+paduan suara
+paes
+pagar duri
+pagi buta
+pagut
+pahang
+pahit darah
+pailit
+pajak gelap
+pajak siluman
+pakai
+pakaian kuda
+pakan hambur
+pakcik
+paking
+paksina
+palean
+palak
+palari
+palatografi
+palem kipas
+palen
+paleosen
+palis
+palmitat
+palung laut
+pamong
+pampiniform
+panar
+panas sengangar
+pancabuta
+pancalomba modern
+pancar terus
+pancasuda
+panco
+pandak
+pandangan
+pandu
+pangah
+panggih
+pangkai
+pangkal lidah
+pangkas
+pangkung
+pangpung
+panik
+panitia bersama
+panjang lampai
+panjang umur
+panjul
+pantai bakau
+pantang kutu dicukur
+panteis
+panti pijat
+pantulan
+papan atas
+papan nama
+papasan
+paralipsis
+paradigmatis
+paragog
+paralelogram
+parameter bisnis
+paranpara
+parasintesis
+paratesis
+parfum
+paris goyang
+parji
+parlementarisme
+paronomasia
+partai kiri
+Partikelir
+paru
+pasah
+pasang gundah
+pasang surut ionosfer
+pasar apung
+pasar lesu
+pasasir
+pascamodern
+paseban agung
+pasifikasi
+pasir embus
+Paskah
+pasteur
+pasu-pasu
+pasukan pembidas
+patah batu hatinya
+patah selera banyak makan
+patar
+patetis
+patiseri
+patola
+patrimonium
+patung
+paut
+pawana
+pawang lebah
+payau
+payung lipat
+peanggar
+pecah menanti sebab
+pecal
+pecuk
+pedagang eceran besar
+pedaka
+pedansa
+pedepokan
+pedongkang
+pegah
+pegat
+pegon
+pejabat penerangan
+pejatian awak
+pekak
+pekan seni
+pekerja harian
+pekik-pekuk
+pekuburan
+pelabuhan bebas
+pelacuran
+pelagu
+pelaku ekonomi
+pelamin
+pelampung suling
+pelanduk melupakan jerat
+pelangpang
+pelapah
+pelarian
+pelasik
+pelataran
+pelawan
+pelayaran Nusantara
+pelebat
+peledakan penduduk
+pelembaya
+pelengkap
+pelepas
+peles
+pelestari
+peletan
+peliberalan
+pelimpahan
+pelintir
+pelir itik
+pelobi
+pelompat
+pelosot
+peluh
+pelumas
+pelunauan
+peluru demdem
+pemabuk
+pemadatan
+pemajak
+pemaksaan
+pemalsuan sertifikat
+pemanas
+pemandangan umum
+pemanggangan
+pemangsa
+pemantikan
+pemarkahan
+pemasok
+pematang jalan
+pemayar
+pembahan
+pembaktian
+pembandut
+pembantingan
+pembarut
+pembatikan
+pembebanan
+pembegalan
+pembelajaran
+pembenci
+kama loka
+pemberat
+pemberkas
+pembeslahan
+pembidik
+pembirokrasian
+pembohong
+pemboros
+pembubaran
+pembujukan
+pembunuh
+pemecah belah
+pemegangan
+pemeluk dunia
+pementasan
+pemeran tambahan
+pemercontohan alur
+pemerintah bayangan
+pemerintahan daerah
+pemerolehan
+pemfokusan
+pemijak tanah
+pemilihan bertingkat
+peminangan
+peminjam
+pemisahan
+pemojokan
+pempek kapal selam
+pemrosesan
+pemudaran
+pemujur
+pemulia
+pemungut
+pemurtadan
+pemutih
+penabur benih
+penahapan
+penakar embun
+penala
+penambakan
+penampang lintang
+penanaman
+penandu
+penanggung
+penangkaran
+penarahan
+penashih
+penata muda
+penatu
+pencabangan
+pencacaran
+pencairan
+pencanaian
+pencarak
+pencatut
+pencela
+pencendekiaan
+pencernaan
+penciptaan
+pencolekan
+pencuci darah
+pencungkil ban
+pendaftaran
+pendakian
+pendanaan
+pendapatan neto
+pendaran kimia
+pendayagunaan
+pendek akal
+pendekar elak jauh
+pendekatan sejarah
+pendepositoan
+pendeta
+pendidikan campuran
+pendidikan liberal
+pendidikan profesional
+pendinding
+pendiversifikasian
+pendongkrak
+penduk
+penebak
+peneduh
+penekelan
+peneliti
+penembahan
+penempur
+penentu
+penerang
+penerima waralaba
+penerobosan
+penetralan
+pengabdian
+pengacuan
+pengadilan
+pengadudombaan
+pengajaran mikro
+pengakuan de facto
+pengali-ali
+pengamal
+pengamatan udara atas
+pengampu
+penganalisis
+pengandung
+pengangkaan
+penganiayaan berat
+pengantin
+pengapuh
+pengarang jantung
+pengartian
+pengasinan
+pengasuransian
+pengaudit
+pengawas
+pengawetan hijauan
+penge penge penge penge -- an an an an
+pengecambah
+pengecualian
+pengejut
+pengelana
+pengeluaran
+pengembangbiakan
+pengempisan
+pengendali
+pengental
+pengepungan
+pengeratan
+pengeritingan
+pengeset
+pengetip
+penggaduh
+penggalan
+penggandal
+penggaraman
+penggawa
+penggelontoran
+penggempur
+penggera burung
+penggertak
+penggilas
+penggongsengan
+penggudangan
+penggundulan hutan
+penghalau
+penghanyutan
+penghasil tersier
+penghempasan
+penghijau
+penghitaman
+penghulu
+pengiba
+pengijon
+pengilang
+pengimporan
+penginjil
+pengipasan
+pengisapan
+pengisolasian
+pengkhianat
+pengklonaan
+pengobat
+pengojek
+pengonsepan
+pengoptimalan
+pengorganisasi
+pengrajin
+pengubahan
+pengudaran
+pengujut
+pengulangan
+pengumbuk
+pengundang
+pengungkapan surat-menyurat
+pengupas
+pengurus
+pengurutan vibrasi
+pengusung
+peniadaan
+penilaian individual
+penimbun
+peninggian
+penisilin
+penjabatan
+penjahat
+penjalin
+penjangat
+penjawat kuasa
+penjembatanan
+penjepretan cermin
+penjilatan
+penjual bangsa
+penjurus
+penolok
+penoreh
+penstandaran
+pental
+penting
+pentung-pentungan
+penuh bekat
+penuh tumpat
+penulis tajuk
+penumpas
+penunggakan
+penuntut
+penutur bahasa
+penyabotan
+penyahutan
+penyalahartian
+penyalut
+penyambungan
+penyandang
+penyanjung
+penyatu
+penyebatan
+penyedotan
+penyejukan
+penyelaman
+penyeliaan
+penyelundup
+penyembuh
+penyemu
+penyensor
+penyerahan
+penyerempet
+penyerpihan
+penyesaran
+penyetor
+penyiar
+penyiksaan
+penyingkat
+penyirepan
+penyodok
+penyortir
+penyuci
+penyulingan
+penyunatan
+penyuplai
+penyusutan
+pepas
+peperangan
+peptidase
+pera
+peracunan
+peragawati
+perahu balang
+perahu papan bermuat intan
+perajuk
+perakyatan
+perambatan
+peran ganda
+perancit
+perang Candu
+perang kolonial
+perang terbatas
+perangkai
+perangkatan
+perap
+perbandingan
+perata
+perawan tua
+perayonan
+perdarahan dalam (luar)
+perbekalan
+perbintangan
+perburuk
+percatutan
+percintaan
+percumbuan
+perdata formal
+perdukunan
+peredaran darah
+perekat
+perembukan
+perempuan lecah
+perenggan
+perenyuk
+peretel
+pergaduhan
+pergantungan
+pergesekan
+pergok
+pergundalan
+perhelatan
+perhumaan
+periang
+perifiton
+perikarditis
+perilaku kolektif
+perinci
+peringgan
+perintis
+perisa
+peristirahatan terakhir
+perit
+perjamuan
+perjuangan kelas
+perkale
+perkaretan
+perkawinan levirat
+perkedel jagung
+perkenan
+perkolasi
+perkudaan
+perlak
+perlelangan
+perlintasan
+perlucutan
+permak
+permasjidan
+permintaan
+permusikan
+pernikahan
+peroi
+peroman
+perongkosan
+perototan
+perpetaan
+perpustakaan acuan
+perputaran modal
+persaingan
+persangkutan
+persekatan
+persemayaman
+persentase
+perseptivitas
+persetubuhan
+persilihan
+persona
+perspektif gelombang
+persundalan
+pertalian darah
+pertandingan
+pertanyaan
+pertegasan
+pertengkaran
+pertikaian
+pertua
+pertumpahan darah
+pertuturan ekspresif
+perubahan
+perum
+perundingan
+perusahaan
+perusahaan pelat merah
+perut besar
+perut muda
+perwajahan sampul
+perwira menengah
+pesawat tempur
+pesakin
+pesangon
+pesawat asap
+pesawat pengebom
+pesenam
+pesimistis
+pesona
+pestaka
+pet
+peta dasar laut
+petah lidah
+petakan
+petang esok
+petarang
+petel
+peti besi
+petiduran
+petir tunggal
+petor
+petuah
+petunjuk arah angin
+pewangi
+pewatas
+phi
+pialu
+piaraan
+picik
+pidana badan
+pidi
+pihak
+pijat
+pike
+pikiran tumpul
+pikulan
+pileren
+pilis
+pimpin
+pinang raja
+pinda
+pines
+pinggang gunung
+pingsan
+pinjaman lunak
+pintasan
+pintu gapura
+pintu mati
+pintu sorong
+pipa balas
+pipa pabrik
+pipis
+piramida terbalik
+pirian
+piring video
+piromania
+pisah tidur
+pisang uli
+pisau sadap
+pistol angin
+pita kosong
+rafi
+pitis garis
+pivot
+plaksegel
+planimetri
+plasma
+plastron
+plaza
+pleopod
+ploi
+plumbum
+pluvial
+pocok
+pohon bronkial
+pohon telinga
+poker
+pokok kayu
+pokrol-pokrolan
+pola kalimat
+polah tingkah
+poleng
+polifase
+poliket
+polipropilena
+polisi militer
+polispermi
+politik buka keran
+politis
+polok
+poma
+pompong
+pondok wisata
+ponor
+popularisasi
+porfiria
+poros halang
+portir
+pose
+posisi tipuan
+poster
+potensial
+potong kuku
+praanggapan
+pragmatik
+prajurit dua
+prakiraan cuaca umum
+pretel
+pramugari
+pramuwisma
+prapendapat
+prasangka ras
+prasetia
+prayuwana
+predisposisi
+prematur
+preposisi
+presentil
+preskriptif
+prewangan
+primadona berita
+prinsip
+privat
+probabilitas kelahiran menurut umur
+produksi berat hidup
+produktivitas primer
+profesionalisme
+program
+proklamator
+proliferasi
+promosi dagang
+propagandis
+proposisi
+prosenium
+prospeksi
+protein
+protese
+protolitik
+provisi makelar
+proyektor
+psikiater
+pudur
+psikopatologi
+psikrometri
+pual garis
+puasa sunah
+publisistik
+pucat seperti mayat
+pucuk tanah
+pugasan
+puitik
+pujuk empenak
+pukat jepang
+pukul
+pukulan popor
+pulang balik
+pulang paling
+pulasan
+pulik
+puluh
+pumpun
+puncak
+pundi
+pungguk
+pungkas
+punjung
+puntung berasap
+pupuk alam
+puputan
+purdah
+puritanisme
+purnatugas
+puruk-parak
+pusa linear
+pusaran
+pusat panas
+pusing
+puso
+puspawarna
+putar balik
+puter
+putih telur
+rambutan lekang
+putus
+putus jiwa
+putus runut
+putusan sela
+puyuh
+Quran
+rabas
+rabuk
+racak
+rada
+radar
+radi
+radiasi termal
+radio dengkul
+radiograf
+radiotelefoni
+rafaksi
+ragam kasar
+ragil
+rahang jepit
+rahimakallah
+rais
+raja sehari
+rajawali
+rajutan
+rakawira
+rakna
+rakyat gembel
+ramah tamah
+rambai ayam
+rambu darat
+rambut tampal
+rampak rindang
+rampus
+rancah
+rancau
+randang
+rangak
+rangin
+rangkap
+rangkul
+rangrang
+ranjang
+ranjungan
+ransum petelur
+rantang
+ranyun
+rapat kilat
+rapiah
+rapung
+rasai
+rasi
+rasionalisme
+rata
+ratna juita
+raudatul atfal
+rautan
+rawat pulih
+rayap
+reagensia
+reaktor
+reasuransi
+rebas
+rebon
+reca
+redaksional
+redaman bunyi
+redum
+reekspor
+refleksi
+refrigerator
+reges
+regol
+regup
+reinterpretasi
+rejang
+reka pangan
+rekanalisasi
+rekayasawan
+rekisitur
+rekonstruktif
+rekstok
+relaks
+relban
+relikui
+rem mekanik
+remang
+rembega
+rembukan
+remenia
+rempah-rempah
+rempuh
+rencah
+rencet
+rendam
+rengap
+renggangan
+rengket
+renin
+rentak
+rentengan
+renyam
+reometri
+repatrian
+repetitor
+repot
+reptilia
+reras
+resa
+resepsi
+resi
+resinol
+resonan
+respons
+restung
+retak tangan
+retet
+retreatisme
+retromandibuler
+revisibilitas
+rewet
+rezeki murah
+riak meriak
+riap
+ribu-ribu
+riding
+rijang
+rimas
+rime
+rincis
+ringan
+ringik
+ringsek
+rintas
+ripuk
+risikan
+ritul
+ro
+roda angin
+roda perusahaan
+roga
+rojabiyah
+rokade
+rolpres
+romantik
+rombohedron
+rompak
+rona
+rongga
+ronggeng
+rongrong
+ropak-rapik
+rosokan
+rotan manis
+roti panggang
+royemen
+ruang api
+ruang muatan
+ruang tunggu
+rubai
+rubing
+rudin
+ruhani
+rujak cingur
+rukuh
+rum
+rumah bola
+rumah induk
+rumah kolong
+rumah obat
+rumah perai
+rumah sakit khusus
+rumah tangga
+Rumawi
+ruminansia
+rumpun
+rumrum
+rundu-rundu
+rungkai
+runjang
+runtuh ripuh
+rupa
+rurut
+rusak tapai karena ragi
+rutin
+ruyung
+sabak
+saben
+sableng
+sabun
+sabung
+sabut
+sadar kelamin
+sadik
+sadur
+safinatunajah
+sagai
+sagu rendang
+sahadat
+sahang
+sahib
+sahut
+saing bebas
+sajadah
+sajak kisahan
+sajak suku kata
+saji makalah
+sakit taun
+sakat batu
+sakhsi
+sakit gula
+sakit kronis
+sakit pikiran
+sakral
+saksi
+saksi peringan
+salaf saleh
+salah besar
+salah huruf
+salah pengertian
+salah tangkap
+salak masir
+salat
+salat jamaah
+salat Musafir
+salat Witir
+salep bibir
+salindia
+salju layang
+salung
+salur pemasaran
+salvo
+samadi
+samarium
+sambal ulek
+sambau
+sambiloto
+sambung perkataan
+sambut
+sampa
+sampai akhir zaman
+sampai umur 1
+sampang
+sampel
+sampo
+sampur
+samuh
+sanatogen
+sandangan
+sandi ton
+sandungan
+sangga buana
+sanggang
+sanggrah
+sanggup
+sangkal
+sangkil
+sangon
+sanik
+sansai
+santase
+santron
+sapa-menyapa
+sapi gondok
+sapogenin
+sapuan
+sarak serasa hilang
+sarang macan
+sarap kontinental
+sarekat
+sarik
+sarjana plus
+sarkoplasma
+saruk
+sarwal
+sasaran perang
+sastra daerah
+sastra otonom
+sat kecil
+satelit komunikasi aktif
+satron
+satu sosial
+satwa
+saudara belahan
+saudara seperjuangan
+sauk
+saut
+sawah kajaroan
+sawala
+sawo beludru
+sayap
+sayet
+sayup
+sayuran
+sebagai kera dapat canggung
+seagak
+searti
+sebagian
+sebambang
+sebaris
+sebegitu
+sebentar ini
+sebesar-besarnya bumi ditampar tak kena
+sebrot
+seburus
+sececah mata
+secuil
+sedam-sedam
+sedapan
+sedawa
+sedemikian
+sediakala
+sedikitnya
+sedu hati
+seenaknya
+segalanya
+segar
+segel tempel
+segi empat
+segregasi
+sehari selembar benang
+sehat masyarakat
+seia
+seiring bertukar jalan
+sejagat
+sejangkauan
+sejenak
+sejuk hati
+sekak
+sekali-kali
+sekang
+sekarang
+sekaut
+sekedudukan
+sekeliling
+sekepat
+seketek
+sekin
+sekoci penolong mekanis
+sekolah lanjutan
+sekolah pertukangan
+sekopong
+sekretaris
+sekrup mati
+sektarian
+sekuat
+sekularitas
+sekutuk
+sel kecambah
+sel udara
+seladang bagai panas di padang
+selaku
+selama sipatung mandi
+selamat pagi
+selampuri
+selang tenggang
+selangkup
+selaput dada
+selaput pembuahan
+selaras
+selaur
+selayang
+selebu
+selekor
+seleler
+selenggara
+selepa
+selera tinggi
+seletuk
+seligi tajam bertimbal
+selincam
+selip
+selisih paham
+selok
+selongsong
+selot gantung
+seluar pendek
+seluk
+selulus
+selundup pajak
+selurusnya
+semah
+semak samun
+semambu
+Semang
+semanja
+semara
+sematan
+sembada
+sembahyang pujian
+sembat
+sembesi
+sembiran
+sembunyi
+sembur kuman
+sememangnya
+semengga-mengga
+sementung
+semidiurnal
+seminau
+semivokal
+sempat-sempatnya
+sempit kalang
+semprot
+semu
+semuka
+semut geramang
+semutu
+senam pagi
+senantiasa
+senapan pegas
+senawar
+sendaren
+senderut
+sending
+sendok dan periuk lagi berantuk ( sendok dengan belanga lagi berlaga)
+sendu
+sengangar
+sengelat
+senggat
+senggugu
+sengit
+sengked
+sengkil
+sengungut
+seni murni
+seni ukir
+seniwan
+senjata biner
+senjong
+sensoran
+sentagi
+senter
+sentimental
+sentral
+senu
+senyawa organik
+senyum raja
+sep
+sepai
+sepan
+sepanjang
+sepasin
+sepatu but
+sepatutnya
+sepegoh
+sepelompatan
+sepemelukan
+sepenjulat
+seranograf
+seperlunya
+sepertiga malam
+sepetir
+sepir
+seprai
+sepuk
+sepusat
+serah
+serak seruk
+serampangan
+serang
+Serani
+serasa di liang lahad
+serat pendek
+serau
+serbabaru
+serban
+serbuan
+serdam
+seregang
+serempet
+serentak
+sergam
+serial
+serigala berbulu domba
+serimis
+seringih
+sermangin
+serobot
+seroma (dengan)
+seropot
+sersan
+sertifikasi
+serudi
+serum darah
+serundeng
+serutan
+sesajen
+sesalin
+sesapan
+sesat surut
+seserahan
+sesuai
+sesukat
+setahap
+setali tiga uang
+setangan kepala
+setat
+setelah
+setempuh lalu
+seterap
+seterusnya
+setiar
+setin
+setirman
+setoples
+setreng
+setti
+setumpu
+seturut
+seumur jagung
+sewajibnya
+sewu
+si cebol hendak mencapai bulan (bintang)
+siaga mental
+sialit
+siang ikan
+siap cetak
+siapa luka siapa menyiuk
+siapuh
+siasat perang
+sibiran
+sidamukti
+sidang pengadilan
+sidik
+sif
+sigai
+sigilografi
+sikai
+sikeduduk
+sinambung
+siksaan
+sila panggung
+silang dalam
+silap mata
+silengah
+silih sambut
+silir
+silt
+simalakama
+simbok
+simpai
+simpang susun
+simpir
+simpul hipotesis
+simtomatis
+Sinansari
+sinar-suminar
+sindikasi
+sinemapleks
+sineskop
+singgan
+singkap
+singkat pikiran
+singkong
+singunen
+sinkretisme
+sinonimi
+sintar
+sintir
+sinusoid
+sipai
+sipit
+sirah
+sirene kapal
+sirih kerakap
+sirikan
+sirkuler
+siru
+sisi
+sistem
+sitak
+sistem partai tunggal
+sistem senioritas
+sisterna
+siter
+sitrun
+siungan
+skala angin Beaufort
+skatologi
+skiameter
+skolastik
+skrin
+slang
+soak
+sobok
+sodok
+sofitel
+soja
+sokongan
+solek
+solis
+soma
+somnambulisme
+sonata
+songar
+sono budoyo
+sopan
+sorak semarai
+sori
+sortir
+sosiodemokrasi
+sosiologi perbandingan
+sositet
+sowang
+sparing
+spektator
+spektrum putaran
+spermatofora
+spesifik
+spiralisasi
+sponsor
+sprint
+seperti Belanda minta tanah
+seperti bumi dengan langit
+seperti gadis sudah berlaki
+seperti ikan dalam belat
+seperti kelekatu masuk api
+seperti kuda lepas dari pingitan
+seperti menanti orang dahulu
+seperti pinggan dengan mangkuk salah sedikit hendak berantuk
+seperti siang dengan malam
+sregep
+stabil
+stalagmometri
+standar sosial
+stasioner
+stasiun kapal tetap
+stasiun televisi
+steatosis
+steno
+stereofonik
+sterilisasi parsial
+stiker
+stoikiometri
+stop
+strategi
+stratum
+striptis
+struktur mengetupat
+studi
+suaka politik
+suapan
+suara sumbang
+sub-
+subdirektorat
+subjek gramatikal
+sublimasi
+subsonik
+subtropik
+subyektivisme
+sudah beruban baru berguam
+sudah lulus maka hendak melantai
+sudah tidak sudu oleh angsa
+sudu-sudu
+sudut lurus
+sufiks inflektif
+suhian
+suhu permukaan laut
+suji
+sukaan
+sukat darah
+suksesif
+suku tertutup
+sulang
+sulfonamida
+sultani
+sulur
+sumarah
+sumbang salah
+sumber bunyi
+sumbu antisiklon
+sumbul
+sumpah berselam air
+sumpah serampu
+sumpit-sumpit
+sumur mati
+surat mentega
+sundang
+sungai
+sungguh
+sungkan
+sungsang
+sunnah
+suntuk
+supaya jangan
+superjet
+supersonik
+supletoar
+suprasasti
+suram
+surat dakwaan
+surat jawatan
+surat keterangan
+surat permintaan
+surat siaran
+surat tuduhan
+suraya
+suri
+suruh
+surut
+suryani
+suster
+susu segar
+susuk kundai
+susur
+suten
+Suwarnadwipa
+swadidik
+swakontradiksi
+swasembada
+switer
+syahadat
+syahwat
+Syakban
+syamsi
+syarahan
+syarikat
+syirik
+syukur
+taajul
+tabal
+tabel naskah
+tabiin
+tabloid
+tabuh-tabuhan
+tabung buritan
+tabung penguat
+tabur
+tadah keringat
+taekwondo
+taftah
+tahadi
+tahan cuaca
+tahan ombak
+tahanan
+tahap oral
+tahu sumedang
+tahi lalat
+tahlil
+tahu bacem
+tahu di surat
+tahu pong
+tahun Geofisika Internasional
+tahun takwim
+tajak
+tajau
+tajuk berita
+tak ada beras yang akan ditanak
+tak boleh bertemu roma
+tak segan-segan
+takal
+takbir
+takhta
+taklid
+takmurni
+taksi
+taksis positif
+takut akan lumpur
+takwim
+talah
+talang kuda
+talasemia
+tali air
+tali duga
+tali kekerabatan
+tali liung-liung
+tali persaudaraan
+tali temali
+talium
+tamak
+taman mediterania
+tamarinda
+tambak
+tambar
+tambun
+tampak-tampak
+tampang tembakau
+tampin
+tampuk nya masih bergetah
+tamtam
+tanah asam
+tanah datar
+tanah kampung
+tanah ledok
+tanah mentah
+tanah regosol
+tanah tinggal
+tanam
+tanang
+tanda bakti
+tanda opsi
+tanda pundak
+tanda titik
+tandang membawa lapik
+tangga sosial
+tangan
+tangan jahil
+tangan terbuka
+tangga berjalan
+tanggal berita
+tangguk lerek dengan bingkainya
+tanggungan
+tangkai sari
+tangki tampung
+tangkur
+tanji
+tanpa daksa
+tanwir
+taoke
+tapak besi
+tapak leper
+tapal gigi
+taptibau
+tarah
+tasyahud
+tari bedaya
+tari pendet
+tarif konfidensial
+tarikan
+tarpaulin
+taruh kata
+tas punggung
+tasel
+tasyaum
+tata bahasa baku
+tata cara
+tata kerja
+tata olah
+tata surya
+tatai
+tating
+tauhid
+Taurat
+tawa
+tawan
+tawar-tawar
+tawuran
+teater
+tebal
+tebal telinga
+tebeng
+tebu kapur
+tebusan
+tedung
+tegak roma
+tegangan jantung
+tegas
+tegur ajar
+teh-tehan
+tekaan
+tekanan diastole
+tekanan mental
+tekanan tinggi
+tekat bersuji
+teker
+teklok
+teknikus
+teknonim
+teks diskursif
+tektit
+tekung
+teladas
+telah karam maka tertimpa
+telancang
+telapakan ban
+teledor
+telegram indah
+telemeter
+telepa
+teleprinter
+telur busuk
+telinak
+telinga kuali
+telipuk
+teluki
+telur beku
+telur mata sapi
+telutur
+temali
+temasya
+tembaga putih
+tembakau kepala
+tembang
+tembel
+temberang keliling
+tembiang
+tembong
+tembusan
+temilang
+tempang
+tempawak
+tempayang
+tempel
+tempias
+tempo-tempo
+tempui
+tempus
+temu lutut
+temukut
+tenaga kerja
+tenaga teknik
+tenda
+tender
+tengah naik
+tenggala
+tenggarang
+tenggiling
+tengik
+tengkawang
+tengkolak
+tengok
+tentakel
+tentu
+teokrasi
+teori kasus
+teorisasi
+tepatan jiwa
+tepercit
+tepinis
+tepuk perut tanya selera
+tepung ikan
+tera ulang
+teradu domba
+terak
+teralang-alang
+teramat
+terampuni
+terang bulan
+terangkat kening
+terapan
+terapung-apung
+teraspal
+terawang
+terbagi
+terbang bertumpu hinggap mencekam
+terbaring
+terbebar
+terbelintang
+terberkas
+terbium
+terbuku
+tercabik
+tercancang
+tercatat
+tercelomok
+tercerap
+tercocok
+tercundang
+terdampar
+terderita
+terduduk
+terempas
+terentang
+teretet
+terganggu
+tergegas
+tergelingsir
+tergerenyeng-gerenyeng
+tergiur
+tergugah
+tergurat
+terhantar
+terhenti
+terhisab
+terigau
+terima
+terindang
+terion
+teritip
+terjal
+terjarak
+terjelengar
+terjerangkang
+terjual terbeli
+terjungkir
+terkagum-kagum
+terkampai
+terkapar
+terkecewa
+terkejut
+terkelu
+terkenang
+terkerak
+terkibuli
+terkirai-kirai
+terkokot
+terkubu
+terkungkung
+terlahir
+terlampau dikadang
+terlantan
+terlayah
+terlekat
+terleraikan
+terlintang
+terlonjak
+terluput
+termandam
+terminal
+termoelektris
+termolisis
+termotivasi
+ternganga
+terobat
+teromol
+teror
+terpacak
+terpalit
+terpanggil
+terpaut kasih
+terpelajar
+terpenggal
+terperikan
+terpico
+terpintal
+terpublikasi
+terputar
+tersadar
+tersambar
+tersangat
+tersaruk-saruk
+tersedan-sedan
+terselami
+tersembam
+tersendeng-sendeng bagai sepat di bawah mengkuang
+tersurat
+terserah
+terserimpung
+tersetai-setai
+tersilang
+tersingit
+tersisa
+tersuar
+tersungging
+tertabur
+tertanam
+tertangkap basah
+tertatih-tatih
+tertebar
+tertelentang
+tertenggang
+tertikam
+tertinggal
+tertuju
+tertumpang
+tertusuk
+teruji
+terumbang-umbang
+teruntum
+terus terang
+terwelu
+tesaurus
+testikel
+tetanus
+tetelan
+tetibar
+tetuang
+tiada rotan akar pun berguna (jadi)
+tiang kampung
+tiang turus
+tiba di rusuk menjeriau
+tidak dapat tidak
+tidak mengetahui daratan lagi
+tidak-tidak
+tifus
+Tijaniah
+tikar bangkar
+tike
+tilam
+tilikan
+timang-timangan
+timbang-menimbang
+timbun
+timpani
+timur Dekat
+tindakan
+tindik
+tinggal waktu
+tinggi hari
+tingkah langkah
+tingkas
+tingkis
+tinta cina
+tipe cuaca
+tipikal
+tipuan
+tirakatan
+tirkah
+tisikan
+titian
+titik cair
+titik lebur
+titik pusat
+toilet
+tiup
+toblos
+togok
+tokek
+tokoh pipih
+toktok
+tolak tangga berayun kaki
+tolok ukur
+tombak kembar
+ton
+tonggak tua
+tongkat membawa rebah
+tongsan
+tonjol
+topas
+topi gabus
+topografis
+tornado
+toserba
+totol
+tradisi
+trakeid
+tram
+transendental
+transitif
+translusens
+transpirasi
+trauler
+trematoda
+trias politika
+tridarma
+triko
+trim
+tripleks
+tritunggal
+trofoblas
+trombus
+troposfer
+truk kontainer
+tua
+tuah
+tualang
+tuang-tuang
+tuas
+tubian
+tudung
+tugal
+tuguran
+tuit
+tujuan politik
+tukal
+tukang pijit
+tukang tilik
+tukar-menukar
+tukun
+tulang belikat
+tulang lunas
+tulang tempurung lutut
+tuli bisu
+tulung
+tumbalang
+tumbuhan anual
+tumbuhan layang berakar
+tumika
+tumpang-tindih
+tumpu
+tuna
+tunan
+tunatenaga
+tungau
+tunggang harawan
+tunggu
+tungkak sepatu
+tunik
+tunjuk
+tuntung
+tupai kericik
+turang jala
+turfat
+turmalin
+turun dari takhta kerajaan
+turun ranjang
+turut
+tusuk gigi
+tutul
+tutupan
+uan
+uang duka
+uang jasa
+uang kertas
+uang lepas
+uang pelincir
+uang saku
+uang sogok
+uang tunai
+uba
+ubaya
+ubi jalar
+ubub
+ucis
+udang dalam tangguk
+udang peci
+udar
+udara khatulistiwa
+udeng
+udutan
+uh
+ujar
+uji tera
+ujian masuk
+ujud
+ujung mata
+ukir-ukiran
+ukur jangka
+ulam
+ulang tahun
+ular babi
+ular hitam
+ular minum
+ular tanah
+ulat jengkal
+uler
+ulos
+ultrasonografi
+uluran
+umbai cacing
+umbi-umbian
+umbul air
+umpama air digenggam tiada tiris
+umpat tidak membunuh
+umuk
+umur setahun jagung (darah setampuk pinang)
+uncue
+undang-undang hukum perdata
+unduk-unduk
+unggang-anggit
+ungka
+ungkau
+uni personal
+uniseluler
+universiade
+unjuk periksa
+unsur kebudayaan
+untang-anting
+untung sabut
+upacara adat
+upah borongan
+upahan
+upawasa
+urai
+Uranus
+urban
+urgensi
+urita
+urung
+urutan kata bebas
+usaha patungan
+usam
+usia kehamilan
+usiran
+usul balasan
+usungan
+utama
+utar-utar
+utrolokal
+uzlah
+vakuol
+valorisasi
+variabel bebas
+variatif
+vaskulum
+vegetasi
+vena Thebesius
+ventrikulus
+Verba impersonal
+Verba telis
+verifikasi
+versi
+vestibulum
+viabilitas
+vigili
+violet
+virtual
+visibilitas
+visualisasi
+vitamin E
+vodka
+vokal rendah
+vokatif
+volunter
+vulkanisir
+waadat
+wadah
+wafa
+wahah
+wai
+wajib
+wakil rakyat
+walafiat
+walaupun
+wali negara
+wallahualam bissawab
+wangi-wangian
+wantilan
+warangka
+wari
+warkat
+warna warta
+waru
+wasangka
+waskita
+watermantel
+wawancara individual
+wawasan
+wayang kerucil
+wayuh
+wedelan
+welirang
+wereng
+wesel luar
+wewarah
+widyawisata
+wiji
+wilayat
+winter
+wiraswasta
+wisata buru
+wisaya
+wiwaha
+wol kasar
+wortel
+wukerar
+X
+xenon
+xilograf
+Yahudi
+yakut
+yatim piatu
+Yehova
+yang lahir menunjukkan yang batin
+yogia
+yudikatif
+yupa prasasti
+yuwana
+zabib
+zakat mal
+zaman batu
+zaman perunggu
+zarafah
+zat arang
+zat pasir
+zending
+ziarat
+zimosis
+zirafah
+Zohrah
+zonasi taman nasional
+zuama
+zus
+afirmasi
+afwah
