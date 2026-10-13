@@ -16,6 +16,7 @@ import torch
 
 from plosagata import (CONFIGS, SAGI_HELLO, PureGPT, is_news_topic,
                        redirect_reply)
+from slang import normalize_slang
 from tokenizer import WordTokenizer
 
 
@@ -64,12 +65,12 @@ def main():
         return _model
 
     def answer(prompt: str) -> str:
-        topic = is_news_topic(prompt)
+        topic = is_news_topic(normalize_slang(prompt))
         if topic == "offtopic":
             return redirect_reply()
         if topic == "greeting":
             return SAGI_HELLO
-        ids, _ = tok.encode(prompt)
+        ids, _ = tok.encode(normalize_slang(prompt))
         real = [i for i in ids if i != tok.pad_id][:64]
         out = get_model().generate(torch.tensor([real]), max_new=a.max_new,
                                    ignore_ids=ign)[0].tolist()

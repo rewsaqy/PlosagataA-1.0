@@ -25,6 +25,7 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 
 from plosagata import CONFIGS, PureGPT, count_params
+from slang import normalize_slang
 from tokenizer import WordTokenizer
 
 
@@ -37,7 +38,7 @@ class ChatLMDataset(Dataset):
 
     def __getitem__(self, i):
         msgs = self.s[i]["messages"]
-        text = "\n".join(f"{m['role']}: {m['content']}" for m in msgs)
+        text = normalize_slang("\n".join(f"{m['role']}: {m['content']}" for m in msgs))
         ids, _ = self.tok.encode(text)
         ids = ids[:self.L]
         return torch.tensor(ids[:-1]), torch.tensor(ids[1:])
@@ -48,7 +49,7 @@ class CorpusDataset(Dataset):
 
     def __init__(self, path, tok: WordTokenizer, max_len: int):
         raw = open(path, encoding="utf-8").read()
-        docs = [d.strip() for d in raw.split("\n\n") if d.strip()]
+        docs = [normalize_slang(d.strip()) for d in raw.split("\n\n") if d.strip()]
         self.blocks = []
         for d in docs:
             ids, _ = tok.encode(d)
@@ -114,11 +115,12 @@ def main():
         print("[fp16 diabaikan: tidak ada GPU]")
 
     if a.corpus:
-        texts = [d.strip() for d in open(a.corpus, encoding="utf-8").read().split("\n\n") if d.strip()]
+        raw_docs = [d.strip() for d in open(a.corpus, encoding="utf-8").read().split("\n\n") if d.strip()]
+        texts = [normalize_slang(d) for d in raw_docs]
         mode = "pretrain"
     else:
         rows = [json.loads(l) for l in open(a.data, encoding="utf-8") if l.strip()]
-        texts = ["\n".join(f"{m['role']}: {m['content']}" for m in r["messages"]) for r in rows]
+        texts = [normalize_slang("\n".join(f"{m['role']}: {m['content']}" for m in r["messages"])) for r in rows]
         mode = "instruction"
         print(f"Data chat: {len(rows)} contoh")
 

@@ -107,6 +107,58 @@ Jujur: sebelum training besar, output model murni masih acak — itu normal.
 
 Tambahkan: confusion matrix, demo poster, perbandingan sebelum/sesudah fine-tune.
 
+## 9. Tutorial training di komputer teman (untuk RTX 2060 / 3080)
+
+**Pilih GPU: RTX 3080** (10/12GB VRAM, ~2x lebih cepat, batch lega).
+RTX 2060 6GB tetap bisa tapi mepet — pakai setting hemat di bawah.
+
+**Hari 0 — setup CachyOS (sekali saja):**
+```bash
+nvidia-smi   # wajib keluar tabel GPU
+sudo pacman -Syu python git
+curl -LsSf astral.sh/uv/install.sh | sh
+git clone git@github.com:rewsaqy/PlosagataA-1.0.git
+cd PlosagataA-1.0
+uv venv --python 3.12
+uv pip install torch scikit-learn datasets bitsandbytes
+.venv/bin/python -c "import torch; print(torch.cuda.is_available())"  # wajib True
+```
+
+**Hari 1 — bangun korpus (butuh internet):**
+```bash
+.venv/bin/python build_corpus.py --out data/korpus.txt
+# + tempel artikel FAKTA dari turnbackhoax.id ke file yang sama
+```
+
+**Hari 1-4 — pretrain b1 (dari nol, mode hemat VRAM):**
+```bash
+# RTX 3080:
+.venv/bin/python train_pure.py --size b1 --corpus data/korpus.txt --epochs 1 \
+  --batch 2 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
+  --out pure-b1-pretrain.pt
+# RTX 2060: sama tapi --batch 1 --grad-accum 32 --max-len 512
+```
+
+**Hari 5 — instruction-tune (jadi Sagi) + bawa pulang:**
+```bash
+.venv/bin/python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 5 \
+  --batch 1 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
+  --ckpt pure-b1-pretrain.pt --out pure-b1.pt
+# copy pure-b1.pt (~3.6GB) balik via flashdisk
+.venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt
+```
+
+**Sistem slang (`slang.py`):** model kecil tidak menghafal tiap varian.
+Slang dinormalisasi sebelum masuk model — saat training (`train_pure.py`)
+DAN saat chat (`pure_chat.py`). Contoh: `gaskeun ngab spill maxwin wkwk`
+-> `lanjutkan bang bocorkan kemenangan besar haha`. Nambah kata baru
+= tambah 1 baris ke dict `SLANG`, tanpa retrain tokenizer.
+
+**Nambah kosakata ke model:** tokenizer BPE (`tokenizer.py`) mengeja kata
+asing per potongan, jadi kata baru umumnya langsung bisa tanpa apa-apa.
+Kalau mau vocab lebih besar: naikkan `--vocab-size 8000/16000` lalu
+training ulang (bentuk embedding berubah, wajib retrain).
+
 ## Struktur
 
 - `plosagata/` — model murni (config, layers, model, guard)
