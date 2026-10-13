@@ -1,0 +1,161 @@
+# Bank kata Bahasa Indonesia untuk melatih tokenizer (BPE).
+# Dicampur otomatis saat build vocab (lihat train_pure.py) agar tokenizer
+# kaya sejak awal walau data chat masih sedikit. Satu baris = satu frasa.
+# Teman yang training TIDAK perlu apa-apa — file ini dipakai otomatis.
+pemerintah presiden wakil presiden menteri gubernur bupati walikota camat lurah
+dpr mpr kpu bawaslu mk ma ky polisi tni tentara kejaksaan kpk pengadilan hakim
+jaksa tersangka terdakwa vonis sidang banding kasasi grasi amnesti
+pemilu pilkada pilpres kampanye debat capres cawapres koalisi oposisi suara tps
+kpu rekapitulasi sirekap quick count exit poll survei elektabilitas
+ekonomi inflasi rupiah dollar pajak bbm sembako beras minyak goreng listrik
+subsidi apbn apbd umkm koperasi pasar saham obligasi kripto bitcoin
+bansos blt pkh bpnt prakerja beasiswa kip kuliah sekolah ujian cpns pppk
+kesehatan rumah sakit dokter perawat obat vaksin imunisasi booster stunting
+gizi posyandu puskesmas bpjs penderita pasien sembuh meninggal dunia
+bencana gempa tsunami banjir longsor erupsi kebakaran hutan kekeringan
+bmkg bnpb basarnas evakuasi pengungsi korban selamat bantuan logistik
+kriminalitas pembunuhan pencurian perampokan narkoba sabu ganja korupsi suap
+penipuan phising scam spam hoaks hoax misinformasi disinformasi malinformasi
+berita fakta data sumber wartawan jurnalis redaksi media massa televisi radio
+koran portal artikel liputan investigasi narasumber konfirmasi klarifikasi
+turnbackhoax cekfakta mafindo kominfo siber patroli siber literasi digital
+teknologi internet website aplikasi unduh unggah tautan link qr kode otp pin
+password kata sandi akun diretas bocor data privasi enkripsi server cloud
+giveaway hadiah undian kuis voucher gratis ongkir cashback saldo pulsa transfer
+bank bri bni mandiri bca bsi ovo gopay dana shopeepay linkaja qris atm m-banking
+lowongan kerja gaji karyawan phk resign interview lamaran cv fresh graduate
+pendidikan guru dosen murid mahasiswa kampus fakultas skripsi wisuda beasiswa
+agama islam kristen katolik hindu buddha konghucu masjid gereja puasa lebaran
+natal nyepi waisak imlek haji umroh zakat kurban sholat ibadah ulama pendeta
+olahraga sepak bola timnas pssi piala liga gol penalti wasit pelatih pemain
+badminton motogp balap atlet medali emas pon sea games olimpiade
+cuaca hujan badai petir angin topan gelombang kemarau musim prediksi prakiraan
+transportasi kereta api pesawat terbang kapal laut bus angkot ojek taksi
+tol macet mudik arus balik bandara pelabuhan tiket delay batal berangkat
+bencana kecelakaan tabrakan terbalik tenggelam hilang ditemukan selamat
+peristiwa kejadian insiden darurat siaga waspada imbauan larangan aturan
+kebijakan pengumuman resmi berlaku mulai besok hari ini kemarin lusa kemarin
+update terkini terbaru breaking news viral trending fyp
+masyarakat warga negara daerah wilayah kota desa kampung jalan kantor pasar
+keluarga anak bayi balita remaja dewasa lansia ibu bapak suami istri
+makanan minuman resep dapur warung kaki lima restoran halal kadaluarsa
+obat herbal jamu vitamin suplemen efek samping dosis resep dokter apotek
+penyakit demam flu batuk pilek covid diabetes kanker jantung stroke ginjal
+gejala diagnosis rawat operasi rujuk isolasi karantina masker cuci tangan
+lingkungan sampah plastik polusi udara sungai laut hutan tambang sawit
+iklim pemanasan global emisi karbon energi surya angin listrik pln token
+uang tunai kembalian harga naik turun mahal murah diskon promo gratis
+belanja online marketplace cod retur komplain garansi ori kw palsu asli
+sosial demo aksi massa ormas bentrok tawuran ricuh bubar damai mediasi
+hukum uud kuhp pasal ayat denda penjara kurungan bebas bersyarat remisi
+internasional pbb asean amerika cina rusia ukraina palestina israel perang damai
+gencatan senjata rudal drone sanksi impor ekspor diplomatik duta besar
+bencana alam peringatan dini mitigasi adaptasi relawan donasi galang dana
+sejarah kemerdekaan pahlawan proklamasi pancasila uud bhineka tunggal ika
+budaya adat istiadat wayang batik dangdut suku jawa sunda batak minang bugis
+papua aceh dayak banjar betawi bali lombok sumatera kalimantan sulawesi
+cuaca ekstrem gelombang tinggi angin kencang jarak pandang kabut asap karhutla
+pemadaman listrik gardu trafo voltase token pulsa listrik subsidi non subsidi
+air bersih pdam sumur pompa kran bocor banjir rob tanggul normalisasi kali
+sampah tpa tps kurangi pilah daur ulang bank sampah maggot kompos
+jalan rusak berlubang macet contraflow ganjil genap tilang etc e-tilang sim stnk
+kecelakaan beruntun oleng rem blong supir kernet penumpang selamat tewas luka
+rumah roboh ambruk retak gempa susulan renovasi bedah rumah rusunawa
+pertanian padi sawah panen gagal tanam pupuk hama tikus wereng Bulog stok gabah
+nelayan tangkap ikan cumi udang kerapu tongkol tenggiri cuaca melaut
+peternakan sapi kambing ayam telur susu qurban aqiqah dokter hewan vaksin rabies
+umkm warung kopi angkringan franchise reseller dropship afiliator live jualan
+kantor dinas camat kelurahan ktp kk akta lahir nik dukcapil e-ktp biometrik
+pajak npwp spt pph ppn bea cukai tilang denda sidang tilang
+bank sentral bi suku bunga bi rate kurs rupiah dollar cadangan devisa
+pemilu damai netralitas asn money politic serangan fajar kotak suara surat suara
+bencana puting beliung hujan es angin lesus pohon tumbang baliho atap terbang
+wabah dbd demam berdarah cikungunya leptospirosis hepatitis tbc pneumonia
+vaksinasi booster gotong royong posko mudik posko lebaran posko natal tahun baru
+arus mudik one way contra flow rest area km kecelakaan mudik pemudik
+ Haji kuota haji visa arab saudi makkah madinah muthowif koper jamaah kloter
+lebaran takbir sholat ied mudik THR parcel bingkisan ketupat opor rendang
+natal misa pohon cemara sinterklas tahun baru kembang api pesta countdown
+imlek angpao barongsai lampion waisak vesak nyepi ogoh ogoh catur brata penyepian
+bulan puasa sahur buka iftar tarawih tadarus ngabuburit takjil bukber mudik
+qurban idul adha haji arafah lempar jumrah tahalul dam haji tamattu
+bencana erupsi status awas siaga waspada normal pvmbg pos pantau abu vulkanik
+gempa magnitudo episentrum hiposentrum kedalaman dirasakan mmI tsunami
+peringatan dini inaTEWS sirene evakuasi jalur titik kumpul tenda darurat
+banjir bandang luapan debit pintu air katulampa manggarai siaga satu dua tiga
+longsor tebing rawan retakan tanah gerak perbukitan korban tertimbun alat berat
+kebakaran hutan lahan titik api hotspot satelit asap tebal ispA masker oksigen
+kecelakaan maut bus pariwisata truk kontainer kereta anjlok tabrakan beruntun
+pesawat delay cancel bagasi pramugari pilot kopilot black box knkt bandara
+kapal tenggelam perahu karet pelampung nahkoda abk manifest syahbandar
+pencurian begal klitih tawuran geng motor sajam celurit tawuran antar kampung
+narkoba sabu ekstasi ganja kurir bandar pengedar rehab bnn tes urine
+korupsi ott kpk gratifikasi suap fee proyek mark up fiktif audit bpk kerugian negara
+penipuan investasi bodong robot trading binary option afiliator crazy rich
+pinjol ilegal ojk satgas waspada debt collector teror sebar data galbay
+judol slot gacor maxwin depo wd bandar admin situs blokir kominfo internet sehat
+hoaks broadcast berantai forward teruskan sebarkan viralkan wajib share
+cek fakta salah konteks menipu menyesatkan tidak terbukti belum terverifikasi
+sumber primer sekunder kredibel otoritatif anonim hoax buster saring sharing
+siber phishing link palsu domain mirip typo squatting akun centang biru verified
+deepfake ai editan tempelan kolase screenshot palsu tanggal lama diupload ulang
+poster pamflet brosur spanduk baliho selebaran stiker qr code pindai tautan
+donasi kitabisa open donasi transfer rekening bukti tf struk atm mutasi
+lowongan loker walk in interview gaji umr lembur kontrak outsourcing magang
+kerja luar negeri tki pmi deportasi over stay paspor visa kedutaan kbri
+beasiswa lpdp bidikmisi kip kuliah afirmasi pertukaran pelajar student exchange
+sekolah ppdb zonasi seragam tas buku rapor nilai un bk guru honorer pns
+kampus ospek maba skripsi wisuda ipk cumlaude do rektor dekan fakultas jurusan
+kesehatan mental stres depresi cemas bunuh diri konseling psikolog psikiater
+healing self care me time overthinking insecure body shaming bullying
+olahraga lari marathon sepeda gowes futsal badminton voli basket e-sport ml ff
+timnas garuda piala asia piala dunia kualifikasi naturalisasi diaspora suporter
+bonek bobotoh the jak aremania viking ultras koreo flareaway day kandang tandang
+cuaca cerah berawan hujan ringan sedang lebat disertai petir angin kencang
+suhu panas dingin lembab titik embun uv index kualitas udara ispu
+pasar induk Kramat Jati Tanah Abang harga cabai bawang telur ayam minyak
+sembako naik turun stabil operasi pasar murah bazar gerak pangan murah
+transportasi online ojol opang tarif aplikator demo driver mogok narik anyep
+gacor orderan slot prioritas suspend putus mitra tuyul mod delay
+mudik gratis bus kereta kapal pesawat tiket habis war tiket refund reschedule
+pelabuhan merak bakauheni gilimanuk ketapang antre antrean kantong parkir
+bandara soetta halim juanda ngurah rai hasanuddin kualanamu sultan mahmud
+stasiun gambir pasar senen bandung kiara condong tawang poncol lempuyangan
+terminal pulogebang kampung rambutan lebak bulus cicaheum purabaya giwangan
+mall plaza itc pasar modern minimarket warung kelontong grosir eceran
+bank tutup libur cuti bersama atm error m-banking gangguan maintenance
+grapari telkomsel xl indosat tri sinyal hilang lemot fup kuota vocer pulsa
+listrik padam byar pet jadwal pemeliharaan gardu induk sutet kesetrum
+air mati keruh bau kaporit meteran bocor pipa pecah galian proyek
+sampah menumpuk bau busuk lalat tpa bantar gebang piye ciliwung citarum
+banjir cengkareng kelapa gading kemang jatinegara bekasi depok tangerang
+jalan ambles jembatan putus flyover underpass layang tol bocimi cisumdawu
+tol trans jawa sumatera kalimantan sulawesi papua rest area tarif golongan
+proyek ikn nusantara groundbreaking investor groundbreaking lagi groundbreaking terus
+bencana banjir rob pesisir utara jawa tanggul laut giant sea wall reklamasi
+gunung meletus semburan lava pijar kolom abu bandara tutup penerbangan batal
+gempa cianjur mamuju palu lombok banten sukabumi karangasem halmahera
+tsunami aceh palu selat sunda banten lampung latihan evakuasi tsunami day
+kebakaran depo plumpang kilang balongan pipa gas meledak korban luka bakar
+kecelakaan smk grafika bus terguling studi tur dilarang Kemenhub evaluasi
+penumpang histeris pintu darurat jendela pecah evakuasi cepat pramugari sigap
+warga gotong royong ronda siskamling pos kamling maling ketangkap babak belur
+pak rt pak rw karang taruna dasawisma pkk posyandu imunisasi balita timbang
+dusun kampung gang rt rw tps sampah liar got mampet fogging nyamuk
+sawah tadah hujan irigasi bendungan waduk embung pompa air sumur bor
+ternak lele nila gurame patin bandeng kerapu lobster kepiting rajungan
+kebun sawit karet kopi kakao cengkeh vanili lada pala kayu manis karet
+tambang batu bara nikel emas timah bauksit smelter hilirisasi freeport
+umkm naik kelas kur kredit usaha rakyat bunga rendah agunan sertifikat halal
+bpom mui sni label kedaluwarsa exp date batch number lot produksi impor
+cek halal sembako murah minyakita beras sphp gula pasir tepung terigu
+daging sapi kerbau kambing ayam potong telur ayam ras broiler petelur
+ikan asin pindang teri jambal roti asin peda tongkol asap bandeng presto
+sayur kangkung bayam sawi kol wortel kentang tomat cabai rawit merah hijau
+buah pisang pepaya mangga rambutan durian manggis salak jeruk apel anggur
+kopi tubruk espresso latte boba es teh manis jus alpukat es kelapa cincau
+gorengan bakwan tahu tempe mendoan pisang molen cireng cilok batagor siomay
+bakso mie ayam soto rawon gudeg rendang sate padang madura lilit taichan
+nasi padang uduk kuning liwet tutug oncom kucing gudeg pecel lele lamongan
+jajanan pasar klepon onde lapis getuk cenil putu ayu bolu kukus brownies
+oleh oleh bakpia dodol geplak yangko amplang kerupuk emping peyek rengginang

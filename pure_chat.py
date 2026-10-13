@@ -23,7 +23,8 @@ from tokenizer import WordTokenizer
 def build_tokenizer(vocab_size: int):
     seeds = ["halo", "hai", "pagi", "bang", "berita", "hoaks", "bener", "gak",
              "giveaway", "klik", "link", "covid", "vaksin", "pemerintah", "cek"]
-    return WordTokenizer.build(seeds, vocab_size=vocab_size, max_len=256)
+    return WordTokenizer.build(seeds, vocab_size=vocab_size, max_len=256,
+                               seed_file="data/vocab_seed.txt")
 
 
 def ignore_ids_for(tok: WordTokenizer) -> set[int]:

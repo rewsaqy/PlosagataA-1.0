@@ -63,11 +63,20 @@ class WordTokenizer:
         texts: Iterable[str] | str,
         vocab_size: int = 5000,
         max_len: int = 256,
+        seed_file: str | Path | None = None,
     ) -> "WordTokenizer":
         if isinstance(texts, str):
             raw_texts = [texts]
         else:
             raw_texts = [str(t) for t in texts if t is not None]
+
+        if seed_file:
+            try:
+                seed_lines = [l for l in Path(seed_file).read_text(encoding="utf-8").splitlines()
+                              if l.strip() and not l.startswith("#")]
+                raw_texts = seed_lines + raw_texts
+            except FileNotFoundError:
+                pass  # seed opsional (mis. dijalankan dari folder lain)
 
         if not raw_texts:
             raw_texts = [" "]

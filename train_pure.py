@@ -126,7 +126,8 @@ def main():
 
     tok = WordTokenizer.build(texts if not a.corpus else
                               [t[:2000] for t in texts[:20000]],  # vocab dari sampel korpus
-                              vocab_size=cfg.vocab, max_len=cfg.max_len)
+                              vocab_size=cfg.vocab, max_len=cfg.max_len,
+                              seed_file="data/vocab_seed.txt")
     print(f"Vocab: {len(tok.vocab)}")
 
     if a.corpus:
