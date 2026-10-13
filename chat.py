@@ -14,14 +14,50 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 
 SYSTEM_BASE = (
-    "Kamu adalah asisten validator hoaks berbahasa Indonesia. "
-    "Ramah, singkat, seperti ChatGPT. "
-    "Kalau user menyapa, sapa balik. "
-    "Kalau user bertanya tentang berita/klaim, nilai kebenarannya, "
-    "jangan suruh percaya begitu saja, selalu sarankan cek sumber resmi "
-    "(turnbackhoax.id, cekfakta.com, situs .go.id). "
-    "Jangan sebarkan hoaks."
+    "Kamu adalah asisten validator berita berbahasa Indonesia. "
+    "Tugasmu HANYA: membahas berita, cek fakta, dan validasi hoaks. "
+    "Sapaan singkat boleh dibalas ramah, tapi langsung arahkan ke topik berita. "
+    "Jika user membahas hal di luar berita (tugas sekolah, coding, resep, curhat, "
+    "hiburan, dll), TOLAK dengan sopan dalam 1-2 kalimat dan ajak kembali "
+    "membahas berita. Jangan pernah mengerjakan topik di luar berita. "
+    "Untuk klaim berita, nilai kebenarannya dan sarankan sumber resmi "
+    "(turnbackhoax.id, cekfakta.com, situs .go.id). Jangan sebarkan hoaks."
 )
+
+# Kata kunci topik berita — di luar ini = off-topic
+NEWS_KEYWORDS = [
+    "berita", "hoaks", "hoax", "fakta", "cek", "valid", "bener", "benar",
+    "viral", "klaim", "artikel", "poster", "broadcast", "pesan berantai",
+    "sumber", "koran", "media", "wartawan", "pemilu", "presiden", "menteri",
+    "bencana", "gempa", "banjir", "vaksin", "covid", "giveaway", "penipuan",
+    "lowongan", "bantuan", "bansos", "isu", "kabar", "informasi", "sebar",
+    "turnbackhoax", "cekfakta", "mafindo", "kominfo",
+]
+GREETING_ONLY = ["halo", "hai", "hello", "pagi", "siang", "sore", "malam",
+                 "assalamu", "tes", "permisi"]
+
+
+def is_news_topic(text: str) -> str:
+    """Return 'greeting' | 'news' | 'offtopic'."""
+    t = text.lower().strip()
+    if len(t) < 30 and any(g in t for g in GREETING_ONLY):
+        return "greeting"
+    if any(k in t for k in NEWS_KEYWORDS):
+        return "news"
+    if "?" in text and len(t) < 200:
+        # pertanyaan pendek tanpa kata kunci berita -> anggap off-topic
+        return "offtopic"
+    if len(t) < 200:
+        return "offtopic"
+    # teks panjang tanpa sinyal berita (mis. tempelan artikel) tetap diproses
+    return "news"
+
+
+def redirect_reply() -> str:
+    return (
+        "Maaf, saya hanya bisa membahas seputar berita dan cek fakta. "
+        "Ada berita atau klaim yang mau dicek kebenarannya? Tempel saja di sini."
+    )
 
 
 def hoax_context(text: str) -> str:
@@ -65,6 +101,8 @@ def hoax_context(text: str) -> str:
 
 def dummy_reply(user_text: str) -> str:
     """Fallback offline — tetap bisa demo sapa + bahas berita."""
+    if is_news_topic(user_text) == "offtopic":
+        return redirect_reply()
     t = user_text.lower().strip()
     sapaan = ["halo", "hai", "pagi", "siang", "sore", "malam", "assalamu", "bang", "kak", "tes"]
     if any(s in t for s in ["halo", "hai", "hello", "pagi", "siang", "sore", "malam", "assalamu"]) and len(t) < 40:
@@ -113,6 +151,9 @@ class ChatAI:
 
     def reply(self, history: list[dict], user_text: str, max_new: int = 256) -> str:
         import torch
+        topic = is_news_topic(user_text)
+        if topic == "offtopic":
+            return redirect_reply()
         ctx = hoax_context(user_text)
         msgs = [{"role": "system", "content": SYSTEM_BASE + ctx}] + history + [
             {"role": "user", "content": user_text}
