@@ -4,6 +4,7 @@ from .factcheck import heuristic_signals, llm_crosscheck, local_verdict
 from .model import TinyHoaxTransformer, count_params
 from .ocr_poster import ocr_poster
 from .retrieval import cari_sumber, kata_kunci, link_cek_fakta
+from .rag import rag_search
 from .tokenizer import WordTokenizer, basic_clean, tokenize_words
 
 __all__ = [
@@ -13,4 +14,5 @@ __all__ = [
     "local_verdict", "heuristic_signals", "llm_crosscheck",
     "ocr_poster",
     "cari_sumber", "kata_kunci", "link_cek_fakta",
+    "rag_search",
 ]
