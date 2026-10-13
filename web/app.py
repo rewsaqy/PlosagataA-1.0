@@ -174,5 +174,11 @@ def stats():
 
 
 if __name__ == "__main__":
+    import torch as _t
+    _t.set_num_threads(max(1, (os.cpu_count() or 4) // 2))  # stabil, hemat CPU
     warmup()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # Reloader MATI default: reloader + thread torch = crash
+    # ("terminate called"). Nyalakan hanya saat ngoding UI:
+    #   SAGI_RELOAD=1 .venv/bin/python web/app.py
+    app.run(host="0.0.0.0", port=5000, debug=True,
+            use_reloader=os.getenv("SAGI_RELOAD", "0") == "1")
