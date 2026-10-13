@@ -3,7 +3,7 @@
   python3 csv_to_chat.py --in data/contoh_dataset.csv --out data/chat_hoaks.jsonl
   cat data/chat_hoaks.jsonl data/contoh_chat.jsonl > data/train_chat.jsonl
 
-Lalu latih di GPU (lihat train_chat_lora.py). Makin banyak contoh
+Lalu latih model murni di GPU (lihat train_pure.py). Makin banyak contoh
 ( target 200-500 ), makin pintar dia bedakan hoaks.
 """
 import argparse

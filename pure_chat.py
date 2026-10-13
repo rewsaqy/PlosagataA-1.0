@@ -41,21 +41,27 @@ def main():
 
     cfg = CONFIGS[a.size]
     if a.size == "b1":
-        print("size b1 (~900M) jangan di-load di CPU sini — pindah ke device GPU. "
-              "Gunakan --size tiny untuk buktikan arsitektur nyala.")
-        return
+        print("[b1 ~912M di CPU: bisa jalan tapi lambat (3.6GB RAM), "
+              "untuk serius pakai GPU + checkpoint hasil training]")
 
     tok = build_tokenizer(cfg.vocab)
     ign = ignore_ids_for(tok)
-    model = PureGPT(cfg)
-    if a.ckpt and os.path.exists(a.ckpt):
-        try:
-            model.load_state_dict(torch.load(a.ckpt, map_location="cpu"))
-            print(f"[ckpt dimuat: {a.ckpt}]")
-        except RuntimeError as e:
-            print(f"[ckpt lama tak cocok dengan arsitektur baru, pakai bobot acak: {e}]")
-    else:
-        print("[bobot ACAK — output awal ngawur itu normal sebelum training]")
+    _model = None
+
+    def get_model():
+        nonlocal _model
+        if _model is None:
+            m = PureGPT(cfg)
+            if a.ckpt and os.path.exists(a.ckpt):
+                try:
+                    m.load_state_dict(torch.load(a.ckpt, map_location="cpu"))
+                    print(f"[ckpt dimuat: {a.ckpt}]")
+                except RuntimeError as e:
+                    print(f"[ckpt tak cocok, pakai bobot acak: {e}]")
+            else:
+                print("[bobot ACAK — output awal ngawur itu normal sebelum training]")
+            _model = m
+        return _model
 
     def answer(prompt: str) -> str:
         topic = is_news_topic(prompt)
@@ -65,8 +71,8 @@ def main():
             return SAGI_HELLO
         ids, _ = tok.encode(prompt)
         real = [i for i in ids if i != tok.pad_id][:64]
-        out = model.generate(torch.tensor([real]), max_new=a.max_new,
-                             ignore_ids=ign)[0].tolist()
+        out = get_model().generate(torch.tensor([real]), max_new=a.max_new,
+                                   ignore_ids=ign)[0].tolist()
         # BPE: decode via tokenizer (mapping id->kata mentah menghasilkan byte sampah)
         return tok.decode(out[len(real):])
 

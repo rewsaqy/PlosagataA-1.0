@@ -21,8 +21,7 @@ Copy seluruh folder `hoax-validator-12m/` ke flashdisk/Google Drive.
 
 ### 1. Install Dependencies
 ```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install transformers peft trl datasets accelerate bitsandbytes tokenizers scikit-learn flask pillow
+pip install torch scikit-learn
 ```
 
 ### 2. Training Model Classifier 12M
@@ -33,40 +32,32 @@ python train.py --data data/contoh_dataset.csv --epochs 20 --batch 32 --vocab-si
 - Hasil: `checkpoints/best.pt`, `checkpoints/vocab.json`
 - Waktu: ~5-15 menit di GPU
 
-### 3. Fine-Tune Chat AI (Qwen 0.5B + LoRA)
-Ini yang bikin AI bisa ngobrol kayak ChatGPT tapi khusus validasi hoaks.
+### 3. Training Model Murni Plosagata b1 (~912M)
+Ini model buatan sendiri (arsitektur di `plosagata/`). Butuh GPU 24GB+;
+di RTX 2060 6GB pakai `--batch 1 --grad-accum 16` dan bersabar (lambat).
 ```bash
-python train_chat_lora.py --base Qwen/Qwen2.5-0.5B-Instruct --data data/train_chat.jsonl --out lora-hoax-chat --epochs 5 --lr 2e-4
+python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 3 --batch 1 --grad-accum 16
 ```
-- Hasil: folder `lora-hoax-chat/` (adapter LoRA ~50-100MB)
-- Waktu: ~30-60 menit di GPU 8GB
+- Hasil: `pure-b1.pt` (~3.6GB)
+- Waktu: berjam-jam di GPU kecil — wajar untuk 900M parameter dari nol
 
-### 4. (Opsional) Fine-Tune Model 1B untuk Hasil Lebih Bagus
-```bash
-# Login HuggingFace dulu (gratis):
-huggingface-cli login
-
-# Fine-tune Llama 3.2 1B:
-python train_chat_lora.py --base meta-llama/Llama-3.2-1B-Instruct --data data/train_chat.jsonl --out lora-hoax-chat-1b --epochs 3 --rank 32
-```
-
-### 5. Copy Hasil Kembali
-Copy folder ini ke komputermu:
+### 4. Copy Hasil Kembali
+Copy file ini ke komputermu:
 - `checkpoints/` (model 12M)
-- `lora-hoax-chat/` (adapter LoRA)
+- `pure-b1.pt` (model murni terlatih)
 
 ## Setelah Copy Balik ke Komputermu
 
-### Test Chat
+### Test Sagi
 ```bash
-# Mode dummy (tanpa model chat, pakai template):
-python chat.py --dummy
+# Perintah terminal (dari mana saja):
+sagi
+sagi "Sagi"
 
-# Mode model (pakai Qwen + LoRA adapter):
-python chat.py --adapter lora-hoax-chat
-
-# Satu pesan:
-python chat.py --adapter lora-hoax-chat --once "Bener gak sih vaksin bikin autis?"
+# Chat model murni:
+.venv/bin/python pure_chat.py --size tiny --prompt "Sagi"
+# Setelah training b1 di GPU dan copy pure-b1.pt balik:
+.venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt
 ```
 
 ### Jalankan Web

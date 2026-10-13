@@ -84,40 +84,38 @@ curl -X POST -F "text=" -F "poster=@poster.jpg" http://localhost:5000/api/check
 > "Model 12M ringan jalan di HP/laptop tanpa internet untuk skrining cepat,
 > lalu diverifikasi LLM + sumber tepercaya. Saring sebelum Sharing."
 
-## 8. Chat AI (nyala dulu, train nanti di GPU)
+## 8. Sagi — model murni Plosagata (tanpa model luar)
 
 ```bash
-# Langsung nyala, tanpa download (template lokal + validator 12M):
-python3 chat.py --dummy
-python3 chat.py --dummy --once "Bener gak giveaway iPhone klik link ini?"
+# Perintah terminal (dari mana saja):
+sagi                        # interaktif
+sagi "Bener gak giveaway ini?"   # cek sekali
 
-# Chat beneran kayak ChatGPT (download Qwen 0.5B sekali, ~1GB):
-.venv/bin/python chat.py
-.venv/bin/python chat.py --once "Halo! Jelaskan hoaks dalam 1 kalimat."
-
-# Versi 1B pas:
-.venv/bin/python chat.py --model meta-llama/Llama-3.2-1B-Instruct
-# butuh: huggingface-cli login (akun HF + accept license Llama)
+# Langsung via python:
+.venv/bin/python pure_chat.py --size tiny --prompt "Sagi"
 ```
 
-Training di device lain (GPU Colab/Kaggle):
+Training `b1` (~912M) di device GPU teman (RTX 2060 6GB+, lihat PANDUAN_FINETUNE.md):
 ```bash
-pip install transformers peft trl datasets accelerate bitsandbytes
-python train_chat_lora.py --base Qwen/Qwen2.5-0.5B-Instruct --data data/contoh_chat.jsonl --out lora-hoax-chat
-# copy folder lora-hoax-chat/ balik ke sini untuk inferensi
+pip install torch scikit-learn
+python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 3 --batch 1 --grad-accum 16
+# copy pure-b1.pt balik ke sini, lalu:
+.venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt
 ```
-Dataset contoh: `data/contoh_chat.jsonl` (7 contoh). Tambahkan 200-500 contoh
-sapaan + klarifikasi berita Indonesia sebelum fine-tune biar berasa milikmu.
+Dataset: `data/train_chat.jsonl` (317 contoh). Tambahkan terus dari turnbackhoax.id.
+Jujur: sebelum training besar, output model murni masih acak — itu normal.
 
 Tambahkan: confusion matrix, demo poster, perbandingan sebelum/sesudah fine-tune.
 
 ## Struktur
 
+- `plosagata/` — model murni (config, layers, model, guard)
 - `model.py` — arsitektur 12M
-- `tokenizer.py` — tokenizer kata Indonesia
+- `tokenizer.py` — tokenizer BPE Indonesia
 - `dataset.py` — loader CSV
-- `train.py` — training
-- `infer.py` — prediksi
+- `train.py` / `train_pure.py` — training
+- `infer.py` / `pure_chat.py` — prediksi & chat
+- `sagi.sh` — launcher Sagi
 - `ocr_poster.py` — poster -> teks
 - `factcheck.py` — verifikasi silang
 - `app.py` + `templates/index.html` — web
