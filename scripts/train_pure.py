@@ -108,6 +108,8 @@ def main():
     ap.add_argument("--max-len", type=int, default=0, help="Override CFG.max_len (kecilkan jika OOM).")
     ap.add_argument("--ckpt", default="", help="Lanjutkan dari checkpoint.")
     ap.add_argument("--out", default="")
+    ap.add_argument("--val-split", type=float, default=0.1, help="Fraksi data untuk validasi (0 = tanpa val).")
+    ap.add_argument("--vocab-file", default="", help="Pakai vocab .pt yang sudah ada (wajib saat lanjut pretrain agar embedding cocok).")
     a = ap.parse_args()
 
     cfg = CONFIGS[a.size]
@@ -130,11 +132,17 @@ def main():
         mode = "instruction"
         print(f"Data chat: {len(rows)} contoh")
 
-    tok = WordTokenizer.build(texts if not a.corpus else
-                              [t[:2000] for t in texts[:20000]],  # vocab dari sampel korpus
-                              vocab_size=cfg.vocab, max_len=cfg.max_len,
-                              seed_file="data/vocab_seed.txt")
-    print(f"Vocab: {len(tok.vocab)}")
+    tok = None
+    if a.vocab_file:
+        vocab = torch.load(a.vocab_file, map_location="cpu")
+        tok = WordTokenizer(vocab, max_len=cfg.max_len)
+        print(f"Vocab dimuat dari {a.vocab_file}: {len(tok.vocab)}")
+    else:
+        tok = WordTokenizer.build(texts if not a.corpus else
+                                  [t[:2000] for t in texts[:20000]],  # vocab dari sampel korpus
+                                  vocab_size=cfg.vocab, max_len=cfg.max_len,
+                                  seed_file="data/vocab_seed.txt")
+        print(f"Vocab: {len(tok.vocab)}")
 
     if a.corpus:
         ds = CorpusDataset(a.corpus, tok, cfg.max_len)
@@ -142,8 +150,22 @@ def main():
         ds = ChatLMDataset(rows, tok, cfg.max_len)
     if len(ds) == 0:
         raise SystemExit("Dataset kosong — korpus terlalu kecil / semua dokumen < 16 token.")
-    ld = DataLoader(ds, batch_size=a.batch, shuffle=True,
-                    collate_fn=lambda b: collate_pad(b, tok.pad_id))
+    import random as _random
+    if a.val_split > 0 and len(ds) > 10:
+        n_val = max(1, int(len(ds) * a.val_split))
+        n_train = len(ds) - n_val
+        tr_ds, va_ds = torch.utils.data.random_split(
+            ds, [n_train, n_val], generator=torch.Generator().manual_seed(42))
+        print(f"Split: train {n_train} | val {n_val} (seed 42)")
+    else:
+        tr_ds, va_ds = ds, None
+        print(f"Tanpa val (val-split=0 atau data kecil). Train: {len(ds)}")
+    tr_ld = DataLoader(tr_ds, batch_size=a.batch, shuffle=True,
+                       collate_fn=lambda b: collate_pad(b, tok.pad_id))
+    va_ld = None
+    if va_ds is not None:
+        va_ld = DataLoader(va_ds, batch_size=a.batch, shuffle=False,
+                           collate_fn=lambda b: collate_pad(b, tok.pad_id))
 
     model = PureGPT(cfg).to(device)
     if a.grad_checkpoint:
@@ -152,16 +174,20 @@ def main():
         model.load_state_dict(torch.load(a.ckpt, map_location=device))
         print(f"[lanjut dari {a.ckpt}]")
     print(f"Parameter: {count_params(model):,} | mode: {mode}")
-    torch.save(tok.vocab, (a.out or f"pure-{a.size}") + ".vocab.pt")
+    vocab_path = (a.out or f"pure-{a.size}") + ".vocab.pt"
+    torch.save(tok.vocab, vocab_path)
 
     opt = make_optimizer(a.optim, model.parameters(), a.lr)
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None
-    model.train()
     t0, seen = time.time(), 0
+    out = a.out or f"pure-{a.size}.pt"
+    best_out = out.replace(".pt", "-best.pt") if out.endswith(".pt") else out + "-best.pt"
+    best_val = float("inf")
     for ep in range(1, a.epochs + 1):
+        model.train()
         tot = 0.0
         opt.zero_grad()
-        for step, (x, y) in enumerate(ld, 1):
+        for step, (x, y) in enumerate(tr_ld, 1):
             x, y = x.to(device), y.to(device)
             with torch.cuda.amp.autocast(enabled=use_fp16):
                 _, loss = model(x, y)
@@ -180,12 +206,36 @@ def main():
                 opt.zero_grad()
             tot += loss.item() * a.grad_accum
             seen += x.numel()
+        # validasi
+        val_loss = None
+        if va_ld is not None:
+            model.eval()
+            vtot, vn = 0.0, 0
+            with torch.no_grad():
+                for x, y in va_ld:
+                    x, y = x.to(device), y.to(device)
+                    with torch.cuda.amp.autocast(enabled=use_fp16):
+                        _, loss = model(x, y)
+                    vtot += loss.item()
+                    vn += 1
+            val_loss = vtot / max(vn, 1)
+            if val_loss < best_val:
+                best_val = val_loss
+                torch.save(model.state_dict(), best_out)
+                # pasangan vocab best: jangan pisahkan .pt dari .vocab.pt
+                import shutil as _shutil
+                _shutil.copy(vocab_path, best_out + ".vocab.pt")
+                improved = " -> best disimpan"
+            else:
+                improved = ""
         dt = time.time() - t0
-        print(f"epoch {ep}/{a.epochs} loss={tot/len(ld):.4f} "
-              f"tok={seen:,} ({seen/max(dt,1):,.0f} tok/s, {dt/3600:.1f} jam)")
-    out = a.out or f"pure-{a.size}.pt"
+        msg = (f"epoch {ep}/{a.epochs} train_loss={tot/len(tr_ld):.4f} "
+               f"tok={seen:,} ({seen/max(dt,1):,.0f} tok/s, {dt/3600:.1f} jam)")
+        if val_loss is not None:
+            msg += f" val_loss={val_loss:.4f} (best {best_val:.4f}){improved}"
+        print(msg)
     torch.save(model.state_dict(), out)
-    print(f"tersimpan: {out}")
+    print(f"tersimpan: {out} (best val: {best_out} loss={best_val:.4f})" if va_ld is not None else f"tersimpan: {out}")
 
 
 if __name__ == "__main__":
