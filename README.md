@@ -1,197 +1,150 @@
-# PlosagataA-1.0
+# PlosagataA-1.0 — Sagi, AI Validator Hoaks Buatan Sendiri
 
-# 🛡️ Validator Hoaks 12M + Deteksi Poster
+Proyek lomba AI terapan: web + chatbot validator hoaks Bahasa Indonesia.
+100% kode dan model buatan sendiri — tidak ada model download dari internet.
 
-Proyek lomba AI terapan: web validator hoaks Bahasa Indonesia.
+## Dua model Sagi (parameter terverifikasi)
 
-**Alur:**
-1. User input teks **atau upload poster hoaks** (gambar)
-2. `ocr_poster.py` ekstrak teks dari poster (Tesseract)
-3. `model.py` — Transformer classifier **~12 juta parameter** kasih skor cepat (Valid / Hoaks / Meragukan)
-4. `factcheck.py` — cek silang heuristic + template integrasi LLM (Gemini/OpenAI) + saran sumber (turnbackhoax.id, cekfakta.com)
-5. `app.py` — web Flask tampilkan hasil
+| Model | Parameter | File | Fungsi | Status |
+|---|---|---|---|---|
+| Klasifier hoaks 12M | **11.584.515** (~11,6M) | `model.py`, `checkpoints/best.pt` | Nilai teks: Valid / Hoaks / Meragukan. Otak web + Sagi | Terlatih, val 97%, siap demo |
+| Plosagata b1 | **912.008.192** (~912M) | `plosagata/`, `pure-b1.pt` (nanti) | Chat bebas (ngobrol kayak ChatGPT khusus berita) | Arsitektur jadi, menunggu training GPU |
+| (Latihan) tiny / small | 6M / 92M | `plosagata/` | Bukti arsitektur nyala di CPU | Jalan |
 
-## 1. Arsitektur model 12M
-
-`model.py:TinyHoaxTransformer`
-- vocab 5000, d_model 384, 6 layer, 6 head, ff 1280, max_len 128/256
-- Token+Pos embedding + TransformerEncoder + mean-pool + MLP head
-- 3 kelas: valid, hoaks, meragukan
-- Total ≈ 11.6M parameter (disebut 12M)
-
-Cek jumlah parameter:
+Cek sendiri jumlahnya:
 ```bash
-uv run --python 3.12 python model.py
+.venv/bin/python gpt_pure.py tiny   # 6.084.608
+.venv/bin/python gpt_pure.py b1     # 912.008.192
 ```
 
-## 2. Install (CPU, tanpa GPU tetap jalan)
+**Alur kerja:** user kirim teks/poster → `ocr_poster.py` (poster jadi teks)
+→ model 12M kasih skor → `factcheck.py` kasih verdict + sumber
+→ tampil di web (`app.py`) atau chat Sagi (`sagi`).
 
+## Model 1 — Klasifier 12M (siap pakai sekarang)
+
+Arsitektur `model.py:TinyHoaxTransformer`: vocab 5000, dimensi 384,
+6 layer, 6 head, feedforward 1280, 3 kelas (valid/hoaks/meragukan).
+
+**Install (Linux, CPU saja cukup):**
 ```bash
-cd Projects/hoax-validator-12m
+cd PlosagataA-1.0
 uv venv --python 3.12
 uv pip install -r requirements.txt
-# opsional OCR:
-sudo apt install tesseract-ocr tesseract-ocr-ind
+# opsional OCR poster:
+sudo apt install tesseract-ocr tesseract-ocr-ind   # Arch: sudo pacman -S tesseract tesseract-data-ind
 ```
 
-## 3. Training / Fine-tune
-
-Dataset format CSV: `text,label` dengan label `valid,hoaks,meragukan`.
-Contoh ada di `data/contoh_dataset.csv`.
-
+**Pakai:**
 ```bash
-uv run python train.py --data data/contoh_dataset.csv --epochs 15 --batch 16
-# hasil: checkpoints/best.pt + vocab.json
+.venv/bin/python infer.py --text "BAGIKAN! Minum ini sembuh kanker 3 hari!"
+.venv/bin/python app.py   # buka http://localhost:5000 (teks + upload poster)
 ```
 
-Fine-tune dengan data lomba kamu:
-1. Kumpulkan 500-2000 sampel hoaks Indonesia (turnbackhoax.id, cekfakta.com)
-2. Tambahkan ke CSV
-3. Jalankan train lagi dengan `--epochs 10 --lr 2e-4`
-
-Untuk dataset besar, naikkan `--vocab-size 8000 --max-len 256`.
-
-## 4. Coba inferensi
-
+**Training ulang / fine-tune (data di `data/contoh_dataset.csv`, format `text,label`):**
 ```bash
-uv run python infer.py --text "BAGIKAN! Minum ini sembuh kanker 3 hari!"
+.venv/bin/python train.py --data data/contoh_dataset.csv --epochs 15 --batch 16
+# hasil: checkpoints/best.pt + checkpoints/vocab.json
 ```
 
-## 5. Jalankan web
+## Model 2 — Plosagata b1 ~912M (Sagi chat, butuh training GPU)
 
+Arsitektur `plosagata/`: decoder-only (mirip GPT), vocab 16000, dimensi 2048,
+22 layer, 16 head. Murni kode sendiri + topic guard (hanya bahas berita).
+
+**Pakai sekarang (CPU bisa, masih bodoh sebelum training):**
 ```bash
-uv run python app.py
-# buka http://localhost:5000
+sagi                 # perintah terminal, dari folder mana saja
+sagi "Sagi"          # Sagi memperkenalkan diri
+sagi "Bener gak giveaway ini?"   # forward beneran via 912M (~7 dtk/token di CPU)
 ```
 
-API:
+**Training = di komputer GPU teman (lihat tutorial 5 hari di bawah).**
+Hasilnya `pure-b1.pt` (~3,6GB) dicopy balik, lalu:
 ```bash
-curl -X POST -F "text=Info giveaway iPhone klik link ini" http://localhost:5000/api/check
-curl -X POST -F "text=" -F "poster=@poster.jpg" http://localhost:5000/api/check
-```
-
-## 6. Sambung ke AI (nilai plus lomba)
-
-`factcheck.py:llm_crosscheck` masih template. Untuk lomba:
-- Daftar Gemini API gratis, isi `GEMINI_API_KEY`
-- Prompt: "Apakah klaim ini hoaks? Beri verdict + 3 sumber URL."
-- Tampilkan sumber di web sebagai bukti kebenaran.
-- Tambahkan reverse image search link untuk poster:
-  `https://lens.google.com/uploadbyurl?url=...`
-
-## 7. Ide pitch lomba
-
-> "Model 12M ringan jalan di HP/laptop tanpa internet untuk skrining cepat,
-> lalu diverifikasi LLM + sumber tepercaya. Saring sebelum Sharing."
-
-## 8. Sagi — model murni Plosagata (tanpa model luar)
-
-```bash
-# Perintah terminal (dari mana saja):
-sagi                        # interaktif
-sagi "Bener gak giveaway ini?"   # cek sekali
-
-# Langsung via python:
-.venv/bin/python pure_chat.py --size tiny --prompt "Sagi"
-```
-
-Training `b1` (~912M) di device GPU teman (RTX 2060 6GB+, lihat PANDUAN_FINETUNE.md):
-```bash
-pip install torch scikit-learn
-python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 3 --batch 1 --grad-accum 16
-# copy pure-b1.pt balik ke sini, lalu:
 .venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt
 ```
-Dataset: `data/train_chat.jsonl` (317 contoh). Tambahkan terus dari turnbackhoax.id.
-Jujur: sebelum training besar, output model murni masih acak — itu normal.
 
-Tambahkan: confusion matrix, demo poster, perbandingan sebelum/sesudah fine-tune.
+## Tutorial training 5 hari di komputer teman (RTX 3080 disarankan, 2060 bisa)
 
-## 9. Tutorial training di komputer teman (untuk RTX 2060 / 3080)
+Kenapa 3080: 10/12GB VRAM vs 6GB, ~2x lebih cepat. 2060 wajib mode hemat.
 
-**Pilih GPU: RTX 3080** (10/12GB VRAM, ~2x lebih cepat, batch lega).
-RTX 2060 6GB tetap bisa tapi mepet — pakai setting hemat di bawah.
-
-**Hari 0 — setup CachyOS (sekali saja):**
+**Hari 0 — setup (Linux/CachyOS):**
 ```bash
-nvidia-smi   # wajib keluar tabel GPU
-sudo pacman -Syu python git
+nvidia-smi   # WAJIB keluar tabel GPU. Kalau error = driver belum kepasang, berhenti di sini
+sudo pacman -Syu python git        # Ubuntu: sudo apt install python3 git
 curl -LsSf astral.sh/uv/install.sh | sh
 git clone git@github.com:rewsaqy/PlosagataA-1.0.git
 cd PlosagataA-1.0
 uv venv --python 3.12
 uv pip install torch scikit-learn datasets bitsandbytes
-.venv/bin/python -c "import torch; print(torch.cuda.is_available())"  # wajib True
+.venv/bin/python -c "import torch; print(torch.cuda.is_available())"  # WAJIB True
 ```
+Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pakai Python 3.12.
 
-**Hari 1 — bangun korpus (butuh internet):**
+**Hari 0 — setup Windows (kalau temannya Windows):**
+- *Disarankan:* install WSL2 Ubuntu (`wsl --install -d Ubuntu`), lalu ikut langkah Linux di atas 1:1.
+- *Native:* `winget install Python.Python.3.12 Git.Git`, `pip install torch scikit-learn datasets`
+  (TANPA bitsandbytes — tidak support Windows; ganti `--optim adam8bit` → `--optim adamw`
+  di semua perintah bawah, plus `--batch 1 --max-len 512` karena makan VRAM lebih).
+
+**Hari 1 — bangun korpus (butuh internet, sekali saja):**
 ```bash
 .venv/bin/python build_corpus.py --out data/korpus.txt
+# Cek: ls -lh data/korpus.txt  (harus ratusan MB; kalau KB = gagal, ulangi)
 # + tempel artikel FAKTA dari turnbackhoax.id ke file yang sama
 ```
 
-**Hari 1-4 — pretrain b1 (dari nol, mode hemat VRAM):**
+**Hari 1-4 — pretrain b1 dari nol (jangan dimatikan):**
 ```bash
 # RTX 3080:
 .venv/bin/python train_pure.py --size b1 --corpus data/korpus.txt --epochs 1 \
   --batch 2 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
   --out pure-b1-pretrain.pt
-# RTX 2060: sama tapi --batch 1 --grad-accum 32 --max-len 512
+# RTX 2060: sama persis tapi --batch 1 --grad-accum 32 --max-len 512
+# Cek jalan: loss harus TURUN tiap jam (8.5 -> 6 -> 5...). Kalau stuck/nan = kabari saya.
+# Jangan tutup terminal; pakai tmux/screen biar aman ditinggal tidur.
 ```
 
-**Hari 0 — setup Windows (pilih salah satu):**
-
-*Opsi A — WSL2 Ubuntu (disarankan, perintah sama persis dengan Linux):*
-```powershell
-wsl --install -d Ubuntu
-# buka Ubuntu, install driver NVIDIA Windows terbaru dulu, lalu ikut Hari 0 Linux di atas
-```
-
-*Opsi B — Windows native:*
-```powershell
-winget install Python.Python.3.12 Git.Git
-git clone https://github.com/rewsaqy/PlosagataA-1.0.git
-cd PlosagataA-1.0
-pip install torch scikit-learn datasets
-python -c "import torch; print(torch.cuda.is_available())"  # wajib True
-```
-Beda perintah di Windows native:
-- `bitsandbytes` TIDAK jalan di Windows → ganti `--optim adam8bit` jadi `--optim adamw` (butuh VRAM ~1GB lebih, turunkan `--batch 1 --max-len 512`)
-- Path: `.venv\Scripts\python.exe`, copy `pure-b1.pt` via flashdisk NTFS/exFAT biasa
-- `nvidia-smi` jalan di CMD/PowerShell kalau driver NVIDIA terinstal
-
-Sisa langkah (korpus, pretrain, instruction-tune) identik dengan Linux,
-ganti `.venv/bin/python` -> `python` dan slash `/` -> `\` bila perlu.
-
-**Hari 5 — instruction-tune (jadi Sagi) + bawa pulang:**
+**Hari 5 — jadikan Sagi + bawa pulang:**
 ```bash
 .venv/bin/python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 5 \
   --batch 1 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
   --ckpt pure-b1-pretrain.pt --out pure-b1.pt
-# copy pure-b1.pt (~3.6GB) balik via flashdisk
-.venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt
+# copy pure-b1.pt (~3,6GB) + checkpoints/ ke flashdisk, bawa pulang
+.venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt   # tes ngobrol di sana
 ```
 
-**Sistem slang (`slang.py`):** model kecil tidak menghafal tiap varian.
-Slang dinormalisasi sebelum masuk model — saat training (`train_pure.py`)
-DAN saat chat (`pure_chat.py`). Contoh: `gaskeun ngab spill maxwin wkwk`
--> `lanjutkan bang bocorkan kemenangan besar haha`. Nambah kata baru
-= tambah 1 baris ke dict `SLANG`, tanpa retrain tokenizer.
+**Kalau OOM (CUDA out of memory):** urutan darurat: `--batch 1` → `--max-len 512` →
+`--max-len 256` → ganti `--optim adamw`. Jangan naikkan batch dulu.
 
-**Nambah kosakata ke model:** tokenizer BPE (`tokenizer.py`) mengeja kata
-asing per potongan, jadi kata baru umumnya langsung bisa tanpa apa-apa.
-Kalau mau vocab lebih besar: naikkan `--vocab-size 8000/16000` lalu
-training ulang (bentuk embedding berubah, wajib retrain).
+## Data & kosakata (biar Sagi paham slang)
 
-## Struktur
+- **Nambah contoh:** `data/contoh_dataset.csv` (`text,label`) untuk klasifier,
+  `data/contoh_chat.jsonl` (1 baris = 1 JSON percakapan) untuk chat. Lalu:
+  ```bash
+  python3 csv_to_chat.py
+  cat data/chat_hoaks.jsonl data/contoh_chat.jsonl > data/train_chat.jsonl
+  ```
+  Sekarang: 215 CSV (75 valid / 75 hoaks / 65 meragukan) + 107 chat = 322.
+- **Slang modern (`slang.py`):** 60+ kata (ngab, gaskeun, spill, maxwin, wkwk...)
+  dinormalisasi otomatis sebelum masuk model, saat training DAN chat.
+  Nambah kata baru = 1 baris di dict `SLANG`, tanpa retrain.
+- **Kosakata model:** tokenizer BPE mengeja kata asing per potongan jadi
+  kata baru langsung bisa. Mau vocab lebih besar: `--vocab-size 16000` + retrain.
 
-- `plosagata/` — model murni (config, layers, model, guard)
-- `model.py` — arsitektur 12M
-- `tokenizer.py` — tokenizer BPE Indonesia
-- `dataset.py` — loader CSV
-- `train.py` / `train_pure.py` — training
-- `infer.py` / `pure_chat.py` — prediksi & chat
-- `sagi.sh` — launcher Sagi
-- `ocr_poster.py` — poster -> teks
-- `factcheck.py` — verifikasi silang
-- `app.py` + `templates/index.html` — web
+## Ide pitch lomba
+
+> "Model 12M ringan jalan di laptop tanpa internet untuk skrining cepat,
+> Sagi 912M hasil training sendiri untuk diajak verifikasi berita.
+> Saring sebelum Sharing."
+
+## Struktur file
+
+- `plosagata/` — model murni b1 (config, layers, model, guard)
+- `model.py`, `dataset.py`, `train.py`, `infer.py` — klasifier 12M
+- `pure_chat.py`, `train_pure.py`, `build_corpus.py` — Sagi
+- `slang.py` — kamus slang, `tokenizer.py` — BPE
+- `app.py` + `templates/index.html` — web, `ocr_poster.py` — poster
+- `factcheck.py` — verdict + sumber, `sagi.sh` — launcher
+- `data/` — semua dataset, `PANDUAN_FINETUNE.md` — panduan lama
