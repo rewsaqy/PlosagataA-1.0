@@ -1,6 +1,6 @@
 """Ubah dataset hoaks CSV (text,label) jadi data chat instruction (jsonl).
 
-  python3 csv_to_chat.py --in data/contoh_dataset.csv --out data/chat_hoaks.jsonl
+  python3 scripts/csv_to_chat.py --in data/contoh_dataset.csv --out data/chat_hoaks.jsonl
   cat data/chat_hoaks.jsonl data/contoh_chat.jsonl > data/train_chat.jsonl
 
 Lalu latih model murni di GPU (lihat train_pure.py). Makin banyak contoh

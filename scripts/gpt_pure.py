@@ -4,6 +4,11 @@ Pakai yang baru:
   from plosagata import PureGPT, CONFIGS, count_params
 """
 from dataclasses import asdict
+from pathlib import Path
+
+import sys
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 
 import torch
 

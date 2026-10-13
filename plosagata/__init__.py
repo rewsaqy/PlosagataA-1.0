@@ -3,7 +3,9 @@ from .config import CONFIGS, GPTConfig
 from .guard import (WAKE_WORD, SAGI_HELLO, is_news_topic, redirect_reply,
                     sagi_hello, sagi_redirect, strip_wake)
 from .model import PureGPT, count_params
+from .slang import SLANG, normalize_slang
 
 __all__ = ["CONFIGS", "GPTConfig", "PureGPT", "count_params",
            "WAKE_WORD", "SAGI_HELLO", "is_news_topic", "redirect_reply",
-           "sagi_hello", "sagi_redirect", "strip_wake"]
+           "sagi_hello", "sagi_redirect", "strip_wake",
+           "SLANG", "normalize_slang"]

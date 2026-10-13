@@ -19,14 +19,20 @@ Jika OOM: turunkan --max-len 1024 -> 512 -> 256.
 """
 import argparse
 import json
+import os
+import sys
 import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+os.chdir(ROOT)
 
 import torch
 from torch.utils.data import DataLoader, Dataset
 
-from plosagata import CONFIGS, PureGPT, count_params
-from slang import normalize_slang
-from tokenizer import WordTokenizer
+from plosagata import CONFIGS, PureGPT, count_params, normalize_slang
+from hoaxcore import WordTokenizer
 
 
 class ChatLMDataset(Dataset):

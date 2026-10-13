@@ -1,6 +1,13 @@
 """Training / fine-tune model hoaks 12M."""
 import argparse
+import os
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+os.chdir(ROOT)
+
 import random
 
 import torch
@@ -8,9 +15,7 @@ import torch.nn as nn
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 
-from dataset import HoaxDataset, load_csv
-from model import TinyHoaxTransformer, count_params
-from tokenizer import WordTokenizer
+from hoaxcore import HoaxDataset, TinyHoaxTransformer, WordTokenizer, count_params, load_csv
 
 
 def augment_text(text: str) -> str:

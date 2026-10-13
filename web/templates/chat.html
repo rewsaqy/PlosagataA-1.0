@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sagi — Chat Validator Berita</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:700px;margin:2rem auto;padding:0 1rem;background:#f7f7f8;color:#222}
+#box{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 12px rgba(0,0,0,.08);height:420px;overflow:auto;margin-bottom:1rem}
+.user{text-align:right;margin:.5rem 0}.user span{background:#111;color:#fff;padding:.5rem .8rem;border-radius:12px;display:inline-block;max-width:80%}
+.ai{margin:.5rem 0}.ai span{background:#e9e9ee;padding:.5rem .8rem;border-radius:12px;display:inline-block;max-width:80%}
+.meta{font-size:.75rem;color:#666;margin-top:.2rem}
+form{display:flex;gap:.5rem}input{flex:1;padding:.7rem;border-radius:8px;border:1px solid #ccc}
+button{background:#111;color:#fff;border:0;padding:.7rem 1.2rem;border-radius:8px;cursor:pointer}
+a{color:#111}
+</style>
+</head>
+<body>
+<h1>🤖 Sagi</h1>
+<p>Chatbot validator berita — hanya bahas berita & cek fakta. <a href="/">← ke validator</a></p>
+<div id="box"><div class="ai"><span>Halo! Saya Sagi. Tempel berita yang mau dicek.</span></div></div>
+<form id="f"><input id="m" placeholder="Ketik pesan..." autocomplete="off"><button>Kirim</button></form>
+<script>
+const box = document.getElementById('box');
+document.getElementById('f').onsubmit = async (e) => {
+  e.preventDefault();
+  const inp = document.getElementById('m'); const t = inp.value.trim();
+  if (!t) return; inp.value = '';
+  box.innerHTML += `<div class="user"><span>${t}</span></div>`;
+  box.innerHTML += `<div class="ai" id="lod"><span>...</span></div>`; box.scrollTop = box.scrollHeight;
+  const r = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message:t})});
+  const j = await r.json(); document.getElementById('lod').remove();
+  let extra = '';
+  if (j.verdict) extra = `<div class="meta">12M: ${j.verdict.label} (skor ${j.verdict.skor}) — ${j.verdict.kesimpulan}</div>`;
+  box.innerHTML += `<div class="ai"><span>${j.ok ? j.reply : j.error}</span>${extra}</div>`;
+  box.scrollTop = box.scrollHeight;
+};
+</script>
+</body>
+</html>

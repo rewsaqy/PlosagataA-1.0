@@ -9,15 +9,17 @@ Setelah training (lihat train_pure.py), muat checkpoint:
 import argparse
 import os
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(__file__))
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+os.chdir(ROOT)
 
 import torch
 
 from plosagata import (CONFIGS, PureGPT, is_news_topic, sagi_hello,
-                       sagi_redirect)
-from slang import normalize_slang
-from tokenizer import WordTokenizer
+                       sagi_redirect, normalize_slang)
+from hoaxcore import WordTokenizer
 
 
 def build_tokenizer(vocab_size: int):

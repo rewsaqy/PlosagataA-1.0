@@ -27,7 +27,7 @@ pip install torch scikit-learn
 ### 2. Training Model Classifier 12M
 Model ini yang mengklasifikasi teks jadi Valid/Hoaks/Meragukan.
 ```bash
-python train.py --data data/contoh_dataset.csv --epochs 20 --batch 32 --vocab-size 5000 --max-len 128
+python scripts/train.py --data data/contoh_dataset.csv --epochs 20 --batch 32 --vocab-size 5000 --max-len 128
 ```
 - Hasil: `checkpoints/best.pt`, `checkpoints/vocab.json`
 - Waktu: ~5-15 menit di GPU
@@ -36,7 +36,7 @@ python train.py --data data/contoh_dataset.csv --epochs 20 --batch 32 --vocab-si
 Ini model buatan sendiri (arsitektur di `plosagata/`). Butuh GPU 24GB+;
 di RTX 2060 6GB pakai `--batch 1 --grad-accum 16` dan bersabar (lambat).
 ```bash
-python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 3 --batch 1 --grad-accum 16
+python scripts/train_pure.py --size b1 --data data/train_chat.jsonl --epochs 3 --batch 1 --grad-accum 16
 ```
 - Hasil: `pure-b1.pt` (~3.6GB)
 - Waktu: berjam-jam di GPU kecil — wajar untuk 900M parameter dari nol
@@ -55,14 +55,14 @@ sagi
 sagi "Sagi"
 
 # Chat model murni:
-.venv/bin/python pure_chat.py --size tiny --prompt "Sagi"
+.venv/bin/python scripts/pure_chat.py --size tiny --prompt "Sagi"
 # Setelah training b1 di GPU dan copy pure-b1.pt balik:
-.venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt
+.venv/bin/python scripts/pure_chat.py --size b1 --ckpt pure-b1.pt
 ```
 
 ### Jalankan Web
 ```bash
-python app.py
+python web/app.py
 # Buka http://localhost:5000
 ```
 

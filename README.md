@@ -13,8 +13,8 @@ Proyek lomba AI terapan: web + chatbot validator hoaks Bahasa Indonesia.
 
 Cek sendiri jumlahnya:
 ```bash
-.venv/bin/python gpt_pure.py tiny   # 6.084.608
-.venv/bin/python gpt_pure.py b1     # 912.008.192
+.venv/bin/python scripts/gpt_pure.py tiny   # 6.084.608
+.venv/bin/python scripts/gpt_pure.py b1     # 912.008.192
 ```
 
 **Alur kerja:** user kirim teks/poster → `ocr_poster.py` (poster jadi teks)
@@ -37,13 +37,13 @@ sudo apt install tesseract-ocr tesseract-ocr-ind   # Arch: sudo pacman -S tesser
 
 **Pakai:**
 ```bash
-.venv/bin/python infer.py --text "BAGIKAN! Minum ini sembuh kanker 3 hari!"
-.venv/bin/python app.py   # buka http://localhost:5000 (teks + upload poster)
+.venv/bin/python scripts/infer.py --text "BAGIKAN! Minum ini sembuh kanker 3 hari!"
+.venv/bin/python web/app.py   # buka http://localhost:5000 (teks + upload poster)
 ```
 
 **Training ulang / fine-tune (data di `data/contoh_dataset.csv`, format `text,label`):**
 ```bash
-.venv/bin/python train.py --data data/contoh_dataset.csv --epochs 15 --batch 16
+.venv/bin/python scripts/train.py --data data/contoh_dataset.csv --epochs 15 --batch 16
 # hasil: checkpoints/best.pt + checkpoints/vocab.json
 ```
 
@@ -62,7 +62,7 @@ sagi "Bener gak giveaway ini?"   # forward beneran via 912M (~7 dtk/token di CPU
 **Training = di komputer GPU teman (lihat tutorial 5 hari di bawah).**
 Hasilnya `pure-b1.pt` (~3,6GB) dicopy balik, lalu:
 ```bash
-.venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt
+.venv/bin/python scripts/pure_chat.py --size b1 --ckpt pure-b1.pt
 ```
 
 ## Tutorial training 5 hari di komputer teman (RTX 3080 disarankan, 2060 bisa)
@@ -90,7 +90,7 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 
 **Hari 1 — bangun korpus (butuh internet, sekali saja):**
 ```bash
-.venv/bin/python build_corpus.py --out data/korpus.txt
+.venv/bin/python scripts/build_corpus.py --out data/korpus.txt
 # Cek: ls -lh data/korpus.txt  (harus ratusan MB; kalau KB = gagal, ulangi)
 # + tempel artikel FAKTA dari turnbackhoax.id ke file yang sama
 ```
@@ -98,7 +98,7 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 **Hari 1-4 — pretrain b1 dari nol (jangan dimatikan):**
 ```bash
 # RTX 3080:
-.venv/bin/python train_pure.py --size b1 --corpus data/korpus.txt --epochs 1 \
+.venv/bin/python scripts/train_pure.py --size b1 --corpus data/korpus.txt --epochs 1 \
   --batch 2 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
   --out pure-b1-pretrain.pt
 # RTX 2060: sama persis tapi --batch 1 --grad-accum 32 --max-len 512
@@ -108,11 +108,11 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 
 **Hari 5 — jadikan Sagi + bawa pulang:**
 ```bash
-.venv/bin/python train_pure.py --size b1 --data data/train_chat.jsonl --epochs 5 \
+.venv/bin/python scripts/train_pure.py --size b1 --data data/train_chat.jsonl --epochs 5 \
   --batch 1 --grad-accum 16 --fp16 --grad-checkpoint --optim adam8bit \
   --ckpt pure-b1-pretrain.pt --out pure-b1.pt
 # copy pure-b1.pt (~3,6GB) + pure-b1.vocab.pt + checkpoints/ ke flashdisk exFAT/NTFS, bawa pulang
-.venv/bin/python pure_chat.py --size b1 --ckpt pure-b1.pt   # tes ngobrol di sana
+.venv/bin/python scripts/pure_chat.py --size b1 --ckpt pure-b1.pt   # tes ngobrol di sana
 ```
 
 **Kepintaran = 3 file, bukan install ulang (checklist bawa pulang):**
@@ -134,7 +134,7 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 - **Nambah contoh:** `data/contoh_dataset.csv` (`text,label`) untuk klasifier,
   `data/contoh_chat.jsonl` (1 baris = 1 JSON percakapan) untuk chat. Lalu:
   ```bash
-  python3 csv_to_chat.py
+  python3 scripts/csv_to_chat.py
   cat data/chat_hoaks.jsonl data/contoh_chat.jsonl > data/train_chat.jsonl
   ```
   Sekarang: 215 CSV (75 valid / 75 hoaks / 65 meragukan) + 107 chat = 322.
@@ -150,12 +150,22 @@ Cek gagal? 90% karena driver NVIDIA / Python >3.13 (torch belum support) — pak
 > Sagi 912M hasil training sendiri untuk diajak verifikasi berita.
 > Saring sebelum Sharing."
 
-## Struktur file
+## Struktur folder (rapih)
 
-- `plosagata/` — model murni b1 (config, layers, model, guard)
-- `model.py`, `dataset.py`, `train.py`, `infer.py` — klasifier 12M
-- `pure_chat.py`, `train_pure.py`, `build_corpus.py` — Sagi
-- `slang.py` — kamus slang, `tokenizer.py` — BPE
-- `app.py` + `templates/index.html` — web, `ocr_poster.py` — poster
-- `factcheck.py` — verdict + sumber, `sagi.sh` — launcher
-- `data/` — semua dataset, `PANDUAN_FINETUNE.md` — panduan lama
+```
+PlosagataA-1.0/
+├── plosagata/      model murni b1 (config, layers, model, guard, slang)
+├── hoaxcore/       klasifier 12M (model, tokenizer, dataset, factcheck, ocr)
+├── scripts/        semua CLI (train, infer, chat, korpus, csv_to_chat)
+├── web/            web validator + chatbot (app.py, chatbot.py, templates/)
+├── data/           dataset + bank kata (csv, jsonl, vocab_seed.txt)
+├── docs/           panduan fine-tune
+├── sagi.sh         launcher (SUPER+S), requirements.txt, README.md
+```
+
+- `plosagata/` — model murni b1 (config, layers, model, guard, slang)
+- `hoaxcore/` — klasifier 12M (model, tokenizer, dataset, factcheck, ocr_poster)
+- `scripts/` — `train.py`, `train_pure.py`, `infer.py`, `pure_chat.py`, `gpt_pure.py`, `csv_to_chat.py`, `build_corpus.py`
+- `web/` — `app.py`, `chatbot.py`, `templates/index.html`, `templates/chat.html`
+- `data/` — `contoh_dataset.csv`, `contoh_chat.jsonl`, `train_chat.jsonl`, `vocab_seed.txt`
+- Semua script bisa dijalankan dari folder mana saja (otomatis kembali ke root repo).

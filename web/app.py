@@ -1,17 +1,18 @@
 """Web validator hoaks: teks + upload poster -> model 12M + OCR + fact-check."""
 import os
+import sys
 import tempfile
 import time
 from collections import Counter, deque
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
 import torch
 from flask import Flask, jsonify, render_template, request
 
-from dataset import ID2LABEL
-from factcheck import local_verdict
-from model import TinyHoaxTransformer
-from tokenizer import WordTokenizer
+from hoaxcore import ID2LABEL, TinyHoaxTransformer, WordTokenizer, local_verdict, ocr_poster
 
 app = Flask(__name__)
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -21,6 +22,15 @@ _history: deque = deque(maxlen=20)  # riwayat 20 cek terakhir (in-memory)
 
 _model = None
 _tok = None
+_engine = None
+
+
+def get_engine():
+    global _engine
+    if _engine is None:
+        from chatbot import SagiEngine
+        _engine = SagiEngine()
+    return _engine
 
 
 def get_model():
@@ -63,6 +73,24 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/chat")
+def chat_page():
+    return render_template("chat.html")
+
+
+@app.route("/api/chat", methods=["POST"])
+def chat_api():
+    data = request.get_json(silent=True) or {}
+    text = (data.get("message", "") or request.form.get("text", "")).strip()
+    if not text:
+        return jsonify({"ok": False, "error": "Pesan kosong."}), 400
+    try:
+        r = get_engine().reply(text)
+        return jsonify({"ok": True, **r})
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"Engine gagal: {e}"}), 500
+
+
 @app.route("/api/check", methods=["POST"])
 def check():
     text = request.form.get("text", "") or (request.json.get("text") if request.is_json else "")
@@ -72,7 +100,6 @@ def check():
     if "poster" in request.files:
         f = request.files["poster"]
         if f and f.filename:
-            from ocr_poster import ocr_poster
             with tempfile.NamedTemporaryFile(delete=False, suffix=Path(f.filename).suffix) as tmp:
                 f.save(tmp.name)
                 ocr = ocr_poster(tmp.name)

@@ -1,13 +1,17 @@
 """Inferensi cepat: teks -> label + probabilitas."""
 import argparse
+import os
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+os.chdir(ROOT)
 
 import torch
 import torch.nn.functional as F
 
-from dataset import ID2LABEL
-from model import TinyHoaxTransformer
-from tokenizer import WordTokenizer
+from hoaxcore import ID2LABEL, TinyHoaxTransformer, WordTokenizer
 
 
 def load_model(ckpt_dir, device="cpu"):

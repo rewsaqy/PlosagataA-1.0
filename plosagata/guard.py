@@ -1,6 +1,6 @@
 """Topic guard Plosagata — hanya bahas berita, tolak topik lain.
 
-Dipindah dari chat.py (karya sendiri) agar jalur murni juga terlindungi.
+Tinggal di paket plosagata (karya sendiri) agar jalur murni juga terlindungi.
 """
 
 # Kata kunci topik berita — di luar ini = off-topic
