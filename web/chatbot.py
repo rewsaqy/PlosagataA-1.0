@@ -6,8 +6,11 @@ import torch.nn.functional as F
 
 from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
                        local_verdict, ringkasan_hasil)
-from plosagata import (CONFIGS, PureGPT, is_news_topic, normalize_slang,
-                       sagi_hello, sagi_redirect)
+from plosagata import (CONFIGS, PureGPT, is_follow_up, is_news_topic,
+                       normalize_slang, sagi_hello, sagi_redirect)
+
+MAX_SESI = 500   # batas memori topik (in-memory, per proses)
+SESI_UMUR = 7200  # detik — sesi lebih tua dari ini dibuang
 
 
 class SagiEngine:
@@ -32,6 +35,10 @@ class SagiEngine:
         # Model chat terlatih? Tanpa checkpoint, generate() = gibberish
         # bobot acak — balas ekstraktif dari verdict + sumber saja.
         self.trained = bool(ckpt and Path(ckpt).exists())
+
+        # Memori topik per sesi: session_id -> {"topik": str|None, "aktif": ts}
+        # Topik = berita terakhir yg ditempel; follow-up merujuk ke sini.
+        self._sesi = {}
 
         # validator 12M (ringan, selalu aktif untuk label + skor)
         try:
@@ -67,29 +74,71 @@ class SagiEngine:
                               dim=-1)[0].tolist()
         return {"label": ID2LABEL[max(range(3), key=lambda i: probs[i])], "probs": probs}
 
-    def reply(self, text, max_new=60):
+    def _sesi_get(self, session_id):
+        """Ambil/buat slot sesi + buang sesi kadaluarsa. Return dict|None."""
+        import time as _t
+        if not session_id:
+            return None
+        now = _t.time()
+        if len(self._sesi) > MAX_SESI:
+            tua = [k for k, s in self._sesi.items() if now - s["aktif"] > SESI_UMUR]
+            for k in tua:
+                del self._sesi[k]
+            while len(self._sesi) > MAX_SESI:
+                self._sesi.pop(next(iter(self._sesi)))
+        s = self._sesi.get(session_id)
+        if s is None:
+            s = {"topik": None, "aktif": now}
+            self._sesi[session_id] = s
+        s["aktif"] = now
+        return s
+
+    def reply(self, text, max_new=60, session_id=""):
         import os as _os
         pure_think = _os.getenv("SAGI_PURE_THINK", "0") == "1"
         clean = normalize_slang(text)
         topic = is_news_topic(clean)
+        sess = self._sesi_get(session_id)
+        topik = (sess or {}).get("topik")
         if not pure_think:
             if topic == "offtopic":
-                return {"reply": sagi_redirect(text), "topic": topic, "verdict": None}
+                # Merujuk topik aktif? → follow-up, JANGAN tolak.
+                if topik and is_follow_up(clean):
+                    topic = "followup"
+                else:
+                    return {"reply": sagi_redirect(text), "topic": topic, "verdict": None}
             if topic == "greeting":
                 return {"reply": sagi_hello(text), "topic": topic, "verdict": None}
-        v = self.verdict(text)
-        lv = local_verdict(text, v)
+        if topik and topic == "news" and len(clean) < 80 and is_follow_up(clean):
+            # Pertanyaan pendek tanpa kata kunci berita ("kapan cairnya?")
+            # = merujuk topik aktif, bukan berita baru.
+            from plosagata.guard import NEWS_KEYWORDS
+            if not any(k in clean.lower() for k in NEWS_KEYWORDS):
+                topic = "followup"
+        if topic == "news":
+            klaim, kueri = text, text
+            if sess is not None:
+                sess["topik"] = text  # berita baru = topik baru
+        elif topic == "followup":
+            klaim, kueri = topik, topik + " " + text
+        else:  # pure_think: anggap berita
+            klaim, kueri = text, text
+        v = self.verdict(klaim)
+        lv = local_verdict(klaim, v)
         try:
-            sumber = cari_sumber(text)
+            sumber = cari_sumber(kueri)
         except Exception:
             sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
         verdict = {**v, "skor": lv["skor_hoaks"],
                    "kesimpulan": lv["kesimpulan"]}
         if not self.trained and not pure_think:
-            return {"reply": ringkasan_hasil(v["label"], lv["skor_hoaks"],
-                                             lv["kesimpulan"], sumber),
-                    "topic": topic, "verdict": verdict, "sumber": sumber}
-        ids, _ = self.tok.encode(clean)
+            isi = ringkasan_hasil(v["label"], lv["skor_hoaks"],
+                                  lv["kesimpulan"], sumber)
+            if topic == "followup":
+                isi = "Merujuk berita tadi:\n" + isi
+            return {"reply": isi, "topic": topic,
+                    "verdict": verdict, "sumber": sumber}
+        ids, _ = self.tok.encode(kueri if topic == "followup" else clean)
         real = [i for i in ids if i != self.tok.pad_id][:64]
         out = self._get_model().generate(torch.tensor([real]).to(self.device),
                                          max_new=max_new, ignore_ids=self.ign)[0].tolist()
