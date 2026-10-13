@@ -5,41 +5,87 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sagi — Chat Validator Berita</title>
 <style>
-body{font-family:system-ui,sans-serif;max-width:700px;margin:2rem auto;padding:0 1rem;background:#f7f7f8;color:#222}
-#box{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 12px rgba(0,0,0,.08);height:420px;overflow:auto;margin-bottom:1rem}
-.user{text-align:right;margin:.5rem 0}.user span{background:#111;color:#fff;padding:.5rem .8rem;border-radius:12px;display:inline-block;max-width:80%}
-.ai{margin:.5rem 0}.ai span{background:#e9e9ee;padding:.5rem .8rem;border-radius:12px;display:inline-block;max-width:80%}
-.meta{font-size:.75rem;color:#666;margin-top:.2rem}
-form{display:flex;gap:.5rem}input{flex:1;padding:.7rem;border-radius:8px;border:1px solid #ccc}
-button{background:#111;color:#fff;border:0;padding:.7rem 1.2rem;border-radius:8px;cursor:pointer}
-a{color:#111}
+:root{--bg:#0f1420;--card:#1a2233;--me:#4f7cff;--ai:#232d45;--txt:#eef1f8;--mut:#9aa4c0}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;max-width:720px;margin:0 auto;padding:1rem;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:.7rem;padding:.5rem 0}
+.dot{width:12px;height:12px;border-radius:50%;background:#3ddc84;box-shadow:0 0 8px #3ddc84}
+h1{font-size:1.2rem;margin:0}small{color:var(--mut)}
+#box{flex:1;background:var(--card);border-radius:14px;padding:1rem;overflow:auto;min-height:380px;max-height:60vh;margin:.5rem 0}
+.row{margin:.5rem 0;display:flex;flex-direction:column}
+.user{align-items:flex-end}.user .b{background:var(--me);color:#fff;padding:.55rem .85rem;border-radius:14px 14px 4px 14px;max-width:85%}
+.ai{align-items:flex-start}.ai .b{background:var(--ai);padding:.55rem .85rem;border-radius:14px 14px 14px 4px;max-width:85%}
+.meta{font-size:.72rem;color:var(--mut);margin-top:.25rem}
+.badge{display:inline-block;padding:.1rem .5rem;border-radius:99px;font-weight:700;font-size:.72rem}
+.hoaks{background:#5a1f1f;color:#ffb4b4}.valid{background:#1d4a2a;color:#b6f0c6}.meragukan{background:#5a4a17;color:#ffe9a8}
+.typing span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--mut);animation:bl 1s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,100%{opacity:.3}50%{opacity:1}}
+#chips{display:flex;gap:.4rem;flex-wrap:wrap;margin:.4rem 0}
+#chips button{background:#232d45;color:var(--txt);border:1px solid #33405f;border-radius:99px;padding:.4rem .8rem;cursor:pointer;font-size:.8rem}
+#chips button:hover{background:#2c3a5c}
+#bar{display:flex;gap:.5rem;align-items:center}
+select{background:#232d45;color:var(--txt);border:1px solid #33405f;border-radius:8px;padding:.6rem}
+#m{flex:1;padding:.7rem;border-radius:10px;border:1px solid #33405f;background:#101728;color:var(--txt)}
+#send{background:var(--me);color:#fff;border:0;padding:.7rem 1.2rem;border-radius:10px;cursor:pointer;font-weight:700}
+#send:disabled{opacity:.5}
+a{color:#8fb0ff}
+.toolbar{display:flex;justify-content:space-between;align-items:center}
+.toolbar button{background:transparent;color:var(--mut);border:0;cursor:pointer;font-size:.8rem}
 </style>
 </head>
 <body>
-<h1>🤖 Sagi</h1>
-<p>Chatbot validator berita — hanya bahas berita & cek fakta. <a href="/">← ke validator</a></p>
-<div id="box"><div class="ai"><span>Halo! Saya Sagi. Tempel berita yang mau dicek.</span></div></div>
-<form id="f"><input id="m" placeholder="Ketik pesan..." autocomplete="off"><button>Kirim</button></form>
-<p>Model: <select id="model">
-<option value="Plosagata_Go">Plosagata_Go — cepat (92M)</option>
-<option value="Plosagata_More">Plosagata_More — medium (912M)</option>
-<option value="Plosagata_Next">Plosagata_Next — besar (1,55B)</option>
-</select> <small>Go siap pakai; More/Next butuh checkpoint training + lambat di CPU.</small></p>
+<header><div class="dot"></div><div><h1>Sagi</h1><small>Chatbot validator berita • <a href="/">validator</a></small></div></header>
+<div class="toolbar"><small id="st">Siap. Model: <b id="mnow">Plosagata_Go</b></small><button id="clear">🧹 Bersihkan</button></div>
+<div id="box"></div>
+<div id="chips"></div>
+<div id="bar">
+<select id="model">
+<option value="Plosagata_Go">Go — cepat</option>
+<option value="Plosagata_More">More — medium</option>
+<option value="Plosagata_Next">Next — besar</option>
+</select>
+<input id="m" placeholder="Tempel berita / ketik pesan..." autocomplete="off">
+<button id="send">Kirim</button>
+</div>
 <script>
-const box = document.getElementById('box');
-document.getElementById('f').onsubmit = async (e) => {
-  e.preventDefault();
-  const inp = document.getElementById('m'); const t = inp.value.trim();
-  if (!t) return; inp.value = '';
-  box.innerHTML += `<div class="user"><span>${t}</span></div>`;
-  box.innerHTML += `<div class="ai" id="lod"><span>...</span></div>`; box.scrollTop = box.scrollHeight;
-  const r = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message:t, model: document.getElementById('model').value})});
-  const j = await r.json(); document.getElementById('lod').remove();
-  let extra = '';
-  if (j.verdict) extra = `<div class="meta">12M: ${j.verdict.label} (skor ${j.verdict.skor}) — ${j.verdict.kesimpulan}</div>`;
-  box.innerHTML += `<div class="ai"><span>${j.ok ? j.reply : j.error}</span>${extra}</div>`;
-  box.scrollTop = box.scrollHeight;
-};
+const box=document.getElementById('box'), inp=document.getElementById('m'),
+      btn=document.getElementById('send'), sel=document.getElementById('model');
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const now=()=>new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+function add(who,html,meta=''){
+  box.insertAdjacentHTML('beforeend',
+    `<div class="row ${who}"><div class="b">${html}</div>${meta?`<div class="meta">${meta}</div>`:''}</div>`);
+  box.scrollTop=box.scrollHeight;
+}
+const CHIPS=['👋 Sapa Sagi','🔍 Bener gak giveaway iPhone klik link ini?','📰 Gimana cara cek berita?','⛔ Buatkan kode python'];
+const chips=document.getElementById('chips');
+CHIPS.forEach(c=>{const b=document.createElement('button');b.innerText=c;
+  b.onclick=()=>{inp.value=c.replace(/^[👋🔍📰⛔] /,'');kirim();};chips.appendChild(b);});
+add('ai','Halo! Saya <b>Sagi</b>. Tempel berita yang mau dicek, atau pencet tombol cepat di bawah.',now());
+async function kirim(){
+  const t=inp.value.trim(); if(!t)return; inp.value=''; btn.disabled=true;
+  document.getElementById('mnow').innerText=sel.value;
+  add('user',esc(t),now());
+  const lod=document.createElement('div');lod.className='row ai';
+  lod.innerHTML='<div class="b typing"><span></span><span></span><span></span></div>';
+  box.appendChild(lod); box.scrollTop=box.scrollHeight;
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:t,model:sel.value})});
+    const j=await r.json(); lod.remove();
+    if(!j.ok){add('ai','⚠️ '+esc(j.error||'Gagal'),now());return;}
+    let extra='';
+    if(j.verdict)extra=`<span class="badge ${j.verdict.label}">${j.verdict.label.toUpperCase()}</span> skor ${j.verdict.skor} — ${esc(j.verdict.kesimpulan)}`;
+    add('ai',esc(j.reply)+(extra?`<div class="meta">${extra} • ${sel.value}</div>`:`<div class="meta">${sel.value}</div>`),now());
+  }catch(e){lod.remove();add('ai','⚠️ Server tidak merespons. Cek koneksi.',now());}
+  btn.disabled=false; inp.focus();
+}
+document.getElementById('f')?.addEventListener?.('submit',e=>e.preventDefault());
+btn.onclick=kirim;
+inp.addEventListener('keydown',e=>{if(e.key==='Enter')kirim();});
+document.getElementById('clear').onclick=()=>{box.innerHTML='';};
+sel.onchange=()=>{document.getElementById('mnow').innerText=sel.value;};
 </script>
 </body>
 </html>
