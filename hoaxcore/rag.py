@@ -3,13 +3,15 @@ from pathlib import Path
 import pickle
 
 from plosagata.slang import normalize_slang
-from hoaxcore.tokenizer import basic_clean
+from hoaxcore.tokenizer import STOPWORDS, basic_clean
 
 INDEX_DIR = Path("data/rag_index")
+MIN_SKOR = 0.15  # cosine di bawah ini = tak relevan -> fallback live
 
 
 def tokenize_id(teks: str) -> list[str]:
-    return basic_clean(normalize_slang(teks or "")).split()
+    return [w for w in basic_clean(normalize_slang(teks or "")).split()
+            if w not in STOPWORDS]
 
 
 def chunk_teks(teks: str, chunk_size: int = 300, overlap: int = 50) -> list[str]:
@@ -41,13 +43,14 @@ def build_tfidf(chunks):
     return vec, mat
 
 
-def save_index(path, bm25, vectorizer, tfidf_mat, chunks):
+def save_index(path, bm25, vectorizer, tfidf_mat, chunks, titles=None):
     p = Path(path)
     p.mkdir(parents=True, exist_ok=True)
     with open(p / "bm25.pkl", "wb") as f:
         pickle.dump(bm25, f)
     with open(p / "tfidf.pkl", "wb") as f:
-        pickle.dump({"vectorizer": vectorizer, "matrix": tfidf_mat, "chunks": chunks}, f)
+        pickle.dump({"vectorizer": vectorizer, "matrix": tfidf_mat,
+                     "chunks": chunks, "titles": titles or []}, f)
     (p / "meta.json").write_text('{"chunk":300,"overlap":50}', encoding="utf-8")
 
 
@@ -69,7 +72,8 @@ def load_index(path=None):
         bm25 = _load_pickle(d / "bm25.pkl")
         tfidf_bundle = _load_pickle(d / "tfidf.pkl")
         idx = {"bm25": bm25, "vectorizer": tfidf_bundle["vectorizer"],
-               "matrix": tfidf_bundle["matrix"], "chunks": tfidf_bundle["chunks"]}
+               "matrix": tfidf_bundle["matrix"], "chunks": tfidf_bundle["chunks"],
+               "titles": tfidf_bundle.get("titles") or []}
     except Exception:
         return None
     _CACHE[str(d)] = idx
@@ -101,9 +105,11 @@ def rag_search(query: str, k: int = 3):
     order = np.argsort(cos)[::-1][:k]
     out = []
     for j in order:
-        if cos[int(j)] <= 0:
-            continue  # tidak relevan → biarkan fallback live yang bicara
+        if cos[int(j)] < MIN_SKOR:
+            continue  # tak relevan -> fallback live yang bicara
         ci = top_idx[int(j)]
         teks = idx["chunks"][ci]
-        out.append({"id": ci, "judul": f"Korpus#{ci}", "cuplikan": teks[:220], "skor": float(cos[int(j)])})
+        titles = idx.get("titles") or []
+        judul = titles[ci] if ci < len(titles) else f"Korpus#{ci}"
+        out.append({"id": ci, "judul": judul, "cuplikan": teks[:220], "skor": float(cos[int(j)])})
     return out

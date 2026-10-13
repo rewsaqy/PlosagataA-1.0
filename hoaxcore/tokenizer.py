@@ -9,6 +9,16 @@ from tokenizers.implementations import ByteLevelBPETokenizer
 PAD, UNK, CLS, SEP = "<pad>", "<unk>", "<cls>", "<sep>"
 SPECIAL = [PAD, UNK, CLS, SEP]
 
+# Kata henti Indonesia untuk RAG (BM25/TF-IDF): tanpa ini, stopword
+# ("yang/dan/dari") membuat dokumen tak relevan lolos ambang cosine.
+STOPWORDS = set("""yang dan di ke dari untuk dengan pada adalah ini itu dalam sebagai
+secara tidak akan ada oleh karena jika atau juga sudah telah bisa harus
+para sebuah tersebut tentang antara setiap semua sangat lebih kurang
+pagi siang sore malam halo hai bang kak pak bu saya kamu kita mereka
+bener benar benarkah betul apa apakah siapa kapan dimana bagaimana
+gimana beritanya tolong dong kok sih nya lah kah pun per jadi agar
+supaya bahwa agar yang""".split())
+
 
 def basic_clean(text: str) -> str:
     text = text.lower()

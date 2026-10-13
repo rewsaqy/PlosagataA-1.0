@@ -8,13 +8,9 @@ import re
 import urllib.parse
 import urllib.request
 
-STOP = set("""yang dan di ke dari untuk dengan pada adalah ini itu dalam sebagai
-secara tidak akan ada oleh karena jika atau juga sudah telah bisa harus
-para sebuah tersebut tentang antara setiap semua sangat lebih kurang
-pagi siang sore malam halo hai bang kak pak bu saya kamu kita mereka
-bener benar benarkah betul apa apakah siapa kapan dimana bagaimana
-gimana beritanya tolong dong kok sih nya lah kah pun per jadi agar
-supaya bahwa agar yang""".split())
+from hoaxcore.tokenizer import STOPWORDS
+
+STOP = STOPWORDS  # alias lama, dipakai kata_kunci()
 
 WIKI_API = "https://id.wikipedia.org/w/api.php"
 

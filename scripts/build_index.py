@@ -1,5 +1,6 @@
-"""Build index RAG offline: korpus.txt -> data/rag_index/."""
+"""Build index RAG offline: korpus.txt / CSV klaim -> data/rag_index/."""
 import argparse
+import csv
 import json
 import os
 import sys
@@ -41,19 +42,34 @@ def main():
     ap.add_argument("--chunk", type=int, default=300)
     ap.add_argument("--overlap", type=int, default=50)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--csv", default="",
+                    help="mode CSV klaim (text,label): tiap baris = 1 dok, "
+                         "judul = label#id. Cth: --csv data/contoh_dataset.csv")
     a = ap.parse_args()
-    if not Path(a.inp).exists():
+    if not Path(a.inp).exists() and not a.csv:
         raise SystemExit(f"korpus tidak ada: {a.inp} (jalankan scripts/build_corpus.py dulu)")
-    chunks = []
-    for art in iter_articles(a.inp, a.limit):
-        chunks.extend(chunk_teks(art, a.chunk, a.overlap))
+    chunks, titles = [], []
+    if a.csv:
+        with open(a.csv, encoding="utf-8") as f:
+            for i, row in enumerate(csv.DictReader(f)):
+                t = (row.get("text") or "").strip()
+                if not t:
+                    continue
+                chunks.append(t)
+                titles.append(f"{row.get('label', '?')}#{i}")
+                if a.limit and len(chunks) >= a.limit:
+                    break
+        print(f"dok CSV: {len(chunks)} dari {a.csv}")
+    else:
+        for art in iter_articles(a.inp, a.limit):
+            chunks.extend(chunk_teks(art, a.chunk, a.overlap))
+        print(f"chunk: {len(chunks)} dari {a.inp}")
     if not chunks:
         raise SystemExit("korpus kosong / semua artikel <500 char")
-    print(f"chunk: {len(chunks)} dari {a.inp}")
     toked = [tokenize_id(c) for c in chunks]
     bm25 = build_bm25(toked)
     vec, mat = build_tfidf(chunks)
-    save_index(a.out, bm25, vec, mat, chunks)
+    save_index(a.out, bm25, vec, mat, chunks, titles or None)
     with open(Path(a.out) / "chunks.jsonl", "w", encoding="utf-8") as o:
         for i, c in enumerate(chunks):
             o.write(json.dumps({"id": i, "teks": c[:2000]}, ensure_ascii=False) + "\n")
