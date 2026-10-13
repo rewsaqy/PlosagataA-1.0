@@ -6,3 +6,4 @@ flask
 pillow
 pytesseract
 tokenizers
+rank-bm25

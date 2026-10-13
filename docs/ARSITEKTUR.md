@@ -27,6 +27,7 @@ web/app.py (validator) / web/chatbot.py + /chat (ngobrol)
 | `dataset.py` | Pelayan data: baca CSV, antar ke model per batch | `load_csv` (kolom text,label), `HoaxDataset` (encode + label jadi tensor), peta `LABEL2ID` |
 | `factcheck.py` | Detektif pola hoaks + pemberi verdict akhir | `heuristic_signals`: cari kata umpan (giveaway, klik link), caps, tanda seru, short-URL, nomor HP, emoji. `local_verdict`: jumlahkan jadi skor 0-100 + kesimpulan + saran + sumber (turnbackhoax.id, cekfakta.com) |
 | `ocr_poster.py` | Mata: baca tulisan di foto poster jadi teks | Bungkus Tesseract-OCR (Indonesia+Inggris). Gagal → pesan jelas, web tetap jalan |
+| `rag.py` | Mesin cari lokal: BM25 top-20 → TF-IDF rerank top-3 dari `data/rag_index/` | `chunk_teks` 300/50, `rag_search` cosine, fallback live jika index hilang |
 
 ## Part 2 — `plosagata/` (otak chat Sagi, murni buatan sendiri)
 
