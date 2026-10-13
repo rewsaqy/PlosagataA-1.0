@@ -19,7 +19,7 @@ def load_model(ckpt_dir, device="cpu"):
     for name in ["best.pt", "last.pt"]:
         p = ckpt_dir / name
         if p.exists():
-            model.load_state_dict(torch.load(p, map_location=device))
+            model.load_state_dict(torch.load(p, map_location=device, weights_only=True))
             break
     model.to(device).eval()
     return model, tok

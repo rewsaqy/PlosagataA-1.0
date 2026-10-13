@@ -1,6 +1,7 @@
 """Training / fine-tune model hoaks 12M."""
 import argparse
 from pathlib import Path
+import random
 
 import torch
 import torch.nn as nn
@@ -10,6 +11,23 @@ from torch.utils.data import DataLoader
 from dataset import HoaxDataset, load_csv
 from model import TinyHoaxTransformer, count_params
 from tokenizer import WordTokenizer
+
+
+def augment_text(text: str) -> str:
+    """Augmentasi teks sederhana untuk memperbanyak variasi training."""
+    augmented = text
+    # Random lowercase/uppercase
+    if random.random() < 0.3:
+        augmented = augmented.upper()
+    elif random.random() < 0.3:
+        augmented = augmented.lower()
+    # Random remove punctuation
+    if random.random() < 0.2:
+        augmented = augmented.replace('!', '').replace('?', '').replace('.', '')
+    # Random duplicate punctuation (hoax style)
+    if random.random() < 0.2:
+        augmented = augmented.replace('!', '!!!').replace('?', '???')
+    return augmented
 
 
 def train(args):
@@ -23,6 +41,17 @@ def train(args):
     tr_t, va_t, tr_l, va_l = train_test_split(
         texts, labels, test_size=0.15, random_state=42, stratify=labels
     )
+    # Augmentasi HANYA data train — val dibiarkan murni agar akurasinya jujur
+    # (augmentasi sebelum split = duplikat bocor ke val = angka kembung)
+    aug_t, aug_l = [], []
+    for t, l in zip(tr_t, tr_l):
+        aug_t.append(t)
+        aug_l.append(l)
+        for _ in range(2):  # 2x augmentasi per sampel
+            aug_t.append(augment_text(t))
+            aug_l.append(l)
+    tr_t, tr_l = aug_t, aug_l
+    print(f"Train setelah augmentasi: {len(tr_t)} | Val murni: {len(va_t)}")
     tr_ds = HoaxDataset(tr_t, tr_l, tok)
     va_ds = HoaxDataset(va_t, va_l, tok)
     tr_ld = DataLoader(tr_ds, batch_size=args.batch, shuffle=True)

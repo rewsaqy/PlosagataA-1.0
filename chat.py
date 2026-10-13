@@ -26,30 +26,103 @@ SYSTEM_BASE = (
 
 # Kata kunci topik berita — di luar ini = off-topic
 NEWS_KEYWORDS = [
+    # Topik umum & cek fakta
     "berita", "hoaks", "hoax", "fakta", "cek", "valid", "bener", "benar",
     "viral", "klaim", "artikel", "poster", "broadcast", "pesan berantai",
     "sumber", "koran", "media", "wartawan", "pemilu", "presiden", "menteri",
     "bencana", "gempa", "banjir", "vaksin", "covid", "giveaway", "penipuan",
     "lowongan", "bantuan", "bansos", "isu", "kabar", "informasi", "sebar",
     "turnbackhoax", "cekfakta", "mafindo", "kominfo",
+    # Tokoh politik
+    "jokowi", "prabowo", "anies", "ganjar", "gibran", "megawati", "puan",
+    "ahok", "ridwan", "kamil",
+    # Lembaga & figur pemerintah
+    "pemerintah", "dpr", "mpr", "polisi", "tni", "gubernur", "bupati",
+    "walikota", "camat", "lurah",
+    # Ekonomi & moneter
+    "harga", "rupiah", "dollar", "inflasi", "pajak", "bbm", "sembako",
+    "beras", "minyak", "listrik", "tarif", "subsidi", "uang", "bank", "ojk",
+    # Kesehatan
+    "penyakit", "obat", "rumah sakit", "dokter", "kesehatan", "wabah",
+    "pandemi", "demam", "flu", "dbd",
+    # Bencana & insiden
+    "tsunami", "longsor", "erupsi", "gunung", "kebakaran", "kecelakaan",
+    # Kriminal & hukum
+    "pembunuhan", "pencurian", "narkoba", "korupsi", "tangkap", "ditahan",
+    "tersangka",
+    # Isu sosial & aksi
+    "demo", "mogok", "protes", "bentrok", "tawuran", "kerusuhan",
+    # Pendidikan & seleksi
+    "sekolah", "universitas", "ujian", "cpns", "pppk", "seleksi",
+    # Penanda klaim / kebenaran
+    "benarkah", "apa benar", "betul", "beneran", "masa", "emang",
+    "ngga mungkin", "mustahil", "percaya", "serius", "yakin", "bukti", "buktinya",
+    # Kata kerja klaim / peristiwa
+    "mundur", "meninggal", "tewas", "gratis", "ditangkap", "resmi",
+    "dilarang", "dihapus", "naik", "turun",
 ]
 GREETING_ONLY = ["halo", "hai", "hello", "pagi", "siang", "sore", "malam",
                  "assalamu", "tes", "permisi"]
+
+OFFTOPIC_KEYWORDS = [
+    # Coding / IT teknis
+    "python", "javascript", "html", "css", "coding", "koding", "script",
+    "program", "code", "algoritma", "database", "sql", "git",
+    # Tugas sekolah / akademik
+    "tugas sekolah", "pekerjaan rumah", "rumus", "hitung", "matematika",
+    "biologi", "kimia", "fisika",
+    # Resep masakan
+    "resep", "cara masak", "cara membuat makanan",
+    # Curhat & relasi personal
+    "curhat", "pacar", "jodoh", "galau", "baper", "mantan",
+    # Hiburan
+    "rekomendasi lagu", "rekomendasi film", "chord", "lirik",
+    "lelucon", "tebak-tebakan", "pantun", "puisi", "cerpen",
+    # Obrolan identitas bot kasual
+    "kamu siapa", "siapa kamu", "siapa namamu", "lagi apa", "sedang apa",
+]
+
+NEWS_QUERY_MARKERS = [
+    "apakah", "kenapa", "mengapa", "bagaimana", "gimana", "siapa", "kapan",
+    "dimana", "di mana", "ada apa", "apa betul", "apa iya",
+]
+
+EVENT_MARKERS = [
+    "kejadian", "peristiwa", "terjadi", "korban", "warga", "masyarakat",
+    "daerah", "wilayah", "negara", "kota", "jalan", "kantor", "darurat",
+    "update", "terkini", "terbaru", "hari ini", "kemarin", "besok",
+    "tadi", "barusan", "siang ini", "malam ini", "pagi ini",
+    "kebijakan", "aturan", "pengumuman", "putus", "tutup", "buka",
+    "batal", "rusak", "ambruk", "amblas", "ledakan", "hancur", "waspada", "siaga",
+    "hilang", "ditemukan", "razia", "sidak",
+]
 
 
 def is_news_topic(text: str) -> str:
     """Return 'greeting' | 'news' | 'offtopic'."""
     t = text.lower().strip()
-    if len(t) < 30 and any(g in t for g in GREETING_ONLY):
+    if len(t) < 30 and any(g in t for g in GREETING_ONLY) and not any(k in t for k in NEWS_KEYWORDS):
         return "greeting"
     if any(k in t for k in NEWS_KEYWORDS):
         return "news"
+    if any(o in t for o in OFFTOPIC_KEYWORDS):
+        return "offtopic"
+
+    # Pertanyaan di bawah 200 karakter: periksa apakah potensi query berita/klaim
     if "?" in text and len(t) < 200:
-        # pertanyaan pendek tanpa kata kunci berita -> anggap off-topic
+        if any(m in t for m in NEWS_QUERY_MARKERS) or any(e in t for e in EVENT_MARKERS):
+            return "news"
+        if len(t.split()) >= 4:
+            return "news"
         return "offtopic"
-    if len(t) < 200:
+
+    # Pernyataan pendek: periksa indikasi peristiwa/klaim berita
+    if len(t) < 80:
+        if any(e in t for e in EVENT_MARKERS):
+            return "news"
         return "offtopic"
-    # teks panjang tanpa sinyal berita (mis. tempelan artikel) tetap diproses
+
+    # Teks panjang tanpa sinyal berita (mis. tempelan artikel) tetap diproses
     return "news"
 
 
@@ -60,28 +133,50 @@ def redirect_reply() -> str:
     )
 
 
+_cached_hoax_model = None
+_cached_hoax_tok = None
+
+
+def _get_hoax_model():
+    global _cached_hoax_model, _cached_hoax_tok
+    if _cached_hoax_model is not None:
+        return _cached_hoax_model, _cached_hoax_tok
+    try:
+        from pathlib import Path
+        import torch
+        from model import TinyHoaxTransformer
+        from tokenizer import WordTokenizer
+
+        ckpt = Path(__file__).parent / "checkpoints"
+        if (ckpt / "vocab.json").exists():
+            tok = WordTokenizer.load(ckpt / "vocab.json")
+            m = TinyHoaxTransformer(len(tok.vocab), max_len=tok.max_len)
+            for n in ["best.pt", "last.pt"]:
+                p = ckpt / n
+                if p.exists():
+                    m.load_state_dict(torch.load(p, map_location="cpu", weights_only=True))
+                    break
+            m.eval()
+            _cached_hoax_model = m
+            _cached_hoax_tok = tok
+    except Exception:
+        _cached_hoax_model = None
+        _cached_hoax_tok = None
+    return _cached_hoax_model, _cached_hoax_tok
+
+
 def hoax_context(text: str) -> str:
     """Ambil konteks dari model 12M + heuristic. Gagal -> string kosong (tetap nyala)."""
     try:
         from factcheck import local_verdict
         try:
             import torch
+            import torch.nn.functional as F
             from dataset import ID2LABEL
-            from model import TinyHoaxTransformer
-            from tokenizer import WordTokenizer
-            from pathlib import Path
-            ckpt = Path(__file__).parent / "checkpoints"
-            if (ckpt / "vocab.json").exists():
-                tok = WordTokenizer.load(ckpt / "vocab.json")
-                m = TinyHoaxTransformer(len(tok.vocab), max_len=tok.max_len)
-                for n in ["best.pt", "last.pt"]:
-                    p = ckpt / n
-                    if p.exists():
-                        m.load_state_dict(__import__("torch").load(p, map_location="cpu"))
-                        break
-                m.eval()
+
+            m, tok = _get_hoax_model()
+            if m is not None and tok is not None:
                 ids, mask = tok.encode(text)
-                import torch.nn.functional as F
                 with torch.no_grad():
                     probs = F.softmax(m(torch.tensor([ids]), torch.tensor([mask])), -1)[0].tolist()
                 pred = max(range(3), key=lambda i: probs[i])

@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import torch
 
-from plosagata import CONFIGS, PureGPT
+from plosagata import CONFIGS, PureGPT, is_news_topic, redirect_reply
 from tokenizer import WordTokenizer
 
 
@@ -57,11 +57,14 @@ def main():
         print("[bobot ACAK — output awal ngawur itu normal sebelum training]")
 
     def answer(prompt: str) -> str:
+        if is_news_topic(prompt) == "offtopic":
+            return redirect_reply()
         ids, _ = tok.encode(prompt)
         real = [i for i in ids if i != tok.pad_id][:64]
         out = model.generate(torch.tensor([real]), max_new=a.max_new,
                              ignore_ids=ign)[0].tolist()
-        return " ".join(tok.inv.get(i, "?") for i in out[len(real):])
+        # BPE: decode via tokenizer (mapping id->kata mentah menghasilkan byte sampah)
+        return tok.decode(out[len(real):])
 
     if a.prompt:
         print(answer(a.prompt))

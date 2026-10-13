@@ -5,3 +5,4 @@ scikit-learn
 flask
 pillow
 pytesseract
+tokenizers

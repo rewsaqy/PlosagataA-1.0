@@ -31,7 +31,7 @@ def get_model():
         for name in ["best.pt", "last.pt"]:
             p = CKPT / name
             if p.exists():
-                _model.load_state_dict(torch.load(p, map_location=DEVICE))
+                _model.load_state_dict(torch.load(p, map_location=DEVICE, weights_only=True))
                 break
         _model.to(DEVICE).eval()
     except Exception as e:
