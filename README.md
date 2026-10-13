@@ -1,3 +1,5 @@
+# PlosagataA-1.0
+
 # 🛡️ Validator Hoaks 12M + Deteksi Poster
 
 Proyek lomba AI terapan: web validator hoaks Bahasa Indonesia.
