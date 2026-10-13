@@ -15,6 +15,29 @@ STOP = STOPWORDS  # alias lama, dipakai kata_kunci()
 WIKI_API = "https://id.wikipedia.org/w/api.php"
 
 
+def saring_relevan(kueri: str, hasil: list[dict]) -> list[dict]:
+    """Buang hasil live yg tak berkaitan dengan kueri.
+
+    Tanpa ini, pencarian full-text Wikipedia mengembalikan judul ngawur
+    (The Last Man, The Simpsons) yg menyesatkan sebagai 'sumber'.
+    Syarat lolos: >=1 kata bersama di JUDUL, atau >=2 di judul+cuplikan.
+    Murni (tanpa network) sehingga bisa diuji offline.
+    """
+    toks = {w for w in kueri.lower().split() if len(w) >= 4 and w not in STOP}
+    if not toks:
+        return hasil
+    dinilai = []
+    for h in hasil:
+        judul = (h.get("judul") or "").lower()
+        cupl = (h.get("cuplikan") or "").lower()
+        t_hit = sum(1 for w in toks if w in judul)
+        total = t_hit + sum(1 for w in toks if w in cupl)
+        if t_hit >= 1 or total >= 2:
+            dinilai.append((total, h))
+    dinilai.sort(key=lambda p: -p[0])
+    return [h for _, h in dinilai]
+
+
 def kata_kunci(teks: str, maks: int = 6) -> str:
     words = re.findall(r"[a-zA-Z]{4,}", teks.lower())
     unik, lihat = [], set()
@@ -45,7 +68,7 @@ def cari_wikipedia(kueri: str, jumlah: int = 3, timeout: int = 10) -> list[dict]
             url = "https://id.wikipedia.org/wiki/" + urllib.parse.quote(judul.replace(" ", "_"))
             cuplikan = re.sub(r"<[^>]+>", "", item.get("snippet", ""))[:220]
             hasil.append({"judul": judul, "url": url, "cuplikan": cuplikan})
-        return hasil
+        return saring_relevan(kueri, hasil)[:jumlah]
     except Exception:
         return []
 

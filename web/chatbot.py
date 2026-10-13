@@ -133,7 +133,8 @@ class SagiEngine:
                    "kesimpulan": lv["kesimpulan"]}
         if not self.trained and not pure_think:
             isi = ringkasan_hasil(v["label"], lv["skor_hoaks"],
-                                  lv["kesimpulan"], sumber)
+                                  lv["kesimpulan"], sumber,
+                                  lv["sinyal"].get("fiksi_hits"))
             if topic == "followup":
                 isi = "Merujuk berita tadi:\n" + isi
             return {"reply": isi, "topic": topic,

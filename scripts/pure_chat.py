@@ -123,7 +123,8 @@ def main():
             except Exception:
                 sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
             isi = ringkasan_hasil(v["label"], lv["skor_hoaks"],
-                                  lv["kesimpulan"], sumber)
+                                  lv["kesimpulan"], sumber,
+                                  lv["sinyal"].get("fiksi_hits"))
             return ("Merujuk berita tadi:\n" + isi) if rujuk else isi
         # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode
         ids, _ = tok.encode(kueri if rujuk else clean)

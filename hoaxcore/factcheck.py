@@ -24,8 +24,31 @@ HOAX_KEYWORDS = [
     "sumber terpercaya",
     "awas", "waspada", "hati-hati",
     "cukup dengan", "hanya dengan", "tanpa efek samping",
-    "nomor wa", "hubungi", "chat admin",
+        "nomor wa", "hubungi", "chat admin",
 ]
+
+# Penanda konten yang MENDEKLARASIKAN dirinya fiksi/simulasi.
+# Kuat = cukup 1 temuan. Lemah = butuh >=2 temuan berbeda
+# (agar berita latihan/simulasi bencana asli tidak kena false-positive).
+FIKSI_KUAT = [
+    "fiktif", "fiksi", "rekaan", "direka", "khayalan", "dongeng",
+]
+FIKSI_LEMAH = [
+    "simulasi", "skenario", "ilustrasi", "sintetis", "ilustratif",
+    "simulasi literasi", "untuk simulasi", "dalam simulasi",
+    "skenario tersebut", "data sintetis", "naskah ini",
+    "contoh jurnalistik", "pejabat fiktif", "tokoh fiktif",
+]
+
+
+def deteksi_fiksi(text: str) -> list[str]:
+    """Kembalikan penanda fiksi yg ditemukan (kosong = bukan deklarasi fiksi)."""
+    t = (text or "").lower()
+    kuat = [k for k in FIKSI_KUAT if k in t]
+    lemah = [k for k in FIKSI_LEMAH if k in t]
+    if kuat or len(set(lemah)) >= 2:
+        return kuat + lemah
+    return []
 
 
 def heuristic_signals(text: str) -> dict:
@@ -54,6 +77,8 @@ def heuristic_signals(text: str) -> dict:
 
 def local_verdict(text: str, model_result: dict) -> dict:
     sig = heuristic_signals(text)
+    fiksi = deteksi_fiksi(text)
+    sig["fiksi_hits"] = fiksi
     skor = 0
     skor += len(sig["keyword_hits"]) * 20
     skor += 15 if sig["many_caps"] else 0
@@ -72,9 +97,15 @@ def local_verdict(text: str, model_result: dict) -> dict:
     elif skor >= 30:
         kesimpulan = "MERAGUKAN — cek sumber resmi sebelum menyebarkan."
     else:
-        kesimpulan = "Tampak VALID — tetap cek sumber resmi."
+        kesimpulan = "Tidak ada sinyal hoaks — belum terverifikasi, cek sumber resmi."
+    if fiksi:
+        kesimpulan = ("FIKSI/SIMULASI — konten menyatakan dirinya rekaan, "
+                      "bukan laporan kejadian nyata.")
 
     saran = []
+    if fiksi:
+        saran.append(f"Terdeteksi deklarasi fiksi/simulasi ({', '.join(fiksi[:3])}). "
+                     "Jangan disebar sebagai berita faktual; fiksi berlabel jelas bukan hoaks.")
     if sig.get("shortened_url") or sig.get("short_urls"):
         saran.append("Waspadai tautan singkat (bit.ly/tinyurl/s.id); berpotensi phising atau penipuan daring.")
     if sig.get("phone_number") or sig.get("has_phone"):
@@ -101,13 +132,16 @@ def local_verdict(text: str, model_result: dict) -> dict:
     }
 
 
-def ringkasan_hasil(label: str, skor: int, kesimpulan: str, sumber: dict | None = None) -> str:
+def ringkasan_hasil(label: str, skor: int, kesimpulan: str,
+                    sumber: dict | None = None, fiksi: list | None = None) -> str:
     """Balasan ekstraktif saat model chat belum terlatih: verdict + sumber RAG.
 
     Dipakai SagiEngine/pure_chat ketika checkpoint Plosagata belum ada —
-    tanpa ini balasannya gibberish bobot acak.
+    tanpa ini balasannya gibberish bobot acak. Bila konten deklarasi fiksi,
+    baris label ikut jujur (bukan VALID).
     """
-    baris = [f"Hasil cek Sagi: {label.upper()} (skor hoaks {skor}/100).",
+    status = "FIKSI/SIMULASI" if fiksi else label.upper()
+    baris = [f"Hasil cek Sagi: {status} (skor hoaks {skor}/100).",
              kesimpulan]
     wiki = (sumber or {}).get("wikipedia") or []
     for h in wiki[:2]:
