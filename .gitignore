@@ -11,3 +11,7 @@ lora-hoax-chat/
 
 # HF cache
 .cache/
+
+# RAG offline (besar, dibangun lokal)
+data/korpus.txt
+data/rag_index/
