@@ -33,7 +33,22 @@ pre{background:#111;color:#0f0;padding:1rem;border-radius:8px;overflow:auto}
 <pre id="json"></pre>
 </div>
 
+<div class="card">
+<h3>3. Riwayat & Statistik</h3>
+<div id="stats">Belum ada cek.</div>
+<ul id="riwayat"></ul>
+</div>
+
 <script>
+async function muatRiwayat(){
+  const r = await fetch('/api/history'); const j = await r.json();
+  const s = await (await fetch('/api/stats')).json();
+  document.getElementById('stats').innerText =
+    `Total: ${s.total} | ` + Object.entries(s.per_label).map(([k,v])=>`${k}: ${v}`).join(' | ');
+  document.getElementById('riwayat').innerHTML = j.riwayat.map(h =>
+    `<li>[${h.waktu}] <span class="badge ${h.label}">${h.label}</span> skor ${h.skor} — ${h.cuplikan}</li>`
+  ).join('');
+}
 document.getElementById('f').onsubmit = async (e) => {
   e.preventDefault();
   const fd = new FormData();
@@ -48,10 +63,12 @@ document.getElementById('f').onsubmit = async (e) => {
     const lbl = j.model.label;
     document.getElementById('hasil').innerHTML =
       `<span class="badge ${lbl}">${lbl.toUpperCase()}</span> <b>${j.verifikasi.kesimpulan}</b><br>Skor hoaks: ${j.verifikasi.skor_hoaks}/100`;
+    muatRiwayat();
   } else {
     document.getElementById('hasil').innerText = j.error || 'Gagal';
   }
 };
+muatRiwayat();
 </script>
 </body>
 </html>

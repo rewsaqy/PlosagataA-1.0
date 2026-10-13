@@ -1,6 +1,8 @@
 """Web validator hoaks: teks + upload poster -> model 12M + OCR + fact-check."""
 import os
 import tempfile
+import time
+from collections import Counter, deque
 from pathlib import Path
 
 import torch
@@ -14,6 +16,8 @@ from tokenizer import WordTokenizer
 app = Flask(__name__)
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CKPT = Path(os.getenv("CKPT_DIR", "checkpoints"))
+
+_history: deque = deque(maxlen=20)  # riwayat 20 cek terakhir (in-memory)
 
 _model = None
 _tok = None
@@ -81,6 +85,12 @@ def check():
 
     hasil_model = model_predict(text)
     verifikasi = local_verdict(text, hasil_model)
+    _history.appendleft({
+        "waktu": time.strftime("%H:%M:%S"),
+        "cuplikan": text[:80],
+        "label": hasil_model["label"],
+        "skor": verifikasi["skor_hoaks"],
+    })
     return jsonify({
         "ok": True,
         "input": text[:2000],
@@ -88,6 +98,17 @@ def check():
         "model": hasil_model,
         "verifikasi": verifikasi,
     })
+
+
+@app.route("/api/history")
+def history():
+    return jsonify({"ok": True, "riwayat": list(_history)})
+
+
+@app.route("/api/stats")
+def stats():
+    c = Counter(h["label"] for h in _history)
+    return jsonify({"ok": True, "total": len(_history), "per_label": dict(c)})
 
 
 if __name__ == "__main__":

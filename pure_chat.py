@@ -14,8 +14,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import torch
 
-from plosagata import (CONFIGS, SAGI_HELLO, PureGPT, is_news_topic,
-                       redirect_reply)
+from plosagata import (CONFIGS, PureGPT, is_news_topic, sagi_hello,
+                       sagi_redirect)
 from slang import normalize_slang
 from tokenizer import WordTokenizer
 
@@ -67,9 +67,9 @@ def main():
     def answer(prompt: str) -> str:
         topic = is_news_topic(normalize_slang(prompt))
         if topic == "offtopic":
-            return redirect_reply()
+            return sagi_redirect(prompt)
         if topic == "greeting":
-            return SAGI_HELLO
+            return sagi_hello(prompt)
         ids, _ = tok.encode(normalize_slang(prompt))
         real = [i for i in ids if i != tok.pad_id][:64]
         out = get_model().generate(torch.tensor([real]), max_new=a.max_new,

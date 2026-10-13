@@ -88,6 +88,30 @@ SAGI_HELLO = (
     "Tempel berita atau klaim yang mau dicek kebenarannya untuk mulai."
 )
 
+SAGI_HELLO_VARIANTS = [
+    SAGI_HELLO,
+    "Halo! Sagi di sini. Ada berita yang meragukan? Tempel saja, saya cek.",
+    "Hai! Saya Sagi, penjaga berita biar kamu tidak termakan hoaks. Mana beritanya?",
+]
+
+SAGI_REDIRECT_VARIANTS = [
+    "Maaf, saya hanya bisa membahas seputar berita dan cek fakta. "
+    "Ada berita atau klaim yang mau dicek kebenarannya? Tempel saja di sini.",
+    "Itu di luar tugas saya — saya Sagi, khusus validasi berita. "
+    "Coba tempel klaim atau berita yang mau dicek.",
+    "Saya tolak dengan sopan ya — Sagi hanya melayani cek fakta berita. "
+    "Ada berita yang mau diverifikasi?",
+]
+
+
+def sagi_hello(prompt: str = "") -> str:
+    """Sapaan bervariasi tapi deterministik (stabil untuk demo)."""
+    return SAGI_HELLO_VARIANTS[abs(hash(prompt)) % len(SAGI_HELLO_VARIANTS)]
+
+
+def sagi_redirect(prompt: str = "") -> str:
+    return SAGI_REDIRECT_VARIANTS[abs(hash(prompt)) % len(SAGI_REDIRECT_VARIANTS)]
+
 
 def strip_wake(text: str) -> tuple[bool, str]:
     """Deteksi panggilan 'Sagi'. Return (disebut, sisa_pesan)."""
