@@ -70,7 +70,14 @@ def cari_sumber(teks: str) -> dict:
     except Exception:
         lokal = []
     if not wiki:
-        wiki = cari_wikipedia(kueri)
+        # Kueri 6 kata sering terlalu sempit (AND implisit) -> hasil kosong.
+        # Mundur progresif: coba 3 kata pertama, lalu 2 kata pertama.
+        toks = kueri.split()
+        for n in (3, 2):
+            if len(toks) > n:
+                wiki = cari_wikipedia(" ".join(toks[:n]))
+                if wiki:
+                    break
     return {"kueri": kueri,
             "wikipedia": wiki,
             "cek_fakta": link_cek_fakta(teks)}

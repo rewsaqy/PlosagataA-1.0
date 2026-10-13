@@ -6,7 +6,8 @@ from plosagata.slang import normalize_slang
 from hoaxcore.tokenizer import STOPWORDS, basic_clean
 
 INDEX_DIR = Path("data/rag_index")
-MIN_SKOR = 0.15  # cosine di bawah ini = tak relevan -> fallback live
+MIN_SKOR = 0.25  # cosine di bawah ini = tak relevan -> fallback live
+# (0.2 masih lolos untuk 1 kata bersama, mis. "mewah"; kasus baik >= 0.35)
 
 
 def tokenize_id(teks: str) -> list[str]:
