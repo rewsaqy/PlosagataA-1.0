@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 
 from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
-                       local_verdict, ringkasan_hasil)
+                       final_label, local_verdict, ringkasan_hasil)
 from plosagata import (CONFIGS, PureGPT, is_follow_up, is_news_topic,
                        normalize_slang, sagi_hello, sagi_redirect)
 
@@ -129,10 +129,10 @@ class SagiEngine:
             sumber = cari_sumber(kueri)
         except Exception:
             sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
-        verdict = {**v, "skor": lv["skor_hoaks"],
-                   "kesimpulan": lv["kesimpulan"]}
+        verdict = {**v, "label": final_label(v.get("label"), lv["skor_hoaks"]),
+                   "skor": lv["skor_hoaks"], "kesimpulan": lv["kesimpulan"]}
         if not self.trained and not pure_think:
-            isi = ringkasan_hasil(v["label"], lv["skor_hoaks"],
+            isi = ringkasan_hasil(verdict["label"], lv["skor_hoaks"],
                                   lv["kesimpulan"], sumber)
             if topic == "followup":
                 isi = "Merujuk berita tadi:\n" + isi

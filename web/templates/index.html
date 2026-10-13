@@ -60,7 +60,7 @@ document.getElementById('f').onsubmit = async (e) => {
   const j = await r.json();
   document.getElementById('json').innerText = JSON.stringify(j, null, 2);
   if (j.ok) {
-    const lbl = j.model.label;
+    const lbl = j.verifikasi.label_final || j.model.label;
     document.getElementById('hasil').innerHTML =
       `<span class="badge ${lbl}">${lbl.toUpperCase()}</span> <b>${j.verifikasi.kesimpulan}</b><br>Skor hoaks: ${j.verifikasi.skor_hoaks}/100`;
     muatRiwayat();

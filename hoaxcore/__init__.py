@@ -1,6 +1,6 @@
 """HoaxCore — klasifier hoaks 12M + util (tokenizer, fact-check, OCR)."""
 from .dataset import ID2LABEL, LABEL2ID, HoaxDataset, load_csv
-from .factcheck import heuristic_signals, llm_crosscheck, local_verdict, ringkasan_hasil
+from .factcheck import final_label, heuristic_signals, llm_crosscheck, local_verdict, ringkasan_hasil
 from .model import TinyHoaxTransformer, count_params
 from .ocr_poster import ocr_poster
 from .retrieval import cari_sumber, kata_kunci, link_cek_fakta

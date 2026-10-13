@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT))
 import torch
 from flask import Flask, jsonify, render_template, request
 
-from hoaxcore import ID2LABEL, TinyHoaxTransformer, WordTokenizer, local_verdict, ocr_poster
+from hoaxcore import ID2LABEL, TinyHoaxTransformer, WordTokenizer, final_label, local_verdict, ocr_poster
 from plosagata import CONFIGS
 
 app = Flask(__name__)
@@ -148,10 +148,11 @@ def check():
 
     hasil_model = model_predict(text)
     verifikasi = local_verdict(text, hasil_model)
+    label = final_label(hasil_model["label"], verifikasi["skor_hoaks"])
     _history.appendleft({
         "waktu": time.strftime("%H:%M:%S"),
         "cuplikan": text[:80],
-        "label": hasil_model["label"],
+        "label": label,
         "skor": verifikasi["skor_hoaks"],
     })
     return jsonify({
