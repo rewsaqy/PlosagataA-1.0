@@ -1,92 +1,176 @@
-# Arsitektur Kode PlosagataA-1.0 (Penjelasan per Part)
+# Arsitektur PlosagataA-1.0 — Bedah Total Bagaimana Semua Kode Berbicara
 
 > Kembali: `README.md` · Santai: `howitworks/Cara_kerja_sagi.md` ·
-> Nambah file: `howitworks/Cara_nambah_file.md`
+> Nambah file: `howitworks/Cara_nambah_file.md` · Bug: `BUGS.md`
 
-Dokumen ini menjelaskan SEMUA file kode: gunanya apa dan cara kerjanya.
-Untuk cara install/training, baca `README.md`.
+Dokumen ini menjawab: modul apa memanggil modul apa, dengan data apa,
+berbentuk apa, sebesar apa. Angka tensor ditulis eksplisit.
 
-## Peta besar (aliran data)
+## 0. Peta ketergantungan modul (siapa import siapa)
 
 ```
-Teks / Poster
-   │  poster → hoaxcore/ocr_poster.py (gambar jadi teks)
-   ▼
-hoaxcore/tokenizer.py ......... teks → angka (BPE)
-   ├─► hoaxcore/model.py ...... angka → label Valid/Hoaks/Meragukan (12M)
-   ├─► hoaxcore/factcheck.py .. label + teks → skor 0-100 + saran sumber
-   └─► plosagata/model.py ..... angka → tebakan kata berikut (b1, Sagi chat)
-         ▲ dilatih oleh scripts/train_pure.py
-   ▼
-web/app.py (validator) / web/chatbot.py + /chat (ngobrol)
+scripts/* ──► plosagata.* ──► (torch saja)
+   │              ├── config   (murni data, tanpa import internal)
+   │              ├── layers   (torch) → dipakai model
+   │              ├── model    (config, layers) → PureGPT, detect_size
+   │              ├── guard    (mandiri: re, hashlib)
+   │              └── slang    (mandiri: re)
+   │
+   ├─► hoaxcore.* ──► (torch, sklearn, tokenizers)
+   │        ├── model      (torch) → TinyHoaxTransformer
+   │        ├── tokenizer  (tokenizers lib) → WordTokenizer + piece_*
+   │        ├── dataset    (torch + slang) → HoaxDataset
+   │        ├── factcheck  (re) → signals, verdict, final_label, ringkasan
+   │        ├── retrieval  (urllib + rag) → cari_sumber
+   │        ├── rag        (rank_bm25, sklearn, slang) → index + search
+   │        ├── ocr_poster (PIL/tesseract, lazy) → teks poster
+   │        └── shared     (model+tokenizer) → SATU instance 12M
+   │
+   └─► web/* ──► (flask + dua paket di atas)
+            ├── app.py     (routing, token, registry engine, history)
+            ├── chatbot.py (SagiEngine: guard→model→verdict→sumber)
+            └── templates/ (index, chat, models)
 ```
 
-## Part 1 — `hoaxcore/` (otak validator 12M)
+Aturan: `plosagata` tidak boleh import `hoaxcore` (tetap murni).
+`hoaxcore` boleh memakai `plosagata.slang` (satu arah).
+`web` boleh memakai keduanya. `scripts` hanya pemanggil.
 
-| File | Guna (bahasa bayi) | Isi arsitektur |
+## 1. Siklus hidup satu chat: "Bener gak BLT cair?" (detail penuh)
+
+Ikuti nomornya — tiap panah = pemanggilan fungsi nyata:
+
+```
+[Browser] POST /api/chat {message, session}
+   │
+[web/app.py:chat_api]
+   ├─ _cek_token() → lolos (tanpa token = 401)
+   ├─ teks diawali "/"? → cmd_chat (jalur slash-command, selesai)
+   └─ get_engine() → SagiEngine(Plosagata_Go) [cache _engines]
+        │
+[web/chatbot.py:SagiEngine.reply]
+   ├─ 1. normalize_slang: "Bener gak..." (slang→formal, regex \b)
+   ├─ 2. is_news_topic → "news" (stem "cair" + keyword BLT/bansos...
+   │      guard STEM dulu: "mencairkan"→"cair", baru cocok kata-per-kata)
+   ├─ 3. _sesi_get(session_id): slot {topik, aktif}; topik="..." disimpan
+   ├─ 4. verdict() → shared.predict_proba:
+   │      tok.encode → ids[128] → TinyHoaxTransformer → softmax
+   │      → {"label":"meragukan","probs":[.2,.5,.3]}
+   ├─ 5. local_verdict(teks, v): heuristic_signals (keyword×20, caps,
+   │      URL, HP, emoji, fitnah_tokoh +50, fiksi-deteksi) → skor 0-100
+   │      → final_label SATU label (fiksi→biru, ≥60→hoaks, dst)
+   ├─ 6. cari_sumber: RAG lokal (BM25 top-20 → TF-IDF cosine top-3,
+   │      ambang 0.25) → kosong? fallback Wikipedia live + link cek fakta
+   ├─ 7a. Model BELUM terlatih → ringkasan_hasil: verdict + 2 sumber
+   │      (ekstraktif, deterministik, tanpa generate)
+   ├─ 7b. Model TERLATIH/pure-think → PureGPT.generate:
+   │      encode → 22×(attention+FFN) per token + KV-cache + EOS stop
+   │      + no-repeat-3gram → decode → teks
+   └─ 8. JSON {reply, topic, verdict{label,skor,kesimpulan}, sumber}
+        → browser render bubble + badge + link sumber
+```
+
+Bentuk data antar tahap: `str → str(bersih) → label str → ids[128] int →
+probs[3] float → skor int → JSON`. Tidak ada yang hilang/berubah diam-diam:
+tipe tiap panah diuji eval (`eval_topik`, `eval_fiksi`, `eval_verdict`).
+
+## 2. Siklus validator web: tempel teks + upload poster
+
+```
+POST /api/check (form: text + file poster?)
+ ├─ ocr_poster(path) → teks poster (Tesseract ind+eng; gagal → "")
+ ├─ text + poster_text digabung
+ ├─ model_predict → get_model (singleton shared) → label+probs
+ ├─ local_verdict → skor + label_final + saran
+ ├─ simpan _history (deque 20: waktu, cuplikan, label FINAL, skor)
+ └─ JSON {input, poster_text, model, verifikasi}
+GET /api/history → 20 terakhir · GET /api/stats → hitung per label
+```
+
+Badge UI membaca `verifikasi.label_final` — TIDAK PERNAH label mentah model.
+Itulah obat bug "skor 100 tapi badge VALID".
+
+## 3. Ganti model beneran (`/models`, `/model X`)
+
+```
+pilih X → select_model(X):
+  1. unload_engine(lama): del objek + gc + cuda.empty_cache → RAM kembali
+  2. ACTIVE = X; bangun SagiEngine(X) baru (tokenizer + sesi kosong)
+  3. PRELOAD bobot: _get_model() sekarang juga (bukan malas)
+     ├─ ckpt cocok? detect_size(ckpt)==X → load, lapor TERLATIH ✅
+     ├─ tak cocok? detect_size → alihkan ukuran + rebuild tokenizer
+     └─ gagal total? fallback Go + pesan manusiawi (bukan traceback)
+  4. Smoke: generate 3 token → ukur detik → "X NYALA dalam N dtk"
+  5. Chat berikut memakai engine baru (sesi lama ikut mati bersamanya)
+```
+
+`/api/models` list: nama, display, params (tabel terverifikasi, tanpa bangun
+model), layers, dim, loaded, trained, ckpt_tersedia (deteksi file saja).
+
+## 4. Training: dua jalur, dua bahan
+
+```
+Jalur A — klasifier (scripts/train.py):
+  CSV → split DULU (perimentasi strata) → augmentasi KHUSUS train
+  → HoaxDataset (slang-normalize!) → DataLoader batch
+  → AdamW + cosine → val tiap epoch → best.pt + vocab.json
+  Aturan suci: augmentasi sebelum split = angka kembung (pernah kejadian).
+
+Jalur B — chat (scripts/train_pure.py):
+  Korpus (.txt, blok \n\n) → CorpusDataset (chunk max_len, collate -100)
+  ATAU chat (.jsonl) → ChatLMDataset (target pad → -100, JANGAN latih pad!)
+  → fp16 + grad-checkpoint + adam8bit (GPU kecil) → --ckpt lanjutkan
+  → out.pt + out.vocab.pt + out.tokenizer.json (backend BPE penuh!)
+  Urutan load inference: .tokenizer.json > .vocab.pt+pieces > build-seed.
+```
+
+## 5. Tokenizer: tiga nyawa
+
+1. **Penuh** (`.tokenizer.json`): backend BPE persis training. Ideal.
+2. **Dict + pieces** (`.vocab.pt`): longest-match darurat per kunci `Ġ`.
+3. **Build ulang** (seed + data): hanya untuk eksperimen, ID tak dijamin sama
+   (terbukti: 266/8000 cocok) — JANGAN untuk ckpt orang.
+
+## 6. Guard: 3 lapis saringan
+
+```
+strip_wake ("Sagi, ...") → _is_greeting (kata utuh, bukan substring)
+→ ada_kata_berita (stem+frasa) → ada_kata_offtopic
+→ "?"-rule → follow-up aman HANYA bila ada topik sesi DAN tanpa kata off-topic
+   ("Siapa pacarmu?" + topik aktif = tetap DITOLAK)
+```
+
+Stemmer mini + kamus `PENGECUALIAN` (aturan buta akar: memberitakan→mberita
+tanpa kamus). Sapaan varian via md5 (stabil lintas restart — `hash()` dilarang).
+
+## 7. RAG: lokal dulu, live cadangan
+
+```
+rag_search: tokenize(slang+clean) → BM25 top-20 (tanpa gate skor>0, karena
+  IDF bisa nol) → TF-IDF cosine → buang cosine≤0 → top-3
+  → kosong? cari_wikipedia live → tetap kosong? link cek-fakta manual
+saring_relevan: minimal kata bersama judul (anti-anime-nyasar)
+Index: build_index.py (chunk 300/50) → data/rag_index/ (gitignore, build lokal)
+```
+
+## 8. Memori & proses
+
+- Satu proses Flask: 12M SATU instance (`shared.py`), engine chat per ukuran
+  (max 1 aktif + cache), sesi `{topik, aktif}` dibatasi 500 + kadaluarsa 2 jam.
+- Thread torch dibatasi setengah core; reloader MATI bawaan (fork+thread=crash).
+- Tanpa GPU: Go ~390 tok/detik train; b1 forward ~7 dtk/token. Jujur di README.
+
+## 9. Kalau mau ubah sesuatu, edit mana? (lengkap)
+
+| Keinginan | File | Fungsi |
 |---|---|---|
-| `model.py` | Mesin penilai: membaca angka, keluar label. Seperti juri yang cap VALID/HOAKS | `TinyHoaxTransformer`: embedding kata+posisi (5000×384) → 6 lapis TransformerEncoder (self-attention 6 head + feedforward 1280) → rata-rata → 2 lapis linear → 3 skor kelas. Total 11.584.515 parameter |
-| `tokenizer.py` | Kamus kata↔angka (BPE). Tanpa ini model buta huruf | Latih pola potongan kata dari data (`build`), `encode` teks→id+mask, `decode` id→teks, `save/load` vocab.json. Kata asing dipotong per pecahan (tidak ada OOV) |
-| `dataset.py` | Pelayan data: baca CSV, antar ke model per batch | `load_csv` (kolom text,label), `HoaxDataset` (encode + label jadi tensor), peta `LABEL2ID` |
-| `factcheck.py` | Detektif pola hoaks + pemberi verdict akhir | `heuristic_signals`: cari kata umpan (giveaway, klik link), caps, tanda seru, short-URL, nomor HP, emoji. `local_verdict`: jumlahkan jadi skor 0-100 + kesimpulan + saran + sumber (turnbackhoax.id, cekfakta.com) |
-| `ocr_poster.py` | Mata: baca tulisan di foto poster jadi teks | Bungkus Tesseract-OCR (Indonesia+Inggris). Gagal → pesan jelas, web tetap jalan |
-| `rag.py` | Mesin cari lokal: BM25 top-20 → TF-IDF rerank top-3 dari `data/rag_index/` | `chunk_teks` 300/50, `rag_search` cosine, fallback live jika index hilang |
-
-## Part 2 — `plosagata/` (otak chat Sagi, murni buatan sendiri)
-
-| File | Guna | Isi arsitektur |
-|---|---|---|
-| `config.py` | Cetak biru 3 ukuran model | `GPTConfig` dataclass (vocab, dim, layers, heads, ff, max_len, tie_weights). `tiny` 6M (tes CPU), `small` 92M (latihan), `b1` 912M (asli: vocab 16000, dim 2048, 22 layer, 16 head) |
-| `layers.py` | Bata bangunan transformer | `CausalSelfAttention`: QKV → attention causal (tidak boleh intip kata depan) → proyeksi. `Block`: attention + feedforward GELU, masing-masing dibungkus LayerNorm + sisa (residual) |
-| `model.py` | Model GPT utuh: tebak kata berikut | `PureGPT`: embedding kata+posisi → N Block → LayerNorm → head (dipinjam dari embedding = hemat 32M di b1) → distribusi 16.000 kata. `generate`: sampling suhu + top-k + penalti pengulangan + larangan token sampah. Init bobot ala GPT-2 (loss awal pas 8,5). Flag `use_checkpoint` untuk hemat VRAM |
-| `guard.py` | Satpam topik: hanya berita yang lolos | Daftar kata berita/off-topic/sapaan + `is_news_topic` → greeting/news/offtopic. Kata panggilan `Sagi` (strip_wake). Sapaan & penolakan 3 varian (`sagi_hello`, `sagi_redirect`) |
-| `slang.py` | Penerjemah gaul: 199 slang → formal | Dict + regex word-boundary. Dipakai training DAN chat agar konsisten. Nambah kata = 1 baris, tanpa retrain |
-
-## Part 3 — `scripts/` (perintah-perintah)
-
-| File | Perintah contoh | Input → Output |
-|---|---|---|
-| `train.py` | `python scripts/train.py --epochs 15` | CSV → `checkpoints/best.pt` + `vocab.json`. Split dulu baru augmentasi train (tidak bocor), AdamW + cosine, simpan terbaik |
-| `train_pure.py` | `python scripts/train_pure.py --size Plosagata_More --corpus data/korpus.txt --fp16 --grad-checkpoint --optim adam8bit` | Korpus/JSONL → `pure-Plosagata_More.pt`. Mode hemat VRAM untuk GPU kecil, log token/detik + ETA, lanjutkan via `--ckpt` |
-| `infer.py` | `python scripts/infer.py --text "..."` | Teks → label + probabilitas 3 kelas |
-| `pure_chat.py` | `python scripts/pure_chat.py --size Plosagata_Go` | Chat terminal: guard → Sagi/generate. Model di-load malas (hemat RAM) |
-| `gpt_pure.py` | `python scripts/gpt_pure.py b1` | Cetak jumlah parameter + tes forward (bukti arsitektur hidup) |
-| `csv_to_chat.py` | `python3 scripts/csv_to_chat.py` | CSV → `data/chat_hoaks.jsonl` (template jawaban per label) |
-| `build_corpus.py` | `python scripts/build_corpus.py` | Wikipedia Indonesia → `data/korpus.txt` (pretrain b1) |
-| `prepare_finetune.sh` | `bash scripts/prepare_finetune.sh` | Siapkan + gabung data, cetak checklist copy ke GPU |
-
-Semua script otomatis `chdir` ke root repo — bisa dijalankan dari folder mana saja.
-
-## Part 4 — `web/` (muka untuk manusia)
-
-| File | Guna |
-|---|---|
-| `app.py` | Server Flask: `/` validator (teks+poster), `/chat` halaman ngobrol, `/api/check` + `/api/chat` + `/api/history` + `/api/stats`. Riwayat 20 cek terakhir in-memory |
-| `chatbot.py` | `SagiEngine`: guard → Sagi/generate model murni + verdict 12M (label+skor) ditempel di jawaban. Ukuran/ckpt via env `SAGI_SIZE`/`SAGI_CKPT` |
-| `templates/index.html` | Form cek + badge hasil + riwayat/stats otomatis refresh |
-| `templates/chat.html` | Chat bubble (user kanan, Sagi kiri) + label 12M di bawah jawaban berita |
-
-## Part 5 — `data/` (bahan bakar)
-
-- `contoh_dataset.csv` (215, seimbang 75/75/65) — latih klasifier
-- `contoh_chat.jsonl` (132) — latih gaya Sagi (slang, penolakan, sapaan)
-- `chat_hoaks.jsonl` (215, hasil generate) + `train_chat.jsonl` (347, gabungan)
-- `vocab_seed.txt` (400+ kata) — dicampur otomatis tiap build vocab agar kata
-  penting jadi 1 token utuh (tes: tsunami 7 potong → 1)
-
-## Kalau mau ubah sesuatu, edit mana?
-
-- Tambah slang → `plosagata/slang.py` (1 baris)
-- Tambah kata kunci topik → `plosagata/guard.py` (`NEWS_KEYWORDS` / `OFFTOPIC_KEYWORDS`)
-- Ganti ukuran model → `plosagata/config.py`
-- Ganti arsitektur → `plosagata/layers.py` + `model.py`
-- Tambah data → `data/` + regenerate (lihat README)
-- Ubah tampilan web → `web/templates/`
-
-## Urutan baca untuk pemula
-
-1. `plosagata/config.py` (pendek, paham ukurannya)
-2. `plosagata/layers.py` (batanya)
-3. `plosagata/model.py` (rumahnya)
-4. `scripts/gpt_pure.py` → jalankan, lihat angka parameter
-5. `hoaxcore/model.py` (juri 12M) → `scripts/train.py` (cara ngajarin)
+| Kata slang baru | `plosagata/slang.py` | 1 baris dict |
+| Kata topik | `plosagata/guard.py` | `*_KEYWORDS` + `PENGECUALIAN` bila berimbuhan aneh |
+| Ukuran model baru | `plosagata/config.py` | 1 baris CONFIGS + PARAMS + DISPLAY |
+| Sampling/anti-ngelantur | `plosagata/model.py` generate args | temp/top_k/no_repeat/eos |
+| Skor/aturan verdict | `hoaxcore/factcheck.py` | bobot `local_verdict`, `final_label` |
+| Sumber internet | `hoaxcore/retrieval.py` + `rag.py` | ambang, fallback |
+| Endpoint web | `web/app.py` | route + `select_model` |
+| Perilaku chat | `web/chatbot.py` | `SagiEngine.reply` |
+| Tampilan | `web/templates/` | html/js langsung |
+| Data | `data/` + regenerate | `csv_to_chat` → gabung `train_chat.jsonl` |
