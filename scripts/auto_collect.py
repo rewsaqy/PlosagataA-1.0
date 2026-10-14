@@ -113,10 +113,10 @@ def kumpulkan_tbh_full(max_artikel: int, jeda: float = 2.5,
     p_seen = Path(seen_path)
     if p_seen.exists():
         seen = set(p_seen.read_text(encoding="utf-8").splitlines())
-    halaman, tambah, total = 1, 0, 0
+    halaman, tambah, total, kosong_beruntun = 1, 0, 0, 0
     with open(seen_path, "a", encoding="utf-8") as f_seen, \
          open("data/korpus.txt", "a", encoding="utf-8") as o:
-        while tambah < max_artikel:
+        while tambah < max_artikel and kosong_beruntun < 5:
             html_page = ""
             for coba in range(4):
                 try:
@@ -133,8 +133,13 @@ def kumpulkan_tbh_full(max_artikel: int, jeda: float = 2.5,
             urls = re.findall(r'href="(https://turnbackhoax\.id/articles/\d+-[a-z0-9\-]+)"', html_page)
             urls = list(dict.fromkeys(urls))
             if not urls:
-                print("[full] tidak ada artikel lagi, selesai.")
-                break
+                # Halaman 200 tapi kosong = server ngadat, BUKAN habis.
+                kosong_beruntun += 1
+                print(f"[full] halaman {halaman} kosong ({kosong_beruntun}x), loncat + jeda 30d.")
+                time.sleep(30)
+                halaman += 1
+                continue
+            kosong_beruntun = 0
             for url in urls:
                 if tambah >= max_artikel or url in seen:
                     continue
