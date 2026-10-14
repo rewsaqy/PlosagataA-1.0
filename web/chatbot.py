@@ -24,9 +24,9 @@ class SagiEngine:
 
         # tokenizer chat — urutan: JSON penuh > dict+pieces > build fallback.
         # JSON penuh memulihkan backend BPE persis seperti saat training.
-        self.ckpt = ckpt
+        self.ckpt = ckpt or self._cari_ckpt_otomatis(size)
         self.ckpt_dir = Path(ckpt_dir)
-        self.trained = bool(ckpt and Path(ckpt).exists())
+        self.trained = bool(self.ckpt and Path(self.ckpt).exists())
         self.use_pieces = False
         loaded_tok = False
         if self.trained:
@@ -75,6 +75,30 @@ class SagiEngine:
             self.vmodel, self.vtok = get_classifier(str(self.ckpt_dir), self.device)
         except Exception:
             self.vtok, self.vmodel = None, None
+
+    @staticmethod
+    def _cari_ckpt_otomatis(size):
+        """Cari checkpoint pasangan di folder proyek (pure-<size>*.pt).
+
+        Biar model yang dinyalakan langsung terlatih bila file-nya ada,
+        tanpa harus set SAGI_CKPT manual.
+        """
+        from pathlib import Path as _P
+        cands = sorted(_P(".").glob(f"pure-{size}*.pt")) + \
+                sorted(_P(".").glob("pure-*.pt"))
+        best = None
+        for p in cands:
+            if p.suffixes[-2:] == [".vocab", ".pt"] or ".vocab." in p.name:
+                continue
+            try:
+                from plosagata import detect_size
+                if detect_size(str(p)) == size:
+                    if "-best" in p.name:
+                        return str(p)
+                    best = best or str(p)
+            except Exception:
+                continue
+        return best or ""
 
     def _get_model(self):
         if self.model is None:

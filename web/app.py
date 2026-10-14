@@ -70,15 +70,38 @@ def unload_engine(name):
 
 
 def select_model(name):
-    """Ganti model AKTIF: matikan semua engine lain, nyalakan yg baru (sesi fresh)."""
+    """Ganti model AKTIF: matikan semua engine lain, nyalakan yg baru (sesi fresh).
+
+    Nyalakan = preload bobot + smoke test 1 forward, lalu LAPOR.
+    Bukan placeholder: kalau gagal load, bilang gagal (tidak pura-pura nyala).
+    """
+    import time as _t
     if name not in CONFIGS:
         return {"ok": False, "error": f"Model tak dikenal: {name}"}
     dimatikan = [k for k in list(_engines) if k != name and unload_engine(k)]
     ACTIVE["model"] = name
-    eng = get_engine(name)  # bangun + warmup ringan
+    t0 = _t.time()
+    try:
+        eng = get_engine(name)  # bangun (tokenizer + 12M shared)
+        eng._get_model()  # preload bobot chat (berat!) — gagal = OOM/disk
+        import torch as _th
+        with _th.no_grad():
+            _th.manual_seed(0)
+            probe = eng.model.generate(
+                _th.tensor([[eng.tok.cls_id]]).to(eng.device),
+                max_new=3, temperature=0.7, top_k=20,
+                ignore_ids=eng.ign) if hasattr(eng, "model") else None
+        dt = _t.time() - t0
+    except Exception as e:
+        unload_engine(name)
+        ACTIVE["model"] = "Plosagata_Go"
+        return {"ok": False,
+                "error": f"Gagal menyalakan {name}: {str(e)[:200]}. Kembali ke Go."}
     from plosagata import PARAMS
     return {"ok": True, "active": name, "dimatikan": dimatikan,
-            "trained": eng.trained, "params": PARAMS.get(name, 0)}
+            "trained": eng.trained,
+            "ckpt": getattr(eng, "ckpt", "") or "-",
+            "params": PARAMS.get(name, 0), "nyala_detik": round(dt, 1)}
 
 
 def warmup():
@@ -202,9 +225,11 @@ def cmd_chat(text, session_id=""):
         if not r.get("ok"):
             return {"ok": True, "topic": "command",
                     "reply": f"Gagal: {r.get('error')}. Cek /models."}
+        extra = " (TERLATIH ✅)" if r.get("trained") else " (bobot acak ⚠️)"
         return {"ok": True, "topic": "command", "model_size": r["active"],
-                "reply": (f"Beralih ke {r['active']} "
-                          f"({r['params']/1e6:.1f} jt param). "
+                "reply": (f"{r['active']} NYALA dalam {r.get('nyala_detik')} dtk "
+                          f"({r['params']/1e6:.1f} jt param){extra}. "
+                          f"ckpt: {r.get('ckpt')}. "
                           f"Engine lama dimatikan: {', '.join(r['dimatikan']) or 'tidak ada'}. "
                           "Sesi chat dimulai fresh.")}
     if cmd == "/status":
