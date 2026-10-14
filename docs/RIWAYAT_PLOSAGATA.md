@@ -10,8 +10,8 @@
 - **Tujuan:** lomba AI terapan — sistem validasi hoaks Bahasa Indonesia end-to-end.
 - **Prinsip keras:** 100% arsitektur + bobot buatan sendiri. Tidak ada model unduhan
   (Qwen sempat dipakai lalu **dihapus total**: kode + 1,2 GB cache).
-- **Tim:** pemilik (rewsaqy, ide + data + testing), asisten AI OpenCode (arsitektur +
-  implementasi + audit), kontributor ZxWyvern (RAG, eval, vocab, UI, fiksi, memori sesi).
+- **Tim:** pemilik (rewsaqy: ide + data + testing) dan asisten AI OpenCode
+  (arsitektur + implementasi + audit).
 
 ## 2. Lini masa (fase, bukan tanggal per jam)
 

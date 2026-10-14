@@ -6,7 +6,6 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange)](https://pytorch.org)
 [![Models](https://img.shields.io/badge/Models-12M_%7C_92M_%7C_912M_%7C_1.5B-green)](#model)
 [![License](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
-[![Contributors](https://img.shields.io/github/contributors/rewsaqy/PlosagataA-1.0)](https://github.com/rewsaqy/PlosagataA-1.0/graphs/contributors)
 [![Last Commit](https://img.shields.io/github/last-commit/rewsaqy/PlosagataA-1.0)](https://github.com/rewsaqy/PlosagataA-1.0/commits)
 [![Stars](https://img.shields.io/github/stars/rewsaqy/PlosagataA-1.0?style=social)](https://github.com/rewsaqy/PlosagataA-1.0/stargazers)
 
@@ -33,8 +32,7 @@ model unduhan dari pihak mana pun.
 - [Penyebaran & Akses Jarak Jauh](#penyebaran--akses-jarak-jauh)
 - [Struktur Repositori](#struktur-repositori)
 - [Peta Jalan](#peta-jalan)
-- [Kontributor](#kontributor)
-- [Berkontribusi](#berkontribusi)
+- [Pembuat](#pembuat)
 - [Lisensi](#lisensi)
 
 ---
@@ -281,20 +279,14 @@ mana pun. Dokumentasi arsitektur per berkas: [`docs/ARSITEKTUR.md`](docs/ARSITEK
 
 ---
 
-## Kontributor
+## Pembuat
 
-- **rewsaqy**: arsitektur, model, dan training awal
-- **ZxWyvern**: training GPU, data, dan pengembangan lanjutan
+- **rewsaqy** — pemilik ide, arsitektur, data, training, dan pengujian.
+- **OpenCode (AI assistant)** — implementasi kode, audit, dan dokumentasi
+  bersama pemilik selama pembangunan.
 
-Lihat riwayat kontribusi lengkap via `git shortlog -sne`.
-
----
-
-## Berkontribusi
-
-Kontribusi terbuka. Baca [`CONTRIBUTING.md`](CONTRIBUTING.md) dulu:
-alur fork/branch/PR, evaluasi wajib (`eval_verdict.py`, `eval_fiksi.py`,
-lapor train + val loss), dan aturan bobot (tidak ada `.pt` di Git).
+Proyek personal — tidak menerima kontribusi luar. Riwayat kerja tercatat
+penuh via `git log`.
 
 ---
 
