@@ -117,11 +117,19 @@ def kumpulkan_tbh_full(max_artikel: int, jeda: float = 2.5,
     with open(seen_path, "a", encoding="utf-8") as f_seen, \
          open("data/korpus.txt", "a", encoding="utf-8") as o:
         while tambah < max_artikel:
-            try:
-                html_page = get(f"{TBH}/articles?page={halaman}")
-            except Exception as e:
-                print(f"[full] listing {halaman} gagal: {e}; berhenti aman.")
-                break
+            html_page = ""
+            for coba in range(4):
+                try:
+                    html_page = get(f"{TBH}/articles?page={halaman}")
+                    break
+                except Exception as e:
+                    tunggu = 10 * (coba + 1)
+                    print(f"[full] listing {halaman} gagal ({e}), coba lagi {tunggu}d...")
+                    time.sleep(tunggu)
+            if not html_page:
+                print(f"[full] listing {halaman} mati total, loncat halaman.")
+                halaman += 1
+                continue
             urls = re.findall(r'href="(https://turnbackhoax\.id/articles/\d+-[a-z0-9\-]+)"', html_page)
             urls = list(dict.fromkeys(urls))
             if not urls:
