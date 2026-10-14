@@ -46,10 +46,10 @@ class PureGPT(nn.Module):
         if self.use_checkpoint and self.training:
             import torch.utils.checkpoint as ckpt
             for b in self.blocks:
-                x = ckpt.checkpoint(b, x, use_reentrant=False)
+                x, _ = ckpt.checkpoint(b, x, use_reentrant=False)
         else:
             for b in self.blocks:
-                x = b(x)
+                x, _ = b(x)
         logits = self.head(self.ln(x))
         loss = None
         if targets is not None:
@@ -59,12 +59,23 @@ class PureGPT(nn.Module):
     @torch.no_grad()
     def generate(self, ids, max_new: int = 50, temperature: float = 0.8,
                  top_k: int = 40, ignore_ids=None, repetition_penalty: float = 1.2,
-                 no_repeat_ngram: int = 3):
+                 no_repeat_ngram: int = 3, eos_ids=None):
+        """Generate hemat: KV-cache (O(N) per token, bukan O(N^2)) + berhenti di EOS."""
         self.eval()
+        ids = ids[:, -self.cfg.max_len:]
         out = ids
+        # Prefill seluruh prompt sekali, simpan KV-cache per layer.
+        B, L0 = ids.shape
+        pos = torch.arange(L0, device=ids.device).unsqueeze(0)
+        x = self.tok_emb(ids) + self.pos_emb(pos)
+        pasts = []
+        for b in self.blocks:
+            x, present = b(x)
+            pasts.append(present)
+        h = self.ln(x)
+        stop = set(eos_ids) if eos_ids else set()
         for _ in range(max_new):
-            cur = out[:, -self.cfg.max_len:]
-            logits, _ = self.forward(cur)
+            logits = self.head(h[:, -1:, :])
             next_logits = logits[:, -1, :] / max(temperature, 1e-6)
             if ignore_ids:
                 next_logits[:, list(ignore_ids)] = float("-inf")
@@ -88,7 +99,23 @@ class PureGPT(nn.Module):
                 v, _ = torch.topk(next_logits, top_k)
                 next_logits[next_logits < v[:, [-1]]] = float("-inf")
             probs = F.softmax(next_logits, dim=-1)
-            out = torch.cat([out, torch.multinomial(probs, 1)], dim=1)
+            nxt = torch.multinomial(probs, 1)
+            out = torch.cat([out, nxt], dim=1)
+            if int(nxt[0, 0]) in stop:
+                break  # EOS: berhenti, jangan ngelantur sampai max_new
+            # Decode 1 token memakai cache (posisi absolut, dibatasi max_len).
+            Lnow = min(out.shape[1] - 1, self.cfg.max_len - 1)
+            ppos = torch.tensor([[Lnow]], device=ids.device)
+            x1 = self.tok_emb(nxt) + self.pos_emb(ppos)
+            new_pasts = []
+            for bb, past in zip(self.blocks, pasts):
+                # Jaga cache tidak melebihi max_len (buang paling lama).
+                if past[0].shape[2] >= self.cfg.max_len:
+                    past = (past[0][:, :, 1:, :], past[1][:, :, 1:, :])
+                x1, pr = bb(x1, past)
+                new_pasts.append(pr)
+            pasts = new_pasts
+            h = self.ln(x1)
         return out
 
 

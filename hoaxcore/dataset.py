@@ -32,7 +32,14 @@ class HoaxDataset(Dataset):
         return len(self.texts)
 
     def __getitem__(self, i):
-        ids, mask = self.tok.encode(self.texts[i])
+        # Slang dinormalisasi di train DAN inferensi (konsisten).
+        # Import lokal agar dataset tetap ringan tanpa plosagata.
+        try:
+            from plosagata.slang import normalize_slang
+            teks = normalize_slang(self.texts[i])
+        except Exception:
+            teks = self.texts[i]
+        ids, mask = self.tok.encode(teks)
         return (
             torch.tensor(ids, dtype=torch.long),
             torch.tensor(mask, dtype=torch.long),

@@ -2,6 +2,8 @@
 
 Tinggal di paket plosagata (karya sendiri) agar jalur murni juga terlindungi.
 """
+import hashlib as _hl
+import re as _re2
 
 # Kata kunci topik berita — di luar ini = off-topic
 NEWS_KEYWORDS = [
@@ -119,6 +121,15 @@ def is_follow_up(text: str) -> bool:
     return False
 
 
+def is_follow_up_safe(text: str) -> bool:
+    """Follow-up yang aman: merujuk obrolan TAPI bukan topik terlarang.
+
+    Mencegah bypass "Siapa pacarmu?" — ada "?" tapi mengandung kata
+    off-topic ("pacar") → tetap off-topic, bukan follow-up.
+    """
+    return bool(is_follow_up(text) and not ada_kata_offtopic(text))
+
+
 WAKE_WORD = "sagi"
 
 SAGI_HELLO = (
@@ -143,12 +154,65 @@ SAGI_REDIRECT_VARIANTS = [
 
 
 def sagi_hello(prompt: str = "") -> str:
-    """Sapaan bervariasi tapi deterministik (stabil untuk demo)."""
-    return SAGI_HELLO_VARIANTS[abs(hash(prompt)) % len(SAGI_HELLO_VARIANTS)]
+    """Sapaan bervariasi tapi deterministik (stabil untuk demo).
+
+    Pakai md5, BUKAN hash() bawaan — hash() Python diacak tiap proses
+    (PYTHONHASHSEED) sehingga varian berubah-ubah antar restart.
+    """
+    n = int(_hl.md5(prompt.encode()).hexdigest(), 16)
+    return SAGI_HELLO_VARIANTS[n % len(SAGI_HELLO_VARIANTS)]
 
 
 def sagi_redirect(prompt: str = "") -> str:
-    return SAGI_REDIRECT_VARIANTS[abs(hash(prompt)) % len(SAGI_REDIRECT_VARIANTS)]
+    n = int(_hl.md5(prompt.encode()).hexdigest(), 16)
+    return SAGI_REDIRECT_VARIANTS[n % len(SAGI_REDIRECT_VARIANTS)]
+
+
+def stem_id(kata: str) -> str:
+    """Stemmer mini Indonesia: buang imbuhan agar cocok kata utuh.
+
+    "memberitakan"->"berita" (tetap lolos), "buang"->"buang" (bukan "uang").
+    """
+    w = kata.lower()
+    for pre, ganti in (("menge", ""), ("meny", "s"), ("meng", ""), ("mem", "m"),
+                       ("men", "n"), ("penge", ""), ("peny", "s"), ("peng", ""),
+                       ("pem", "m"), ("pen", "n"), ("ber", ""), ("ter", ""),
+                       ("per", ""), ("pel", ""), ("di", ""), ("ke", ""),
+                       ("se", ""), ("pe", "")):
+        if w.startswith(pre) and len(w) - len(pre) >= 4:
+            w = ganti + w[len(pre):]
+            break
+    for suf in ("kan", "an", "i", "mu", "ku", "nya", "lah", "kah", "tah", "pun"):
+        if w.endswith(suf) and len(w) - len(suf) >= 4:
+            w = w[:-len(suf)]
+            break
+    return w
+
+
+def _bagi(kata_list: list[str]) -> tuple[set[str], list[str]]:
+    """Pisah kata tunggal (stem) vs frasa (substring)."""
+    single = {stem_id(k) for k in kata_list if " " not in k}
+    phrase = [k.lower() for k in kata_list if " " in k]
+    return single, phrase
+
+
+NEWS_SINGLE, NEWS_PHRASE = _bagi(NEWS_KEYWORDS)
+OFFTOPIC_SINGLE, OFFTOPIC_PHRASE = _bagi(OFFTOPIC_KEYWORDS)
+
+
+def ada_kata_berita(teks: str) -> bool:
+    """Cocok kata-per-kata (stem), bukan substring — 'buang' != 'uang'."""
+    t = teks.lower()
+    if any(p in t for p in NEWS_PHRASE):
+        return True
+    return any(stem_id(w) in NEWS_SINGLE for w in _re2.findall(r"[a-z]+", t))
+
+
+def ada_kata_offtopic(teks: str) -> bool:
+    t = teks.lower()
+    if any(p in t for p in OFFTOPIC_PHRASE):
+        return True
+    return any(stem_id(w) in OFFTOPIC_SINGLE for w in _re2.findall(r"[a-z]+", t))
 
 
 def strip_wake(text: str) -> tuple[bool, str]:
@@ -175,11 +239,11 @@ def is_news_topic(text: str) -> str:
     if mentioned and not rest:
         return "greeting"  # cuma manggil "Sagi!" -> sapa balik
     t = rest if mentioned else text.lower().strip()
-    if _is_greeting(t) and not any(k in t for k in NEWS_KEYWORDS):
+    if _is_greeting(t) and not ada_kata_berita(t):
         return "greeting"
-    if any(k in t for k in NEWS_KEYWORDS):
+    if ada_kata_berita(t):
         return "news"
-    if any(o in t for o in OFFTOPIC_KEYWORDS):
+    if ada_kata_offtopic(t):
         return "offtopic"
 
     # Pertanyaan di bawah 200 karakter: periksa apakah potensi query berita/klaim

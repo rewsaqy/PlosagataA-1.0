@@ -6,7 +6,7 @@ import torch.nn.functional as F
 
 from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
                        final_label, local_verdict, ringkasan_hasil)
-from plosagata import (CONFIGS, PureGPT, is_follow_up, is_news_topic,
+from plosagata import (CONFIGS, PureGPT, is_follow_up_safe, is_news_topic,
                        normalize_slang, sagi_hello, sagi_redirect)
 
 MAX_SESI = 500   # batas memori topik (in-memory, per proses)
@@ -22,36 +22,47 @@ class SagiEngine:
         self.cfg = CONFIGS[size]
         self.size = size
 
-        # tokenizer chat (dengan seed kata) — bangun sekali
-        seeds = ["halo", "hai", "sagi", "berita", "hoaks", "cek"]
-        self.tok = WordTokenizer.build(seeds, vocab_size=self.cfg.vocab,
-                                       max_len=256, seed_file="data/vocab_seed.txt")
-        self.ign = {i for t, i in self.tok.vocab.items()
-                    if t.startswith("<pad") or t in ("<unk>", "<cls>", "<sep>")}
-
-        self.model = None
+        # tokenizer chat — muat vocab berpasangan jika ada checkpoint, atau build fallback
         self.ckpt = ckpt
         self.ckpt_dir = Path(ckpt_dir)
-        # Model chat terlatih? Tanpa checkpoint, generate() = gibberish
-        # bobot acak — balas ekstraktif dari verdict + sumber saja.
         self.trained = bool(ckpt and Path(ckpt).exists())
+
+        loaded_tok = False
+        if self.trained:
+            cands = [str(ckpt) + ".vocab.pt", str(ckpt).replace(".pt", ".vocab.pt")]
+            if "-best.pt" in str(ckpt):
+                base = str(ckpt).replace("-best.pt", ".pt")
+                cands += [base + ".vocab.pt", base.replace(".pt", ".vocab.pt")]
+            for cand in cands:
+                p_cand = Path(cand)
+                if p_cand.exists():
+                    try:
+                        vocab = torch.load(p_cand, map_location="cpu", weights_only=True)
+                        self.tok = WordTokenizer(vocab, max_len=self.cfg.max_len)
+                        loaded_tok = True
+                        break
+                    except Exception:
+                        pass
+
+        if not loaded_tok:
+            seeds = ["halo", "hai", "sagi", "berita", "hoaks", "cek"]
+            self.tok = WordTokenizer.build(seeds, vocab_size=self.cfg.vocab,
+                                           max_len=256, seed_file="data/vocab_seed.txt")
+
+        self.ign = {i for t, i in self.tok.vocab.items()
+                    if t.startswith("<pad") or t in ("<unk>", "<cls>")}
+        # <sep> diizinkan sebagai EOS agar generate bisa berhenti sendiri.
+        self.eos = {self.tok.sep_id}
+        self.model = None
 
         # Memori topik per sesi: session_id -> {"topik": str|None, "aktif": ts}
         # Topik = berita terakhir yg ditempel; follow-up merujuk ke sini.
         self._sesi = {}
 
-        # validator 12M (ringan, selalu aktif untuk label + skor)
+        # validator 12M: pakai instance tunggal (hemat RAM, tidak diduplikat).
         try:
-            vt = WordTokenizer.load(self.ckpt_dir / "vocab.json")
-            vm = TinyHoaxTransformer(len(vt.vocab), max_len=vt.max_len)
-            for n in ["best.pt", "last.pt"]:
-                p = self.ckpt_dir / n
-                if p.exists():
-                    vm.load_state_dict(torch.load(p, map_location=self.device,
-                                                  weights_only=True))
-                    break
-            vm.to(self.device).eval()
-            self.vtok, self.vmodel = vt, vm
+            from hoaxcore import get_classifier
+            self.vmodel, self.vtok = get_classifier(str(self.ckpt_dir), self.device)
         except Exception:
             self.vtok, self.vmodel = None, None
 
@@ -67,7 +78,7 @@ class SagiEngine:
     def verdict(self, text):
         if self.vmodel is None:
             return {"label": "meragukan", "probs": [0.33, 0.33, 0.34]}
-        ids, mask = self.vtok.encode(text)
+        ids, mask = self.vtok.encode(normalize_slang(text))
         with torch.no_grad():
             probs = F.softmax(self.vmodel(torch.tensor([ids]).to(self.device),
                                           torch.tensor([mask]).to(self.device)),
@@ -103,13 +114,14 @@ class SagiEngine:
         if not pure_think:
             if topic == "offtopic":
                 # Merujuk topik aktif? → follow-up, JANGAN tolak.
-                if topik and is_follow_up(clean):
+                # is_follow_up_safe: kata off-topic ("pacar") mem-veto.
+                if topik and is_follow_up_safe(clean):
                     topic = "followup"
                 else:
                     return {"reply": sagi_redirect(text), "topic": topic, "verdict": None}
             if topic == "greeting":
                 return {"reply": sagi_hello(text), "topic": topic, "verdict": None}
-        if topik and topic == "news" and len(clean) < 80 and is_follow_up(clean):
+        if topik and topic == "news" and len(clean) < 80 and is_follow_up_safe(clean):
             # Pertanyaan pendek tanpa kata kunci berita ("kapan cairnya?")
             # = merujuk topik aktif, bukan berita baru.
             from plosagata.guard import NEWS_KEYWORDS
@@ -129,7 +141,7 @@ class SagiEngine:
             sumber = cari_sumber(kueri)
         except Exception:
             sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
-        verdict = {**v, "label": final_label(v.get("label"), lv["skor_hoaks"]),
+        verdict = {**v, "label": lv["label_final"],
                    "skor": lv["skor_hoaks"], "kesimpulan": lv["kesimpulan"]}
         if not self.trained and not pure_think:
             isi = ringkasan_hasil(verdict["label"], lv["skor_hoaks"],
@@ -146,6 +158,7 @@ class SagiEngine:
             temperature=float(os.getenv("SAGI_TEMP", "0.7")),
             top_k=int(os.getenv("SAGI_TOPK", "40")),
             no_repeat_ngram=int(os.getenv("SAGI_NOREPEAT", "3")),
+            eos_ids=self.eos,
             ignore_ids=self.ign)[0].tolist()
         return {"reply": self.tok.decode(out[len(real):]), "topic": topic,
                 "verdict": verdict, "sumber": sumber}

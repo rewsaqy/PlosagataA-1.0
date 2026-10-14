@@ -47,7 +47,12 @@ class ChatLMDataset(Dataset):
         text = normalize_slang("\n".join(f"{m['role']}: {m['content']}" for m in msgs))
         ids, _ = self.tok.encode(text)
         ids = ids[:self.L]
-        return torch.tensor(ids[:-1]), torch.tensor(ids[1:])
+        pad = self.tok.pad_id
+        # target padding = -100 agar cross_entropy MENGABAIKANNYA.
+        # (Dulu pad ikut dihitung → model belajar memprediksi padding.)
+        x = torch.tensor(ids[:-1])
+        y = torch.tensor([t if t != pad else -100 for t in ids[1:]])
+        return x, y
 
 
 class CorpusDataset(Dataset):

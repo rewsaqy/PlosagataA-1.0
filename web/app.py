@@ -39,7 +39,10 @@ def get_engine(size=None):
     if key not in CONFIGS:
         key = "Plosagata_Go"
     if key not in _engines:
-        from chatbot import SagiEngine
+        try:
+            from web.chatbot import SagiEngine
+        except ImportError:
+            from chatbot import SagiEngine
         _engines[key] = SagiEngine(size=key)
     return _engines[key]
 
@@ -56,20 +59,13 @@ def warmup():
 
 
 def get_model():
+    """Instance tunggal via hoaxcore.shared (tidak diduplikat per modul)."""
     global _model, _tok
     if _model is not None:
         return _model, _tok
     try:
-        _tok = WordTokenizer.load(CKPT / "vocab.json")
-        _model = TinyHoaxTransformer(
-            vocab_size=len(_tok.vocab), max_len=_tok.max_len, num_classes=3
-        )
-        for name in ["best.pt", "last.pt"]:
-            p = CKPT / name
-            if p.exists():
-                _model.load_state_dict(torch.load(p, map_location=DEVICE, weights_only=True))
-                break
-        _model.to(DEVICE).eval()
+        from hoaxcore import get_classifier
+        _model, _tok = get_classifier(str(CKPT), DEVICE)
     except Exception as e:
         print(f"[warn] model belum ada ({e}), pakai mode heuristic saja.")
         _model, _tok = None, None
@@ -81,6 +77,11 @@ def model_predict(text):
     if model is None:
         return {"label": "meragukan", "probs": [0.33, 0.33, 0.34], "mode": "heuristic-only"}
     import torch.nn.functional as F
+    try:
+        from plosagata.slang import normalize_slang
+        text = normalize_slang(text)
+    except Exception:
+        pass
     ids, mask = tok.encode(text)
     ids_t = torch.tensor([ids]).to(DEVICE)
     mask_t = torch.tensor([mask]).to(DEVICE)
@@ -136,9 +137,18 @@ def check():
     if "poster" in request.files:
         f = request.files["poster"]
         if f and f.filename:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=Path(f.filename).suffix) as tmp:
-                f.save(tmp.name)
-                ocr = ocr_poster(tmp.name)
+            tmp_path = None
+            try:
+                with tempfile.NamedTemporaryFile(delete=False, suffix=Path(f.filename).suffix) as tmp:
+                    f.save(tmp.name)
+                    tmp_path = tmp.name
+                ocr = ocr_poster(tmp_path)
+            finally:
+                if tmp_path and os.path.exists(tmp_path):
+                    try:
+                        os.unlink(tmp_path)
+                    except Exception:
+                        pass
             poster_text = ocr.get("text", "")
             if poster_text:
                 text = (text + "\n" + poster_text).strip()
@@ -148,7 +158,8 @@ def check():
 
     hasil_model = model_predict(text)
     verifikasi = local_verdict(text, hasil_model)
-    label = final_label(hasil_model["label"], verifikasi["skor_hoaks"])
+    label = final_label(hasil_model["label"], verifikasi["skor_hoaks"], fiksi=bool(verifikasi.get("sinyal", {}).get("fiksi_hits")))
+    verifikasi["label_final"] = label
     _history.appendleft({
         "waktu": time.strftime("%H:%M:%S"),
         "cuplikan": text[:80],

@@ -31,9 +31,10 @@ def build_tokenizer(vocab_size: int):
 
 
 def ignore_ids_for(tok: WordTokenizer) -> set[int]:
-    # jangan pernah generate token sampah padding/unknown
+    # jangan pernah generate token sampah padding/unknown/cls.
+    # <sep> SENGAJA diizinkan sebagai EOS agar generate bisa berhenti.
     return {i for t, i in tok.vocab.items()
-            if t.startswith("<pad") or t in ("<unk>", "<cls>", "<sep>")}
+            if t.startswith("<pad") or t in ("<unk>", "<cls>")}
 
 
 def load_ckpt_vocab(ckpt_path: str):
@@ -84,7 +85,7 @@ def piece_decode(ids: list[int], inv: dict) -> str:
     for t in toks:
         if not t or t.startswith("<pad") or t in ("<pad>", "<unk>", "<cls>", "<sep>"):
             continue
-        out += t[1:] if t.startswith("Ġ") else t
+        out += (" " + t[1:]) if t.startswith("Ġ") else t
     return out.replace("  ", " ").strip()
 
 
@@ -154,19 +155,19 @@ def main():
         return _model
 
     def answer(prompt: str) -> str:
-        from plosagata import is_follow_up
+        from plosagata import is_follow_up_safe
         clean = normalize_slang(prompt)
         topic = is_news_topic(clean)
         klaim, kueri, rujuk = prompt, prompt, False
         topik = sess.get("topik")
         if not a.pure_think:
             if topic == "offtopic":
-                if topik and is_follow_up(clean):
+                if topik and is_follow_up_safe(clean):
                     topic, rujuk = "followup", True
                     klaim, kueri = topik, topik + " " + prompt
                 else:
                     return sagi_redirect(prompt)
-            elif topic == "news" and topik and len(clean) < 80 and is_follow_up(clean):
+            elif topic == "news" and topik and len(clean) < 80 and is_follow_up_safe(clean):
                 from plosagata.guard import NEWS_KEYWORDS
                 if not any(k in clean.lower() for k in NEWS_KEYWORDS):
                     topic, rujuk = "followup", True
@@ -178,25 +179,12 @@ def main():
         trained = bool(a.ckpt and os.path.exists(a.ckpt))
         if not trained and not a.pure_think:
             # Model belum terlatih (bobot acak) — jawab ekstraktif saja.
+            # Validator 12M = instance tunggal (tidak diduplikat).
             v = {"label": "meragukan", "probs": [0.33, 0.33, 0.34]}
-            try:  # validator 12M bila ada (sama seperti SagiEngine)
-                from hoaxcore import ID2LABEL, TinyHoaxTransformer
-                import torch.nn.functional as _F
-                vt = WordTokenizer.load("checkpoints/vocab.json")
-                vm = TinyHoaxTransformer(len(vt.vocab), max_len=vt.max_len)
-                for n in ["best.pt", "last.pt"]:
-                    p = Path("checkpoints") / n
-                    if p.exists():
-                        vm.load_state_dict(torch.load(p, map_location="cpu",
-                                                      weights_only=True))
-                        break
-                vm.eval()
-                _ids, _mask = vt.encode(klaim)
-                with torch.no_grad():
-                    _pr = _F.softmax(vm(torch.tensor([_ids]),
-                                        torch.tensor([_mask])), dim=-1)[0].tolist()
-                v = {"label": ID2LABEL[max(range(3), key=lambda i: _pr[i])],
-                     "probs": _pr}
+            try:
+                from hoaxcore import predict_proba
+                _lab, _pr = predict_proba(klaim)
+                v = {"label": _lab, "probs": _pr}
             except Exception:
                 pass
             lv = local_verdict(klaim, v)
@@ -204,7 +192,7 @@ def main():
                 sumber = cari_sumber(kueri)
             except Exception:
                 sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
-            isi = ringkasan_hasil(final_label(v["label"], lv["skor_hoaks"]),
+            isi = ringkasan_hasil(lv["label_final"],
                                   lv["skor_hoaks"], lv["kesimpulan"], sumber,
                                   lv["sinyal"].get("fiksi_hits"))
             return ("Merujuk berita tadi:\n" + isi) if rujuk else isi
@@ -218,6 +206,7 @@ def main():
         out = get_model().generate(torch.tensor([real]), max_new=a.max_new,
                                    temperature=a.temp, top_k=a.top_k,
                                    no_repeat_ngram=a.no_repeat,
+                                   eos_ids={tok.sep_id},
                                    ignore_ids=ign)[0].tolist()
         # BPE: decode via tokenizer (mapping id->kata mentah menghasilkan byte sampah)
         if use_pieces:

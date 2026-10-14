@@ -1,567 +1,281 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sagi AI — Chat Asisten Validator Berita</title>
+<title>Sagi Neural — AI News & Fact Verification</title>
+
+<!-- Fonts: Instrument Serif / Plus Jakarta Sans & JetBrains Mono -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS via Official CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+      colors: {
+        obsidian: {
+          950: '#090a0f',
+          900: '#0f1118',
+          850: '#141722',
+          800: '#1a1e2c',
+          700: '#262c3f',
+          600: '#353c54',
+        },
+        champagne: {
+          100: '#fdfbf7',
+          200: '#f7f1e6',
+          300: '#eedec5',
+          400: '#e3c59a',
+          500: '#d4a86a',
+          600: '#bc8a4b',
+        },
+        brand: {
+          bronze: '#d4a86a',
+          copper: '#c27847',
+          terracotta: '#bc544b',
+          sage: '#4e8774',
+          crimson: '#b94747',
+          amber: '#c78635',
+        }
+      },
+      boxShadow: {
+        'glow-bronze': '0 0 24px -4px rgba(212, 168, 106, 0.15)',
+        'glow-subtle': '0 0 40px -10px rgba(255, 255, 255, 0.03)',
+        'dock': '0 20px 40px -15px rgba(0, 0, 0, 0.7)',
+      }
+    }
+  }
+}
+</script>
+
 <style>
-:root {
-  --bg: #0b0f19;
-  --side: #080c14;
-  --card: #131927;
-  --card-hover: #1a2336;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-focus: #3b82f6;
-  --txt: #f8fafc;
-  --mut: #94a3b8;
-  --dim: #64748b;
-  --acc: #3b82f6;
-  --acc-glow: rgba(59, 130, 246, 0.25);
-  --hoaks-bg: rgba(239, 68, 68, 0.15);
-  --hoaks-border: #ef4444;
-  --hoaks-txt: #fca5a5;
-  --valid-bg: rgba(16, 185, 129, 0.15);
-  --valid-border: #10b981;
-  --valid-txt: #6ee7b7;
-  --meragukan-bg: rgba(245, 158, 11, 0.15);
-  --meragukan-border: #f59e0b;
-  --meragukan-txt: #fde68a;
+/* Custom Architectural Micro-Details */
+::selection {
+  background: rgba(212, 168, 106, 0.25);
+  color: #fff;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--txt);
-  height: 100vh;
-  display: flex;
-  overflow: hidden;
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
-
-/* Sidebar */
-aside {
-  width: 280px;
-  background: var(--side);
-  border-right: 1px solid var(--border);
-  padding: 1.1rem 0.9rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  flex-shrink: 0;
-  transition: transform 0.25s ease;
-  z-index: 50;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 0.3rem 0.4rem;
-}
-.logo-wrap {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  text-decoration: none;
-  color: var(--txt);
-}
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 10px #10b981;
-}
-.logo-title {
-  font-weight: 800;
-  font-size: 1.1rem;
-  letter-spacing: -0.02em;
-}
-
-#newchat {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--txt);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.65rem 0.8rem;
-  cursor: pointer;
-  font-size: 0.86rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.15s ease;
-}
-#newchat:hover {
+::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.18);
-}
-
-.history-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--dim);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.2rem 0.3rem 0;
-}
-#convs {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  padding-right: 0.2rem;
-}
-.conv {
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--mut);
-  text-align: left;
-  padding: 0.55rem 0.75rem;
-  border-radius: 9px;
-  cursor: pointer;
-  font-size: 0.84rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: all 0.15s ease;
-}
-.conv:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--txt);
-}
-.conv.on {
-  background: rgba(59, 130, 246, 0.12);
-  color: #fff;
-  border-color: rgba(59, 130, 246, 0.3);
-  font-weight: 600;
-}
-
-.sidebar-settings {
-  border-top: 1px solid var(--border);
-  padding-top: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-}
-.sidebar-settings label {
-  font-size: 0.73rem;
-  color: var(--dim);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-.sidebar-settings select, .sidebar-settings input {
-  width: 100%;
-  background: rgba(11, 15, 25, 0.7);
-  color: var(--txt);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.5rem 0.65rem;
-  font-size: 0.82rem;
-  font-family: inherit;
-  outline: none;
-}
-.sidebar-settings select:focus, .sidebar-settings input:focus {
-  border-color: var(--border-focus);
-}
-.nav-back-link {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--mut);
-  text-decoration: none;
-  font-size: 0.82rem;
-  font-weight: 500;
-  padding: 0.4rem 0.2rem;
-  transition: color 0.15s ease;
-}
-.nav-back-link:hover {
-  color: var(--txt);
-}
-
-/* Main Chat Area */
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  position: relative;
-  background: radial-gradient(at 50% 0%, rgba(59, 130, 246, 0.07) 0px, transparent 60%);
-}
-
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.8rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-  background: rgba(11, 15, 25, 0.6);
-  backdrop-filter: blur(12px);
-}
-.mobile-toggle {
-  display: none;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--txt);
-  padding: 0.4rem 0.6rem;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.model-indicator {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--txt);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 0.35rem 0.8rem;
   border-radius: 99px;
-  border: 1px solid var(--border);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 
-#box {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.5rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  max-width: 860px;
-  width: 100%;
-  margin: 0 auto;
+.bg-dot-matrix {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-/* Messages */
-.msg {
-  max-width: 100%;
-  line-height: 1.65;
-  font-size: 0.94rem;
-  animation: fadeInMsg 0.2s ease;
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
-@keyframes fadeInMsg {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.msg.user {
-  align-self: flex-end;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #fff;
-  padding: 0.75rem 1.15rem;
-  border-radius: 18px 18px 4px 18px;
-  max-width: 80%;
-  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+@keyframes waveBar {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
 }
-.msg.user .time {
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.65);
-  text-align: right;
-  margin-top: 0.25rem;
-}
-
-.msg.ai {
-  align-self: flex-start;
-  width: 100%;
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 1.1rem 1.25rem;
-  border-radius: 18px 18px 18px 4px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-.msg.ai .who {
-  font-weight: 700;
-  font-size: 0.86rem;
-  margin-bottom: 0.45rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.msg.ai .who-title {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: #60a5fa;
-}
-.msg.ai .mini {
-  font-size: 0.72rem;
-  color: var(--dim);
-  font-weight: 400;
-}
-.msg.ai .body-text {
-  color: var(--txt);
-  white-space: pre-wrap;
-}
-
-/* Verdict Badge in Chat */
-.verd {
-  margin-top: 0.85rem;
-  font-size: 0.83rem;
-  border-radius: 12px;
-  padding: 0.65rem 0.95rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-}
-.verd.hoaks { background: var(--hoaks-bg); border: 1px solid var(--hoaks-border); color: var(--hoaks-txt); }
-.verd.valid { background: var(--valid-bg); border: 1px solid var(--valid-border); color: var(--valid-txt); }
-.verd.meragukan { background: var(--meragukan-bg); border: 1px solid var(--meragukan-border); color: var(--meragukan-txt); }
-
-.badge {
-  display: inline-block;
-  padding: 0.2rem 0.6rem;
-  border-radius: 99px;
-  font-weight: 800;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-}
-.badge.hoaks { background: #ef4444; color: #fff; }
-.badge.valid { background: #10b981; color: #fff; }
-.badge.meragukan { background: #f59e0b; color: #111; }
-
-.sources-box {
-  margin-top: 0.6rem;
-  font-size: 0.8rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-.source-pill {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
-  padding: 0.35rem 0.65rem;
-  border-radius: 8px;
-  color: var(--mut);
-}
-.source-pill a {
-  color: #60a5fa;
-  text-decoration: none;
-  font-weight: 600;
-}
-.source-pill a:hover {
-  text-decoration: underline;
-}
-
-/* Hero / Empty state */
-.hero {
-  text-align: center;
-  margin: auto 0;
-  padding: 2rem 0;
-}
-.hero h2 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.4rem;
-  background: linear-gradient(135deg, #f8fafc, #94a3b8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.hero p {
-  color: var(--mut);
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-}
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 0.75rem;
-  max-width: 640px;
-  margin: 0 auto;
-}
-.cards button {
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--txt);
-  border-radius: 14px;
-  padding: 0.95rem 1rem;
-  cursor: pointer;
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-align: left;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-.cards button:hover {
-  background: var(--card-hover);
-  border-color: rgba(255, 255, 255, 0.18);
-  transform: translateY(-2px);
-}
-.cards small {
-  display: block;
-  color: var(--dim);
-  font-size: 0.76rem;
-  font-weight: 400;
-  margin-top: 0.3rem;
-}
-
-/* Typing Indicator */
-.typing {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0.3rem 0;
-}
-.typing span {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--acc);
-  animation: bounce 1.2s infinite;
-}
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce {
-  0%, 100% { opacity: 0.25; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-
-/* Composer / Input Area */
-.composer-wrap {
-  padding: 0 1.25rem 1rem;
-  max-width: 860px;
-  width: 100%;
-  margin: 0 auto;
-}
-#composer {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.6rem;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 0.75rem 0.9rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-#composer:focus-within {
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px var(--acc-glow);
-}
-#m {
-  flex: 1;
-  background: transparent;
-  border: 0;
-  color: var(--txt);
-  font-size: 0.95rem;
-  resize: none;
-  outline: none;
-  max-height: 150px;
-  font-family: inherit;
-  line-height: 1.5;
-}
-#send {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  color: #fff;
-  border: 0;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
-  transition: all 0.15s ease;
-}
-#send:hover:not(:disabled) {
-  transform: scale(1.05);
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
-}
-#send:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-.hint {
-  text-align: center;
-  color: var(--dim);
-  font-size: 0.74rem;
-  margin-top: 0.5rem;
-}
-
-@media(max-width: 768px) {
-  aside {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    transform: translateX(-100%);
-  }
-  aside.open {
-    transform: translateX(0);
-    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.6);
-  }
-  .mobile-toggle {
-    display: block;
-  }
-}
+.wave-1 { animation: waveBar 1s ease-in-out infinite; }
+.wave-2 { animation: waveBar 1s ease-in-out infinite 0.2s; }
+.wave-3 { animation: waveBar 1s ease-in-out infinite 0.4s; }
 </style>
 </head>
-<body>
 
-<aside id="sidebar">
-  <div class="sidebar-header">
-    <a href="/chat" class="logo-wrap">
-      <div class="dot"></div>
-      <span class="logo-title">Sagi Chat</span>
+<body class="bg-obsidian-950 text-slate-100 font-sans h-screen flex overflow-hidden antialiased selection:bg-brand-bronze/20 selection:text-champagne-200">
+
+<!-- SIDEBAR (Antigravity & Opencode Inspired) -->
+<aside id="sidebar" class="w-72 bg-obsidian-900 border-r border-white/[0.06] p-4 flex flex-col gap-4 flex-shrink-0 transition-transform duration-300 z-50 md:translate-x-0 -translate-x-full fixed md:relative h-full">
+  
+  <!-- Logo & Version Tag -->
+  <div class="flex items-center justify-between pb-3 border-b border-white/[0.05]">
+    <a href="/chat" class="flex items-center gap-3 group">
+      <!-- Monogram Glyph -->
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-obsidian-800 to-obsidian-850 border border-brand-bronze/40 flex items-center justify-center shadow-glow-bronze group-hover:border-brand-bronze transition-colors">
+        <span class="font-serif italic text-brand-bronze text-lg font-bold">S</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span class="font-semibold text-sm tracking-tight text-slate-100">Sagi Neural</span>
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-bronze/10 text-brand-bronze border border-brand-bronze/20">v1.2</span>
+        </div>
+        <p class="text-[11px] text-slate-400 font-mono tracking-wider">HYBRID VERIFIER</p>
+      </div>
     </a>
-    <button class="mobile-toggle" id="closeSidebar" style="display:none;">✕</button>
+    <button id="closeSidebar" class="md:hidden text-slate-400 hover:text-white p-1 rounded-md">✕</button>
   </div>
 
-  <button id="newchat">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    Obrolan Baru
+  <!-- New Chat Button (Command Palette Style) -->
+  <button id="newchat" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.07] hover:border-white/[0.14] text-xs font-medium text-slate-200 transition-all group shadow-sm">
+    <div class="flex items-center gap-2.5">
+      <svg class="w-4 h-4 text-brand-bronze" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+      <span>Sesi Percakapan Baru</span>
+    </div>
+    <kbd class="text-[10px] font-mono text-slate-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-white/[0.06] group-hover:text-slate-300">⌘N</kbd>
   </button>
 
-  <div class="history-label">Riwayat Percakapan</div>
-  <div id="convs"></div>
+  <!-- History Group List -->
+  <div class="flex-1 flex flex-col min-h-0">
+    <div class="flex items-center justify-between px-1 py-1 text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+      <span>Riwayat Cek Fakta</span>
+      <span class="text-[10px] text-slate-500" id="chatCount">0 sesi</span>
+    </div>
+    <div id="convs" class="flex-1 overflow-y-auto space-y-1 pr-1 mt-1">
+      <!-- Dynamic chat sessions populated via JS -->
+    </div>
+  </div>
 
-  <div class="sidebar-settings">
-    <label>Model Engine</label>
-    <select id="model">
-      <option value="Plosagata_Go">Plosagata_Go (Cepat / Responsif)</option>
-      <option value="Plosagata_More">Plosagata_More (Medium / Penalaran)</option>
-      <option value="Plosagata_Next">Plosagata_Next (Besar / Detail)</option>
-    </select>
+  <!-- Bottom Configurations (Opencode Inspector Style) -->
+  <div class="pt-3 border-t border-white/[0.05] space-y-3">
+    
+    <!-- Model Engine Selector -->
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <label class="text-[11px] font-mono text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Engine Model
+        </label>
+        <span class="text-[10px] font-mono text-slate-400">12M + RAG</span>
+      </div>
+      <div class="relative">
+        <select id="model" class="w-full appearance-none bg-obsidian-850 hover:bg-obsidian-800 text-xs font-mono text-slate-200 border border-white/[0.08] hover:border-white/[0.15] rounded-lg px-3 py-2 pr-8 outline-none focus:border-brand-bronze/60 transition-all cursor-pointer">
+          <option value="Plosagata_Go">Plosagata_Go · Fast Native (CPU)</option>
+          <option value="Plosagata_More">Plosagata_More · 912M Reasoning</option>
+          <option value="Plosagata_Next">Plosagata_Next · 1.55B Dense Tier</option>
+        </select>
+        <div class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+      </div>
+    </div>
 
-    <label>Token Remote (Opsional)</label>
-    <input id="tok" type="password" placeholder="Kosongkan jika server lokal">
+    <!-- Remote Token (Collapsible subtle) -->
+    <div>
+      <details class="group">
+        <summary class="text-[11px] font-mono text-slate-400 hover:text-slate-300 cursor-pointer flex items-center justify-between py-0.5">
+          <span>Auth Token (Remote)</span>
+          <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="mt-2">
+          <input id="tok" type="password" placeholder="X-Sagi-Token..." class="w-full bg-obsidian-850 text-xs font-mono text-slate-200 placeholder:text-slate-400 border border-white/[0.08] rounded-lg px-3 py-1.5 outline-none focus:border-brand-bronze/50">
+        </div>
+      </details>
+    </div>
 
-    <a href="/" class="nav-back-link">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
-      Kembali ke Scanner & OCR
+    <!-- Navigation to Scanner (Claude / Antigravity style switch) -->
+    <a href="/" class="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] hover:border-white/[0.1] text-xs text-slate-300 transition-colors">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <span>Mode Scanner & OCR</span>
+      </div>
+      <span class="text-slate-500 text-xs">→</span>
     </a>
+
   </div>
 </aside>
 
-<main>
-  <div class="top-bar">
-    <button class="mobile-toggle" id="openSidebar">☰</button>
-    <div class="model-indicator">
-      <div class="dot"></div>
-      <span id="modelIndicatorText">Plosagata_Go • Aktif</span>
-    </div>
-    <a href="/" style="font-size:0.84rem;color:var(--mut);text-decoration:none;font-weight:600;">🛡️ Scanner Hoaks</a>
-  </div>
+<!-- MAIN WORKSPACE -->
+<main class="flex-1 flex flex-col h-full bg-obsidian-950 bg-dot-matrix relative overflow-hidden">
+  
+  <!-- Subtle Ambient Glow (Warm Ochre / Champagne) -->
+  <div class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-brand-bronze/[0.03] blur-[120px] rounded-full"></div>
 
-  <div id="box"></div>
-
-  <div class="composer-wrap">
-    <div id="composer">
-      <textarea id="m" rows="1" placeholder="Tanyakan kebenaran berita, tempel narasi klaim, atau sapa Sagi..."></textarea>
-      <button id="send" title="Kirim Pesan">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  <!-- Top Navigation Header -->
+  <header class="h-14 border-b border-white/[0.05] bg-obsidian-950/80 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between flex-shrink-0 z-20">
+    <div class="flex items-center gap-3">
+      <button id="openSidebar" class="md:hidden text-slate-400 hover:text-white p-1.5 rounded-lg border border-white/[0.08] bg-obsidian-900">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
       </button>
+
+      <!-- Engine Breadcrumb Indicator -->
+      <div class="flex items-center gap-2 text-xs font-mono">
+        <span class="text-slate-400">workspace</span>
+        <span class="text-slate-600">/</span>
+        <span class="text-slate-300 font-medium flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-brand-bronze/80"></span>
+          <span id="modelIndicatorText">Plosagata_Go</span>
+        </span>
+      </div>
     </div>
-    <div class="hint">Sagi terhubung dengan 12M Classifier & Heuristik Cek Fakta. Saring sebelum Sharing.</div>
+
+    <!-- Status Badges -->
+    <div class="flex items-center gap-3">
+      <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] text-[11px] font-mono text-slate-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span>Local CPU · ~12ms</span>
+      </div>
+      <a href="/" class="text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-1">
+        <span>Buka Scanner</span>
+        <span class="font-mono text-[10px]">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Chat Scroll Area -->
+  <div id="box" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6 max-w-4xl w-full mx-auto">
+    <!-- Populated dynamically via JS -->
   </div>
+
+  <!-- Bottom Floating Composer (Claude / ChatGPT 4o Refined) -->
+  <div class="p-4 sm:p-6 max-w-4xl w-full mx-auto flex-shrink-0 relative z-20">
+    <div class="bg-obsidian-900/90 backdrop-blur-xl border border-white/[0.1] focus-within:border-brand-bronze/60 rounded-2xl p-2.5 sm:p-3 shadow-dock transition-all group">
+      
+      <div class="flex items-end gap-3">
+        <!-- Input Textarea -->
+        <textarea id="m" rows="1" placeholder="Tempel narasi berita, klaim viral, atau tanyakan fakta..." class="w-full bg-transparent text-sm sm:text-[15px] text-slate-100 placeholder:text-slate-400 outline-none resize-none max-h-40 leading-relaxed py-1.5 px-2 font-sans"></textarea>
+        
+        <!-- Send Action -->
+        <button id="send" title="Kirim Pesan (Enter)" class="w-9 h-9 rounded-xl bg-champagne-300 hover:bg-champagne-400 disabled:bg-white/[0.08] disabled:text-slate-600 text-obsidian-950 flex items-center justify-center flex-shrink-0 transition-all font-bold shadow-sm">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Composer Meta Bar -->
+      <div class="flex items-center justify-between pt-2 px-2 border-t border-white/[0.04] mt-2 text-[11px] font-mono text-slate-400">
+        <div class="flex items-center gap-2">
+          <span>Saring Sebelum Sharing</span>
+          <span class="text-slate-700">·</span>
+          <span class="hidden sm:inline">12M Encoder + RAG Heuristik</span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-400">
+          <span class="hidden sm:inline">Kirim</span>
+          <kbd class="px-1.5 py-0.5 rounded bg-white/[0.05] border border-white/[0.06] text-[10px]">Enter ↵</kbd>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -572,21 +286,23 @@ const box = document.getElementById('box'),
       tok = document.getElementById('tok'),
       convs = document.getElementById('convs'),
       sidebar = document.getElementById('sidebar'),
+      chatCount = document.getElementById('chatCount'),
       modelIndicatorText = document.getElementById('modelIndicatorText');
 
-// Token & Model setting
+// Persisted Preferences
 tok.value = localStorage.getItem('sagi_token') || '';
 tok.onchange = () => localStorage.setItem('sagi_token', tok.value);
+
 sel.value = localStorage.getItem('sagi_model') || 'Plosagata_Go';
 sel.onchange = () => {
   localStorage.setItem('sagi_model', sel.value);
-  modelIndicatorText.innerText = sel.value + ' • Aktif';
+  modelIndicatorText.innerText = sel.value;
 };
-modelIndicatorText.innerText = sel.value + ' • Aktif';
+modelIndicatorText.innerText = sel.value;
 
-// Mobile sidebar
-document.getElementById('openSidebar')?.addEventListener('click', () => sidebar.classList.add('open'));
-document.getElementById('closeSidebar')?.addEventListener('click', () => sidebar.classList.remove('open'));
+// Mobile Drawer Controls
+document.getElementById('openSidebar')?.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+document.getElementById('closeSidebar')?.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
 
 const API = new URLSearchParams(location.search).get('api') || '/api/chat';
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -601,20 +317,33 @@ if (!sid) {
 }
 
 function save() {
-  localStorage.setItem('sagi_chats', JSON.stringify(chats.slice(0, 20)));
+  localStorage.setItem('sagi_chats', JSON.stringify(chats.slice(0, 30)));
 }
 
 function renderList() {
   convs.innerHTML = '';
+  chatCount.innerText = `${chats.length} sesi`;
+  if (!chats.length) {
+    convs.innerHTML = '<div class="text-[11px] font-mono text-slate-400 py-3 px-2">Belum ada sesi tersimpan.</div>';
+    return;
+  }
   chats.forEach((c, i) => {
     const b = document.createElement('button');
-    b.className = 'conv' + (i === cur ? ' on' : '');
-    b.innerText = c.title || ('Percakapan ' + (i + 1));
+    const isActive = i === cur;
+    b.className = `w-full text-left px-2.5 py-2 rounded-lg text-xs truncate transition-colors flex items-center justify-between group ${
+      isActive 
+        ? 'bg-brand-bronze/15 text-champagne-300 font-medium border border-brand-bronze/30' 
+        : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+    }`;
+    b.innerHTML = `
+      <span class="truncate">${esc(c.title || 'Percakapan ' + (i + 1))}</span>
+      <span class="text-[10px] font-mono text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">#${i+1}</span>
+    `;
     b.onclick = () => {
       cur = i;
       paint();
       renderList();
-      sidebar.classList.remove('open');
+      sidebar.classList.add('-translate-x-full');
     };
     convs.appendChild(b);
   });
@@ -623,38 +352,76 @@ function renderList() {
 function paint() {
   box.innerHTML = '';
   if (cur < 0 || !chats[cur] || !chats[cur].msgs.length) {
-    hero();
+    renderHero();
     return;
   }
-  chats[cur].msgs.forEach(m => bubble(m.w, m.h, m.meta || ''));
+  chats[cur].msgs.forEach(m => appendBubble(m.w, m.h, m.meta || ''));
 }
 
-function hero() {
+function renderHero() {
   box.innerHTML = `
-    <div class="hero">
-      <h2>Mau verifikasi kabar apa hari ini?</h2>
-      <p>Tempel klaim atau tanyakan berita viral. Sagi akan menganalisis kebenarannya.</p>
-      <div class="cards">
-        <button data-q="Bener gak giveaway iPhone 15 gratis cuma klik link dan masukin OTP?">
-          🔍 Cek Giveaway Palsu
-          <small>Indikasi phishing link berhadiah</small>
+    <div class="my-auto py-8 sm:py-16 text-center max-w-2xl mx-auto space-y-6">
+      
+      <!-- Brand Emblem -->
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-brand-bronze">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-bronze"></span>
+        <span>PLOSAGATA ARCHITECTURE · 12M HYBRID</span>
+      </div>
+
+      <!-- Editorial Title -->
+      <div class="space-y-2">
+        <h1 class="text-3xl sm:text-5xl font-serif font-normal tracking-tight text-slate-100">
+          Verifikasi Berita & Cek Fakta
+        </h1>
+        <p class="text-sm sm:text-base text-slate-400 max-w-md mx-auto font-light leading-relaxed">
+          Tempel narasi mencurigakan dari WhatsApp, media sosial, atau media massa. Sagi membedah keaslian klaim secara objektif.
+        </p>
+      </div>
+
+      <!-- Quick Exploration Cards (Claude / Opencode Style) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 text-left">
+        
+        <button data-q="Bener gak giveaway iPhone 15 gratis cuma klik link bit.ly dan masukkan OTP?" class="card-prompt p-3.5 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-850 border border-white/[0.06] hover:border-brand-bronze/40 transition-all group">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <span class="text-rose-400 font-semibold">🔴 Phishing & Scam</span>
+            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+          </div>
+          <div class="text-xs text-slate-200 font-medium">Bocoran giveaway iPhone klik tautan mencurigakan</div>
+          <div class="text-[11px] text-slate-400 mt-1">Deteksi pola phishing OTP perbankan</div>
         </button>
-        <button data-q="Sagi, bener gak bansos BLT Kemensos cair minggu ini?">
-          💰 Verifikasi Bantuan Sosial
-          <small>Cek info resmi kemensos.go.id</small>
+
+        <button data-q="Pemerintah resmi menyalurkan bansos BLT melalui kantor pos menurut situs resmi kemensos.go.id" class="card-prompt p-3.5 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-850 border border-white/[0.06] hover:border-brand-bronze/40 transition-all group">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <span class="text-emerald-400 font-semibold">🟢 Kebijakan Resmi</span>
+            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+          </div>
+          <div class="text-xs text-slate-200 font-medium">Penyaluran BLT Kemensos via Kantor Pos</div>
+          <div class="text-[11px] text-slate-400 mt-1">Uji domain kementerian .go.id</div>
         </button>
-        <button data-q="Beneran gak minum rebusan paku bisa sembuhin kanker?">
-          ⚠️ Klarifikasi Hoaks Medis
-          <small>Klaim pengobatan tanpa bukti dokter</small>
+
+        <button data-q="VIRAL! Minum rebusan paku dan daun sirih menyembuhkan kanker dalam 3 hari, sebarkan sebelum dihapus!" class="card-prompt p-3.5 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-850 border border-white/[0.06] hover:border-brand-bronze/40 transition-all group">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <span class="text-amber-400 font-semibold">🟡 Hoaks Kesehatan</span>
+            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+          </div>
+          <div class="text-xs text-slate-200 font-medium">Klaim obat ajaib kanker tanpa uji medis</div>
+          <div class="text-[11px] text-slate-400 mt-1">Analisis kata kunci manipulatif</div>
         </button>
-        <button data-q="Tolong buatkan kode python untuk kalkulator">
-          ⛔ Tes Batasan Topik
-          <small>Lihat respons Sagi saat menolak sopan</small>
+
+        <button data-q="Tolong buatkan kode python untuk game ular" class="card-prompt p-3.5 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-850 border border-white/[0.06] hover:border-brand-bronze/40 transition-all group">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <span class="text-slate-400 font-semibold">⛔ Guardrail Uji Batasan</span>
+            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+          </div>
+          <div class="text-xs text-slate-200 font-medium">Instruksi pemrograman di luar ranah berita</div>
+          <div class="text-[11px] text-slate-400 mt-1">Uji sistem penolakan sopan</div>
         </button>
+
       </div>
     </div>
   `;
-  box.querySelectorAll('[data-q]').forEach(b => {
+
+  box.querySelectorAll('.card-prompt').forEach(b => {
     b.onclick = () => {
       inp.value = b.dataset.q;
       kirim();
@@ -662,34 +429,47 @@ function hero() {
   });
 }
 
-function bubble(who, htmlContent, meta) {
-  if (who === 'u') {
-    box.insertAdjacentHTML('beforeend', `
-      <div class="msg user">
-        <div>${esc(htmlContent)}</div>
-        <div class="time">${now()}</div>
+function appendBubble(who, htmlContent, meta) {
+  const isUser = who === 'u';
+  const row = document.createElement('div');
+  row.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1.5`;
+
+  if (isUser) {
+    row.innerHTML = `
+      <div class="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-sm bg-obsidian-850 border border-white/[0.08] px-4 py-3 text-sm text-slate-100 shadow-sm leading-relaxed">
+        ${esc(htmlContent)}
       </div>
-    `);
+      <div class="text-[10px] font-mono text-slate-400 px-1">${now()}</div>
+    `;
   } else {
-    box.insertAdjacentHTML('beforeend', `
-      <div class="msg ai">
-        <div class="who">
-          <span class="who-title">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-            Sagi AI
-          </span>
-          <span class="mini">${meta || now()}</span>
+    row.innerHTML = `
+      <div class="w-full flex items-start gap-3">
+        <!-- Avatar Glyph -->
+        <div class="w-7 h-7 rounded-lg bg-obsidian-850 border border-brand-bronze/40 flex items-center justify-center text-xs font-serif italic text-brand-bronze font-bold flex-shrink-0 mt-0.5">
+          S
         </div>
-        <div class="body-text">${htmlContent}</div>
+        
+        <div class="flex-1 space-y-2 max-w-full">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold text-slate-200">Sagi AI</span>
+            <span class="text-[10px] font-mono text-slate-400">${meta || now()}</span>
+          </div>
+
+          <div class="bg-obsidian-900/70 border border-white/[0.07] rounded-2xl rounded-tl-sm p-4 sm:p-5 text-sm text-slate-200 leading-relaxed shadow-sm space-y-3">
+            <div>${htmlContent}</div>
+          </div>
+        </div>
       </div>
-    `);
+    `;
   }
+
+  box.appendChild(row);
   box.scrollTop = box.scrollHeight;
 }
 
-function push(w, h, meta) {
+function pushHistory(w, h, meta) {
   if (cur < 0) {
-    chats.unshift({ title: h.slice(0, 30), msgs: [] });
+    chats.unshift({ title: h.slice(0, 34), msgs: [] });
     cur = 0;
   }
   chats[cur].msgs.push({ w, h, meta });
@@ -704,15 +484,22 @@ async function kirim() {
   inp.style.height = 'auto';
   btn.disabled = true;
 
-  bubble('u', text);
-  push('u', text);
+  appendBubble('u', text);
+  pushHistory('u', text);
 
-  // Loading indicator
+  // Animated Waveform Loading (Antigravity Style)
   const lod = document.createElement('div');
-  lod.className = 'msg ai';
+  lod.className = 'flex items-center gap-3';
   lod.innerHTML = `
-    <div class="who"><span class="who-title">Sagi AI</span></div>
-    <div class="typing"><span></span><span></span><span></span></div>
+    <div class="w-7 h-7 rounded-lg bg-obsidian-850 border border-white/[0.08] flex items-center justify-center text-xs font-serif italic text-slate-400">S</div>
+    <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-obsidian-900/60 border border-white/[0.06] text-xs font-mono text-slate-400">
+      <div class="flex items-center gap-1 h-3">
+        <span class="w-1 h-3 bg-brand-bronze/60 rounded-full wave-1"></span>
+        <span class="w-1 h-3 bg-brand-bronze/60 rounded-full wave-2"></span>
+        <span class="w-1 h-3 bg-brand-bronze/60 rounded-full wave-3"></span>
+      </div>
+      <span>Menganalisis klaim & memindai sumber...</span>
+    </div>
   `;
   box.appendChild(lod);
   box.scrollTop = box.scrollHeight;
@@ -734,45 +521,79 @@ async function kirim() {
     lod.remove();
 
     if (!j.ok) {
-      const errTxt = '⚠️ ' + esc(j.error || 'Gagal memproses respons.');
-      bubble('a', errTxt);
-      push('a', errTxt);
+      const errTxt = `<div class="text-rose-400 font-mono text-xs">⚠️ Terjadi kendala: ${esc(j.error || 'Gagal memproses respons.')}</div>`;
+      appendBubble('a', errTxt);
+      pushHistory('a', errTxt);
       return;
     }
 
-    let extra = '';
+    let extraHtml = '';
+
+    // Verdict Badge Card
     if (j.verdict) {
       const v = j.verdict;
       const vLabel = (v.label || 'meragukan').toLowerCase();
-      extra += `
-        <div class="verd ${vLabel}">
-          <div>
-            <span class="badge ${vLabel}">${vLabel.toUpperCase()}</span>
-            <b>Skor: ${v.skor}/100</b> • ${esc(v.kesimpulan)}
+      
+      let badgeTheme = 'bg-amber-500/10 text-amber-300 border-amber-500/30';
+      if (vLabel === 'hoaks') badgeTheme = 'bg-rose-500/10 text-rose-300 border-rose-500/30';
+      if (vLabel === 'valid') badgeTheme = 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30';
+      if (vLabel === 'fiksi') badgeTheme = 'bg-sky-500/10 text-sky-300 border-sky-500/30';
+
+      extraHtml += `
+        <div class="mt-3 p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono tracking-wider uppercase px-2 py-0.5 rounded border ${badgeTheme} font-bold">
+              ${esc(vLabel.toUpperCase())}
+            </span>
+            <span class="text-xs font-mono text-slate-400">Skor Indikator: <b class="text-slate-200">${v.skor}/100</b></span>
           </div>
+          <p class="text-xs text-slate-300 font-medium">${esc(v.kesimpulan)}</p>
         </div>
       `;
     }
 
+    // Sources Card (Wikipedia / Cek Fakta)
     if (j.sumber) {
-      let srcHtml = '';
+      let srcItems = '';
       (j.sumber.wikipedia || []).forEach(s => {
-        srcHtml += `<div class="source-pill">📖 Wikipedia: <a href="${s.url}" target="_blank">${esc(s.judul)}</a> — ${esc(s.cuplikan || '')}</div>`;
+        srcItems += `
+          <div class="text-xs text-slate-300 py-1 border-b border-white/[0.04] last:border-0 flex items-start gap-1.5">
+            <span class="text-slate-400 font-mono text-[10px]">WIKI</span>
+            <div>
+              <a href="${s.url}" target="_blank" class="text-brand-bronze hover:underline font-medium">${esc(s.judul)}</a>
+              <span class="text-slate-400 text-[11px] block sm:inline"> — ${esc(s.cuplikan || '')}</span>
+            </div>
+          </div>
+        `;
       });
       (j.sumber.cek_fakta || []).forEach(s => {
-        srcHtml += `<div class="source-pill">✅ Cek Fakta: <a href="${s.url}" target="_blank">${esc(s.judul)}</a></div>`;
+        srcItems += `
+          <div class="text-xs text-slate-300 py-1 border-b border-white/[0.04] last:border-0 flex items-center gap-1.5">
+            <span class="text-emerald-400 font-mono text-[10px]">VERIF</span>
+            <a href="${s.url}" target="_blank" class="text-brand-bronze hover:underline font-medium">${esc(s.judul)}</a>
+          </div>
+        `;
       });
-      if (srcHtml) extra += `<div class="sources-box">${srcHtml}</div>`;
+
+      if (srcItems) {
+        extraHtml += `
+          <div class="mt-2.5 p-3 rounded-xl bg-black/30 border border-white/[0.05] space-y-1">
+            <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">Rujukan & Bukti Web Terkait:</div>
+            ${srcItems}
+          </div>
+        `;
+      }
     }
 
-    const finalHtml = esc(j.reply) + extra;
-    bubble('a', finalHtml, `${sel.value} • ${now()}`);
-    push('a', finalHtml, sel.value);
+    const finalHtml = `<div class="whitespace-pre-line">${esc(j.reply)}</div>${extraHtml}`;
+    appendBubble('a', finalHtml, `${sel.value} · ${now()}`);
+    pushHistory('a', finalHtml, sel.value);
+
   } catch (err) {
     lod.remove();
-    const failHtml = '⚠️ Gagal terhubung ke server Sagi. Pastikan Flask sedang berjalan.';
-    bubble('a', failHtml);
-    push('a', failHtml);
+    const failHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Server tidak dapat dijangkau. Pastikan aplikasi Flask sedang aktif.</div>`;
+    appendBubble('a', failHtml);
+    pushHistory('a', failHtml);
   }
 
   btn.disabled = false;
@@ -788,7 +609,7 @@ inp.addEventListener('keydown', e => {
 });
 inp.addEventListener('input', () => {
   inp.style.height = 'auto';
-  inp.style.height = Math.min(150, inp.scrollHeight) + 'px';
+  inp.style.height = Math.min(160, inp.scrollHeight) + 'px';
 });
 
 document.getElementById('newchat').onclick = () => {

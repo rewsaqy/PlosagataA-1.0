@@ -30,6 +30,11 @@ def load_model(ckpt_dir, device="cpu"):
 
 
 def predict(text, model, tok, device="cpu"):
+    try:
+        from plosagata.slang import normalize_slang
+        text = normalize_slang(text)
+    except Exception:
+        pass
     ids, mask = tok.encode(text)
     ids_t = torch.tensor([ids], dtype=torch.long).to(device)
     mask_t = torch.tensor([mask], dtype=torch.long).to(device)

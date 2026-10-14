@@ -58,8 +58,12 @@ def heuristic_signals(text: str) -> dict:
     excl = text.count("!") + text.count("?")
     many_caps = caps_ratio > 0.3 and len(text) > 30
     no_source = not any(s in t for s in ["kompas", "detik", "tempo", "antaranews", "cnn", "bbc", "situs resmi", ".go.id"])
-    short_url = bool(re.search(r'(?:\b|https?://)(?:bit\.ly|tinyurl(?:\.com)?|s\.id)(?:/\S*)?', t))
-    has_phone = bool(re.search(r'(?:(?:\+?62\s?|0)8[0-9\s\-\.]{7,14}[0-9])', text))
+    short_pat = r'(?:\b|https?://)(?:bit\.ly|tinyurl(?:\.com)?|s\.id)(?:/\S*)?'
+    phone_pat = r'(?:(?:\+?62\s?|0)8[0-9\s\-\.]{7,14}[0-9])'
+    short_urls = re.findall(short_pat, t)
+    phone_numbers = re.findall(phone_pat, text)
+    short_url = bool(short_urls)
+    has_phone = bool(phone_numbers)
     emojis = re.findall(r'[\U0001F300-\U0001FAFF\u2600-\u27BF]', text)
     excess_emoji = len(emojis) >= 3
     return {
@@ -68,25 +72,33 @@ def heuristic_signals(text: str) -> dict:
         "excess_punct": excl > 5,
         "no_source": no_source,
         "shortened_url": short_url,
-        "short_urls": short_url,
+        "short_urls": short_urls,
         "phone_number": has_phone,
         "has_phone": has_phone,
+        "phone_numbers": phone_numbers,
         "excess_emoji": excess_emoji,
     }
 
 
-def final_label(model_label: str, skor: int) -> str:
+def final_label(model_label: str, skor: int, fiksi: bool = False) -> str:
     """SATU label final — badge & kesimpulan tidak boleh kontradiksi.
 
-    Aturan: heuristic menang saat kuat (skor>=60 -> hoaks),
-    model menang saat heuristic lemah. Mencegah kasus
-    'skor 100 tapi badge VALID'.
+    Aturan seimbang:
+    - Konten fiksi/simulasi berlabel jelas diakui sebagai non-hoaks
+      (label khusus "fiksi", bukan merah HOAKS)
+    - Skor >= 60 -> hoaks (bukti heuristik / indikator kuat)
+    - Skor 30..59 -> meragukan (atau hoaks jika model yakin dan ada sinyal)
+    - Skor < 30 -> valid (kecuali model curiga meragukan)
     """
+    if fiksi:
+        return "fiksi"
     if skor >= 60:
         return "hoaks"
-    if (model_label or "") == "hoaks":
-        return "hoaks"
-    if skor >= 30 or (model_label or "") == "meragukan":
+    if skor >= 35:
+        if (model_label or "") == "hoaks":
+            return "hoaks"
+        return "meragukan"
+    if (model_label or "") == "meragukan" and skor >= 20:
         return "meragukan"
     return "valid"
 
@@ -95,28 +107,50 @@ def local_verdict(text: str, model_result: dict) -> dict:
     sig = heuristic_signals(text)
     fiksi = deteksi_fiksi(text)
     sig["fiksi_hits"] = fiksi
+
+    # Deteksi sinyal peringatan aktif (red flags)
+    has_alarm = bool(
+        sig["keyword_hits"]
+        or sig["many_caps"]
+        or sig["excess_punct"]
+        or sig.get("shortened_url")
+        or sig.get("phone_number")
+        or sig.get("excess_emoji")
+    )
+
     skor = 0
     skor += len(sig["keyword_hits"]) * 20
     skor += 15 if sig["many_caps"] else 0
     skor += 10 if sig["excess_punct"] else 0
-    skor += 10 if sig["no_source"] else 0
     skor += 15 if sig.get("shortened_url") or sig.get("short_urls") else 0
     skor += 10 if sig.get("phone_number") or sig.get("has_phone") else 0
-    if model_result.get("label") == "hoaks":
-        skor += 25
-    elif model_result.get("label") == "meragukan":
+
+    # Penalti tanpa sumber hanya berlaku jika teks mengandung nada provokatif / alarm
+    if sig["no_source"] and has_alarm:
         skor += 10
+
+    # Kontribusi model 12M:
+    # Model menjadi pembantu sinyal heuristik, bukan penentu mutlak tanpa bukti
+    m_label = model_result.get("label", "")
+    if m_label == "hoaks":
+        if has_alarm:
+            skor += 25
+        else:
+            skor += 10  # model curiga tapi tidak ada satupun sinyal heuristik
+    elif m_label == "meragukan":
+        skor += 5 if has_alarm else 0
+
     skor = min(skor, 100)
 
-    if skor >= 60:
-        kesimpulan = "Berpotensi HOAKS — perlu verifikasi ke sumber resmi."
-    elif skor >= 30:
-        kesimpulan = "MERAGUKAN — cek sumber resmi sebelum menyebarkan."
-    else:
-        kesimpulan = "Tidak ada sinyal hoaks — belum terverifikasi, cek sumber resmi."
     if fiksi:
         kesimpulan = ("FIKSI/SIMULASI — konten menyatakan dirinya rekaan, "
                       "bukan laporan kejadian nyata.")
+    elif skor >= 60:
+        kesimpulan = "Berpotensi HOAKS — perlu verifikasi ke sumber resmi."
+    elif skor >= 35:
+        kesimpulan = "MERAGUKAN — cek sumber resmi sebelum menyebarkan."
+    else:
+        kesimpulan = "Tampak VALID — belum terverifikasi, cek sumber resmi."
 
     saran = []
     if fiksi:
@@ -140,7 +174,7 @@ def local_verdict(text: str, model_result: dict) -> dict:
 
     return {
         "skor_hoaks": skor,
-        "label_final": final_label(model_result.get("label"), skor),
+        "label_final": final_label(model_result.get("label"), skor, fiksi=bool(fiksi)),
         "kesimpulan": kesimpulan,
         "sinyal": sig,
         "saran": saran,
