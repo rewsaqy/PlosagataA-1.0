@@ -14,8 +14,10 @@ class GPTConfig:
     tie_weights: bool = True  # head pinjam bobot embedding (hemat ~32M di More)
 
 
-# Tepat 3 model (nama resmi):
+# Tepat 4 model (nama resmi):
 CONFIGS: dict[str, GPTConfig] = {
+    # Plosagata_Flash — super ringan ~12M (CPU kentang, demo kilat)
+    "Plosagata_Flash": GPTConfig(vocab=5000, dim=384, layers=6, heads=6, ff=1536, max_len=256),
     # Plosagata_Go — respon cepat (CPU/laptop, demo kilat)
     "Plosagata_Go": GPTConfig(vocab=8000, dim=768, layers=12, heads=12, ff=3072, max_len=512),
     # Plosagata_More — medium, target training utama (~912M, GPU 6GB+)
@@ -24,8 +26,17 @@ CONFIGS: dict[str, GPTConfig] = {
     "Plosagata_Next": GPTConfig(vocab=16000, dim=2048, layers=38, heads=16, ff=5632, max_len=1024),
 }
 
+# Jumlah parameter terverifikasi (scripts/gpt_pure.py) — tanpa bangun model.
+PARAMS = {
+    "Plosagata_Flash": 12665856,
+    "Plosagata_Go": 91593216,
+    "Plosagata_More": 912008192,
+    "Plosagata_Next": 1549927424,
+}
+
 # Nama tampilan untuk manusia
 DISPLAY = {
+    "Plosagata_Flash": "Plosagata_Flash (12M) — super ringan",
     "Plosagata_Go": "Plosagata_Go (small) — respon cepat",
     "Plosagata_More": "Plosagata_More (B1) — medium",
     "Plosagata_Next": "Plosagata_Next (b1x38) — besar",

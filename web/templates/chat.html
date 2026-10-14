@@ -160,17 +160,11 @@ tailwind.config = {
         <span class="text-[10px] font-mono text-slate-400">12M + RAG</span>
       </div>
       <div class="relative">
-        <select id="model" class="w-full appearance-none bg-obsidian-850 hover:bg-obsidian-800 text-xs font-mono text-slate-200 border border-white/[0.08] hover:border-white/[0.15] rounded-lg px-3 py-2 pr-8 outline-none focus:border-brand-bronze/60 transition-all cursor-pointer">
-          <option value="Plosagata_Go">Plosagata_Go · Fast Native (CPU)</option>
-          <option value="Plosagata_More">Plosagata_More · 912M Reasoning</option>
-          <option value="Plosagata_Next">Plosagata_Next · 1.55B Dense Tier</option>
-        </select>
-        <div class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
+        <div id="activeModel" class="w-full bg-obsidian-850 text-xs font-mono text-slate-200 border border-white/[0.08] rounded-lg px-3 py-2">
+          …memuat model aktif…
         </div>
       </div>
+      <a href="/models" class="text-[11px] font-mono text-brand-bronze hover:underline">Ganti model → /models</a>
     </div>
 
     <!-- Remote Token (Collapsible subtle) -->
@@ -282,7 +276,6 @@ tailwind.config = {
 const box = document.getElementById('box'),
       inp = document.getElementById('m'),
       btn = document.getElementById('send'),
-      sel = document.getElementById('model'),
       tok = document.getElementById('tok'),
       convs = document.getElementById('convs'),
       sidebar = document.getElementById('sidebar'),
@@ -293,12 +286,15 @@ const box = document.getElementById('box'),
 tok.value = localStorage.getItem('sagi_token') || '';
 tok.onchange = () => localStorage.setItem('sagi_token', tok.value);
 
-sel.value = localStorage.getItem('sagi_model') || 'Plosagata_Go';
-sel.onchange = () => {
-  localStorage.setItem('sagi_model', sel.value);
-  modelIndicatorText.innerText = sel.value;
-};
-modelIndicatorText.innerText = sel.value;
+// Model aktif = keputusan server (/api/models), bukan dropdown lokal.
+async function refreshActive(){
+  try{
+    const j = await (await fetch('/api/models')).json();
+    document.getElementById('activeModel').innerText = j.active + ' ● AKTIF';
+    modelIndicatorText.innerText = j.active;
+  }catch(e){ document.getElementById('activeModel').innerText = 'tak tersambung'; }
+}
+refreshActive();
 
 // Mobile Drawer Controls
 document.getElementById('openSidebar')?.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
@@ -513,7 +509,6 @@ async function kirim() {
       },
       body: JSON.stringify({
         message: text,
-        model: sel.value,
         session: sid
       })
     });
@@ -586,8 +581,8 @@ async function kirim() {
     }
 
     const finalHtml = `<div class="whitespace-pre-line">${esc(j.reply)}</div>${extraHtml}`;
-    appendBubble('a', finalHtml, `${sel.value} · ${now()}`);
-    pushHistory('a', finalHtml, sel.value);
+    appendBubble('a', finalHtml, `${j.model_size || '?'} · ${now()}`);
+    pushHistory('a', finalHtml, j.model_size || '?');
 
   } catch (err) {
     lod.remove();

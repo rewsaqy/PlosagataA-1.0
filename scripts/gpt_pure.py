@@ -23,7 +23,7 @@ if __name__ == "__main__":
     total = count_params(m)
     print(f"PureGPT-{name}: {total:,} ({total/1e9:.3f}B / {total/1e6:.1f}M)")
     print(asdict(cfg))
-    if name == "Plosagata_Go":
+    if name in ("Plosagata_Flash", "Plosagata_Go"):
         x = torch.randint(0, cfg.vocab, (1, 17))
         logits, _ = m(x[:, :-1], x[:, 1:])  # geser: posisi i menebak token i+1
         import torch.nn.functional as F

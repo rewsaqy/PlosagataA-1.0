@@ -32,10 +32,11 @@ _history: deque = deque(maxlen=20)  # riwayat 20 cek terakhir (in-memory)
 _model = None
 _tok = None
 _engines = {}
+ACTIVE = {"model": os.getenv("SAGI_SIZE", "Plosagata_Go")}
 
 
 def get_engine(size=None):
-    key = size or os.getenv("SAGI_SIZE", "Plosagata_Go")
+    key = size or ACTIVE["model"]
     if key not in CONFIGS:
         key = "Plosagata_Go"
     if key not in _engines:
@@ -45,6 +46,39 @@ def get_engine(size=None):
             from chatbot import SagiEngine
         _engines[key] = SagiEngine(size=key)
     return _engines[key]
+
+
+def unload_engine(name):
+    """Bongkar total engine lama (RAM/VRAM balik). Return True bila ada yg dibongkar."""
+    eng = _engines.pop(name, None)
+    if eng is None:
+        return False
+    try:
+        eng.model = None
+        eng.vmodel = None
+    except Exception:
+        pass
+    import gc
+    gc.collect()
+    try:
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except Exception:
+        pass
+    return True
+
+
+def select_model(name):
+    """Ganti model AKTIF: matikan semua engine lain, nyalakan yg baru (sesi fresh)."""
+    if name not in CONFIGS:
+        return {"ok": False, "error": f"Model tak dikenal: {name}"}
+    dimatikan = [k for k in list(_engines) if k != name and unload_engine(k)]
+    ACTIVE["model"] = name
+    eng = get_engine(name)  # bangun + warmup ringan
+    from plosagata import PARAMS
+    return {"ok": True, "active": name, "dimatikan": dimatikan,
+            "trained": eng.trained, "params": PARAMS.get(name, 0)}
 
 
 def warmup():
@@ -111,6 +145,32 @@ def chat_page():
     return render_template("chat.html")
 
 
+@app.route("/models")
+def models_page():
+    return render_template("models.html")
+
+
+@app.route("/api/models")
+def models_api():
+    from plosagata import DISPLAY, PARAMS
+    items = []
+    for n in CONFIGS:
+        items.append({"name": n, "display": DISPLAY.get(n, n),
+                      "params": PARAMS.get(n, 0),
+                      "layers": CONFIGS[n].layers, "dim": CONFIGS[n].dim,
+                      "loaded": n in _engines,
+                      "trained": bool(_engines[n].trained) if n in _engines else False})
+    return jsonify({"ok": True, "active": ACTIVE["model"], "models": items})
+
+
+@app.route("/api/models/select", methods=["POST"])
+def models_select():
+    data = request.get_json(silent=True) or {}
+    name = (data.get("model", "") or request.form.get("model", "")).strip()
+    r = select_model(name)
+    return jsonify(r), (200 if r.get("ok") else 400)
+
+
 @app.route("/api/chat", methods=["POST"])
 def chat_api():
     if not _cek_token():
@@ -122,8 +182,16 @@ def chat_api():
     if not text:
         return jsonify({"ok": False, "error": "Pesan kosong."}), 400
     try:
-        r = get_engine(size or None).reply(text, session_id=session_id)
-        return jsonify({"ok": True, "model_size": get_engine(size or None).size, **r})
+        if size:
+            # Minta model eksplisit = pindah beneran (matikan yg lain).
+            s = select_model(size)
+            if not s.get("ok"):
+                return jsonify({"ok": False, "error": s.get("error")}), 400
+            eng = get_engine(size)
+        else:
+            eng = get_engine()
+        r = eng.reply(text, session_id=session_id)
+        return jsonify({"ok": True, "model_size": eng.size, **r})
     except Exception as e:
         return jsonify({"ok": False, "error": f"Engine gagal: {e}"}), 500
 
