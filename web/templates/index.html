@@ -417,6 +417,9 @@ function renderResult(j) {
   const sigList = document.getElementById('signalsList');
   sigList.innerHTML = '';
   const s = v.sinyal || {};
+  if (s.fitnah_tokoh) {
+    sigList.innerHTML += `<li>🚨 Pola fitnah: tokoh publik dituduh kejahatan tanpa proses hukum.</li>`;
+  }
   if (s.keyword_hits && s.keyword_hits.length) {
     sigList.innerHTML += `<li>⚠️ Kata kunci kecurigaan: <b>${s.keyword_hits.join(', ')}</b></li>`;
   }

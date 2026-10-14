@@ -29,6 +29,22 @@ HOAX_KEYWORDS = [
         "nomor wa", "hubungi", "chat admin",
 ]
 
+# Tokoh publik + kata kerja kriminal TANPA sumber kredibel = pola fitnah absurd.
+# ("Prabowo ledakkan rumah Putin", "Jokowi culik artis", ...)
+# Hanya aktif bila tak ada media arus utama disebut (berita kriminal asli
+# selalu menyebut sumber) agar berita kriminal beneran tidak kena.
+PEJABAT = [
+    "presiden", "wakil presiden", "wapres", "menteri", "gubernur", "bupati",
+    "walikota", "jokowi", "prabowo", "anies", "ganjar", "gibran", "megawati",
+    "puan", "ahok", "ridwan kamil", "putin", "biden", "trump", "raja",
+]
+KRIMINAL = [
+    "bunuh", "membunuh", "pembunuhan", "ledak", "meledakkan", "bom",
+    "culik", "menculik", "penculikan", "rampok", "merampok", "perkosa",
+    "memperkosa", "tikam", "menusuk", "tembak", "menembak", "racun",
+    "meracuni", "santet", "teluh", "bunuh diri",
+]
+
 # Penanda konten yang MENDEKLARASIKAN dirinya fiksi/simulasi.
 # Kuat = cukup 1 temuan. Lemah = butuh >=2 temuan berbeda
 # (agar berita latihan/simulasi bencana asli tidak kena false-positive).
@@ -66,10 +82,17 @@ def heuristic_signals(text: str) -> dict:
     phone_numbers = re.findall(phone_pat, text)
     short_url = bool(short_urls)
     has_phone = bool(phone_numbers)
+    # Fitnah absurd: tokoh publik + kerja kriminal, tanpa media kredibel.
+    fitnah = (any(p in t for p in PEJABAT)
+              and any(k in t for k in KRIMINAL)
+              and not any(s in t for s in ["kompas", "detik", "tempo", "antaranews",
+                                           "cnn", "bbc", "kejaksaan", "kepolisian",
+                                           "kpk", "pengadilan", "vonis", "ditangkap"]))
     emojis = re.findall(r'[\U0001F300-\U0001FAFF\u2600-\u27BF]', text)
     excess_emoji = len(emojis) >= 3
     return {
         "keyword_hits": hits,
+        "fitnah_tokoh": fitnah,
         "many_caps": many_caps,
         "excess_punct": excl > 5,
         "no_source": no_source,
@@ -120,10 +143,12 @@ def local_verdict(text: str, model_result: dict) -> dict:
         or sig.get("shortened_url")
         or sig.get("phone_number")
         or sig.get("excess_emoji")
+        or sig.get("fitnah_tokoh")
     )
 
     skor = 0
     skor += len(sig["keyword_hits"]) * 20
+    skor += 50 if sig.get("fitnah_tokoh") else 0  # fitnah tokoh ≈ pasti hoaks
     skor += 15 if sig["many_caps"] else 0
     skor += 10 if sig["excess_punct"] else 0
     skor += 15 if sig.get("shortened_url") or sig.get("short_urls") else 0
@@ -157,6 +182,8 @@ def local_verdict(text: str, model_result: dict) -> dict:
         kesimpulan = "Tampak VALID — belum terverifikasi, cek sumber resmi."
 
     saran = []
+    if sig.get("fitnah_tokoh"):
+        saran.append("Pola fitnah: tokoh publik dituduh kejahatan berat tanpa proses hukum maupun media kredibel. Cek ke kejaksaan/pengadilan resmi.")
     if fiksi:
         saran.append(f"Terdeteksi deklarasi fiksi/simulasi ({', '.join(fiksi[:3])}). "
                      "Jangan disebar sebagai berita faktual; fiksi berlabel jelas bukan hoaks.")
