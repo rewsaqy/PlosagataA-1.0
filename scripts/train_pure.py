@@ -181,6 +181,11 @@ def main():
     print(f"Parameter: {count_params(model):,} | mode: {mode}")
     vocab_path = (a.out or f"pure-{a.size}") + ".vocab.pt"
     torch.save(tok.vocab, vocab_path)
+    # + backend BPE penuh agar inference tak perlu tebak-tebak merges
+    try:
+        tok.save((a.out or f"pure-{a.size}") + ".tokenizer.json")
+    except Exception as e:
+        print(f"[warn] tokenizer.json gagal disimpan: {e}")
 
     opt = make_optimizer(a.optim, model.parameters(), a.lr)
     scaler = torch.cuda.amp.GradScaler() if use_fp16 else None

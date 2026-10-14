@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .config import GPTConfig
+from .config import CONFIGS, GPTConfig
 from .layers import Block
 
 
@@ -121,3 +121,23 @@ class PureGPT(nn.Module):
 
 def count_params(m: nn.Module) -> int:
     return sum(p.numel() for p in m.parameters())
+
+
+def detect_size(ckpt_path: str):
+    """Tebak nama config dari isi checkpoint (layer/dim/vocab).
+
+    Mencegah salah pasang: ckpt Go dimuat ke model More, dll.
+    Return nama config atau None bila tidak cocok satupun.
+    """
+    import torch
+    try:
+        sd = torch.load(ckpt_path, map_location="cpu", weights_only=True)
+    except Exception:
+        return None
+    layers = len({k.split(".")[1] for k in sd if k.startswith("blocks.")})
+    dim = sd.get("tok_emb.weight", torch.empty(0)).shape[1] if "tok_emb.weight" in sd else 0
+    vocab = sd.get("tok_emb.weight", torch.empty(0)).shape[0] if "tok_emb.weight" in sd else 0
+    for name, cfg in CONFIGS.items():
+        if cfg.layers == layers and cfg.dim == dim and cfg.vocab == vocab:
+            return name
+    return None

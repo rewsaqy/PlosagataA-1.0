@@ -22,11 +22,12 @@ class SagiEngine:
         self.cfg = CONFIGS[size]
         self.size = size
 
-        # tokenizer chat — muat vocab berpasangan jika ada checkpoint, atau build fallback
+        # tokenizer chat — urutan: JSON penuh > dict+pieces > build fallback.
+        # JSON penuh memulihkan backend BPE persis seperti saat training.
         self.ckpt = ckpt
         self.ckpt_dir = Path(ckpt_dir)
         self.trained = bool(ckpt and Path(ckpt).exists())
-
+        self.use_pieces = False
         loaded_tok = False
         if self.trained:
             cands = [str(ckpt) + ".vocab.pt", str(ckpt).replace(".pt", ".vocab.pt")]
@@ -39,10 +40,19 @@ class SagiEngine:
                     try:
                         vocab = torch.load(p_cand, map_location="cpu", weights_only=True)
                         self.tok = WordTokenizer(vocab, max_len=self.cfg.max_len)
+                        self.use_pieces = True
                         loaded_tok = True
                         break
                     except Exception:
                         pass
+            jcand = str(ckpt).replace(".pt", ".tokenizer.json")
+            if Path(jcand).exists():
+                try:
+                    self.tok = WordTokenizer.load(jcand)
+                    self.use_pieces = False
+                    loaded_tok = True
+                except Exception:
+                    pass
 
         if not loaded_tok:
             seeds = ["halo", "hai", "sagi", "berita", "hoaks", "cek"]
@@ -70,7 +80,43 @@ class SagiEngine:
         if self.model is None:
             m = PureGPT(self.cfg).to(self.device)
             if self.ckpt:
-                m.load_state_dict(torch.load(self.ckpt, map_location=self.device))
+                try:
+                    m.load_state_dict(torch.load(self.ckpt, map_location=self.device))
+                except RuntimeError:
+                    # Salah ukuran? Deteksi dari isi checkpoint, bukan tebakan.
+                    from plosagata import detect_size
+                    pas = detect_size(self.ckpt)
+                    if pas and pas != self.size:
+                        self.cfg = CONFIGS[pas]
+                        self.size = pas
+                        # utama: vocab pasangan ckpt; fallback: seeds
+                        self.use_pieces = False
+                        for cand in [str(self.ckpt) + ".vocab.pt",
+                                     str(self.ckpt).replace(".pt", ".vocab.pt")]:
+                            from pathlib import Path as _P
+                            if _P(cand).exists():
+                                try:
+                                    _v = torch.load(cand, map_location="cpu",
+                                                    weights_only=True)
+                                    self.tok = WordTokenizer(_v, max_len=self.cfg.max_len)
+                                    self.use_pieces = True
+                                    break
+                                except Exception:
+                                    pass
+                        else:
+                            seeds = ["halo", "hai", "sagi", "berita", "hoaks", "cek"]
+                            self.tok = WordTokenizer.build(
+                                seeds, vocab_size=self.cfg.vocab, max_len=256,
+                                seed_file="data/vocab_seed.txt")
+                        self.ign = {i for t, i in self.tok.vocab.items()
+                                    if t.startswith("<pad") or t in ("<unk>", "<cls>")}
+                        self.eos = {self.tok.sep_id}
+                        m = PureGPT(self.cfg).to(self.device)
+                        m.load_state_dict(torch.load(self.ckpt, map_location=self.device))
+                    else:
+                        raise RuntimeError(
+                            f"Checkpoint {self.ckpt} tidak cocok dengan arsitektur "
+                            f"{self.size}. Pakai --size yang sesuai (terdeteksi: {pas}).")
             m.eval()
             self.model = m
         return self.model
@@ -151,7 +197,12 @@ class SagiEngine:
                 isi = "Merujuk berita tadi:\n" + isi
             return {"reply": isi, "topic": topic,
                     "verdict": verdict, "sumber": sumber}
-        ids, _ = self.tok.encode(kueri if topic == "followup" else clean)
+        src = kueri if topic == "followup" else clean
+        if self.use_pieces:
+            from hoaxcore import piece_decode, piece_encode
+            ids, _ = piece_encode(src, self.tok.vocab, self.tok.max_len)
+        else:
+            ids, _ = self.tok.encode(src)
         real = [i for i in ids if i != self.tok.pad_id][:64]
         out = self._get_model().generate(
             torch.tensor([real]).to(self.device), max_new=max_new,
@@ -160,5 +211,10 @@ class SagiEngine:
             no_repeat_ngram=int(os.getenv("SAGI_NOREPEAT", "3")),
             eos_ids=self.eos,
             ignore_ids=self.ign)[0].tolist()
+        if self.use_pieces:
+            from hoaxcore import piece_decode as _pd
+            inv = {i: t for t, i in self.tok.vocab.items()}
+            return {"reply": _pd(out[len(real):], inv), "topic": topic,
+                    "verdict": verdict, "sumber": sumber}
         return {"reply": self.tok.decode(out[len(real):]), "topic": topic,
                 "verdict": verdict, "sumber": sumber}

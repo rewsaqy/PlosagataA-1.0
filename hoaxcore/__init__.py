@@ -7,11 +7,13 @@ from .model import TinyHoaxTransformer, count_params
 from .ocr_poster import ocr_poster
 from .retrieval import cari_sumber, kata_kunci, link_cek_fakta, saring_relevan
 from .rag import rag_search
-from .tokenizer import WordTokenizer, basic_clean, tokenize_words
+from .tokenizer import (WordTokenizer, basic_clean, piece_decode, piece_encode,
+                         tokenize_words)
 
 __all__ = [
     "TinyHoaxTransformer", "count_params",
-    "WordTokenizer", "basic_clean", "tokenize_words",
+    "WordTokenizer", "basic_clean", "piece_decode", "piece_encode",
+    "tokenize_words",
     "HoaxDataset", "load_csv", "LABEL2ID", "ID2LABEL",
     "local_verdict", "heuristic_signals", "llm_crosscheck",
     "get_classifier", "predict_proba", "ringkasan_hasil",

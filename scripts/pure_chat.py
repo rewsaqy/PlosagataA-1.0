@@ -20,6 +20,7 @@ import torch
 from plosagata import (CONFIGS, PureGPT, is_news_topic, sagi_hello,
                        sagi_redirect, normalize_slang)
 from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
+                      piece_decode, piece_encode,
                       final_label, local_verdict, ringkasan_hasil)
 
 
@@ -46,47 +47,6 @@ def load_ckpt_vocab(ckpt_path: str):
         if isinstance(v, dict) and len(v) > 100:
             return v
     return None
-
-
-def piece_encode(text: str, vocab: dict, max_len: int = 256) -> tuple[list[int], list[int]]:
-    """Encode longest-match untuk vocab BPE tanpa backend (darurat ckpt lama)."""
-    pad_id, unk_id = vocab.get("<pad>", 0), vocab.get("<unk>", 1)
-    cls_id, sep_id = vocab.get("<cls>", 2), vocab.get("<sep>", 3)
-    ids = [cls_id]
-    for wi, w in enumerate(text.split()):
-        for form in ([w, "Ġ" + w] if wi == 0 else ["Ġ" + w, w]):
-            cur, i, ok = [], 0, True
-            while i < len(form):
-                best = next((form[i:j] for j in range(len(form), i, -1)
-                             if form[i:j] in vocab), None)
-                if best is None:
-                    ok = False
-                    break
-                cur.append(vocab[best])
-                i += len(best)
-            if ok:
-                ids.extend(cur)
-                break
-        else:
-            ids.append(unk_id)
-        if len(ids) >= max_len - 1:
-            break
-    ids = (ids + [sep_id])[:max_len]
-    mask = [1] * len(ids)
-    while len(ids) < max_len:
-        ids.append(pad_id)
-        mask.append(0)
-    return ids, mask
-
-
-def piece_decode(ids: list[int], inv: dict) -> str:
-    toks = [inv.get(i, "") for i in ids]
-    out = ""
-    for t in toks:
-        if not t or t.startswith("<pad") or t in ("<pad>", "<unk>", "<cls>", "<sep>"):
-            continue
-        out += (" " + t[1:]) if t.startswith("Ġ") else t
-    return out.replace("  ", " ").strip()
 
 
 def main():
@@ -140,15 +100,24 @@ def main():
     sess = {"topik": None}  # memori topik sesi terminal
 
     def get_model():
-        nonlocal _model
+        nonlocal _model, cfg
         if _model is None:
             m = PureGPT(cfg)
             if a.ckpt and os.path.exists(a.ckpt):
                 try:
                     m.load_state_dict(torch.load(a.ckpt, map_location="cpu"))
                     print(f"[ckpt dimuat: {a.ckpt}]")
-                except RuntimeError as e:
-                    print(f"[ckpt tak cocok, pakai bobot acak: {e}]")
+                except RuntimeError:
+                    from plosagata import detect_size
+                    pas = detect_size(a.ckpt)
+                    if pas and pas != a.size:
+                        print(f"[ckpt ternyata {pas}, alihkan ukuran dari {a.size}]")
+                        cfg = CONFIGS[pas]
+                        m = PureGPT(cfg)
+                        m.load_state_dict(torch.load(a.ckpt, map_location="cpu"))
+                        print(f"[ckpt dimuat: {a.ckpt}]")
+                    else:
+                        print(f"[ckpt tak cocok (terdeteksi: {pas}), pakai bobot acak]")
             else:
                 print("[bobot ACAK — output awal ngawur itu normal sebelum training]")
             _model = m
