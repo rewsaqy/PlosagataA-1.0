@@ -61,7 +61,11 @@ def bersihkan_judul(judul: str) -> str:
 
 
 def kumpulkan_tbh(pages: int, jeda: float = 1.5) -> list[tuple[str, str, str]]:
-    """Return [(text, label, sumber_url)]."""
+    """Return [(text, label, sumber_url)]. Judul dari listing."""
+    return [(t, l, u) for (t, l, u) in _listing_tbh(pages, jeda)]
+
+
+def _listing_tbh(pages: int, jeda: float = 1.5) -> list[tuple[str, str, str]]:
     hasil, lihat = [], set()
     for p in range(1, pages + 1):
         try:
@@ -84,6 +88,67 @@ def kumpulkan_tbh(pages: int, jeda: float = 1.5) -> list[tuple[str, str, str]]:
         print(f"[tbh] halaman {p}: {len(hasil)} terkumpul")
         time.sleep(jeda)
     return hasil
+
+
+def isi_artikel(url: str, timeout: int = 25) -> str:
+    """Ambil isi <article> halaman TurnBackHoax -> teks bersih."""
+    html_page = get(url, timeout=timeout)
+    m = re.search(r"<article[^>]*>(.*?)</article>", html_page, re.S)
+    if not m:
+        return ""
+    teks = re.sub(r"<script.*?</script>|<style.*?</style>", " ", m.group(1), flags=re.S)
+    teks = re.sub(r"<[^>]+>", " ", teks)
+    teks = re.sub(r"\s+", " ", html.unescape(teks)).strip()
+    return teks if len(teks) >= 500 else ""
+
+
+def kumpulkan_tbh_full(max_artikel: int, jeda: float = 2.5,
+                       seen_path: str = "data/tbh_seen.txt") -> int:
+    """Unduh ISI artikel (bukan judul) -> append korpus.txt. Resume otomatis.
+
+    Sopan: jeda 2.5 dtk/artikel (~35KB/mnt, tak terasa buat main game).
+    15.600 artikel ≈ 9-10 jam. Bisa di-stop (Ctrl+C) dan dilanjut kapan saja.
+    """
+    seen = set()
+    p_seen = Path(seen_path)
+    if p_seen.exists():
+        seen = set(p_seen.read_text(encoding="utf-8").splitlines())
+    halaman, tambah, total = 1, 0, 0
+    with open(seen_path, "a", encoding="utf-8") as f_seen, \
+         open("data/korpus.txt", "a", encoding="utf-8") as o:
+        while tambah < max_artikel:
+            try:
+                html_page = get(f"{TBH}/articles?page={halaman}")
+            except Exception as e:
+                print(f"[full] listing {halaman} gagal: {e}; berhenti aman.")
+                break
+            urls = re.findall(r'href="(https://turnbackhoax\.id/articles/\d+-[a-z0-9\-]+)"', html_page)
+            urls = list(dict.fromkeys(urls))
+            if not urls:
+                print("[full] tidak ada artikel lagi, selesai.")
+                break
+            for url in urls:
+                if tambah >= max_artikel or url in seen:
+                    continue
+                try:
+                    isi = isi_artikel(url)
+                except Exception:
+                    isi = ""
+                seen.add(url)
+                f_seen.write(url + "\n")
+                f_seen.flush()
+                if isi:
+                    o.write("\n" + isi[:12000] + "\n")
+                    o.flush()
+                    tambah += 1
+                    total += len(isi)
+                    if tambah % 50 == 0:
+                        print(f"[full] {tambah} artikel (+{total/1e6:.1f} MB)", flush=True)
+                time.sleep(jeda)
+            halaman += 1
+            time.sleep(jeda)
+    print(f"[full] selesai: {tambah} artikel baru (+{total/1e6:.1f} MB)")
+    return tambah
 
 
 def kumpulkan_rss(feeds: list[str]) -> list[tuple[str, str, str]]:
@@ -130,6 +195,8 @@ def muat_csv(path: str) -> tuple[list, set]:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tbh-pages", type=int, default=2)
+    ap.add_argument("--tbh-full", type=int, default=0,
+                    help="Unduh ISI N artikel TurnBackHoax -> korpus.txt (resume otomatis)")
     ap.add_argument("--rss", type=int, default=1, help="0 = matikan RSS")
     ap.add_argument("--csv", default="data/contoh_dataset.csv")
     ap.add_argument("--no-regen", action="store_true")
@@ -139,6 +206,10 @@ def main():
     print(f"CSV awal: {len(rows)} baris")
 
     baru = []
+    if a.tbh_full > 0:
+        kumpulkan_tbh_full(a.tbh_full)
+        print("Mode full: hanya isi korpus, selesai.")
+        return
     if a.tbh_pages > 0:
         baru += kumpulkan_tbh(a.tbh_pages)
     if a.rss:
