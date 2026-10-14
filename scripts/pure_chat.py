@@ -123,8 +123,31 @@ def main():
             _model = m
         return _model
 
+    def cmd_terminal(text: str) -> str:
+        from plosagata import DISPLAY, PARAMS
+        parts = text.split()
+        cmd = parts[0].lower()
+        if cmd in ("/help", "/bantuan"):
+            return ("Perintah: /models (daftar), /model <nama> "
+                    "(restart dengan --size itu), /status")
+        if cmd == "/models":
+            return "\n".join(
+                f"{'●' if n == a.size else '○'} {n} "
+                f"({PARAMS.get(n,0)/1e6:.1f} jt)" for n in CONFIGS)
+        if cmd in ("/model", "/pakai", "/ganti"):
+            mau = " ".join(parts[1:])
+            if mau in CONFIGS and mau != a.size:
+                return (f"Restart dengan: --size {mau} "
+                        f"(proses ini jalan {a.size})")
+            return f"Sudah pakai {a.size}. Lihat: /models"
+        if cmd == "/status":
+            return f"Model: {a.size} | topik sesi: {sess.get('topik') or '-'}"
+        return f"Perintah tak dikenal: {cmd}. Ketik /help."
+
     def answer(prompt: str) -> str:
         from plosagata import is_follow_up_safe
+        if prompt.strip().startswith("/"):
+            return cmd_terminal(prompt.strip())
         clean = normalize_slang(prompt)
         topic = is_news_topic(clean)
         klaim, kueri, rujuk = prompt, prompt, False

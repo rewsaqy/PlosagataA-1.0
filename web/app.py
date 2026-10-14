@@ -171,6 +171,56 @@ def models_select():
     return jsonify(r), (200 if r.get("ok") else 400)
 
 
+def cmd_chat(text, session_id=""):
+    """Slash-command ala OpenCode di dalam chat. Return dict respons API."""
+    from plosagata import DISPLAY, PARAMS
+    parts = text.strip().split()
+    cmd = parts[0].lower()
+    arg = " ".join(parts[1:]).strip()
+
+    if cmd in ("/help", "/bantuan", "/perintah"):
+        return {"ok": True, "topic": "command",
+                "reply": ("Perintah Sagi:\n"
+                          "/models — daftar model + status\n"
+                          "/model <nama> — ganti model (bongkar total, sesi fresh)\n"
+                          "/status — model aktif + topik sesi ini\n"
+                          "/help — pesan ini")}
+    if cmd == "/models":
+        baris = []
+        for n in CONFIGS:
+            tand = "● AKTIF" if n == ACTIVE["model"] else "○"
+            loaded = "nyala" if n in _engines else "mati"
+            baris.append(f"{tand} {n} ({PARAMS.get(n,0)/1e6:.1f} jt) [{loaded}]")
+        return {"ok": True, "topic": "command",
+                "reply": "Model Sagi:\n" + "\n".join(baris) +
+                         "\nGanti: /model <nama> — atau halaman /models"}
+    if cmd in ("/model", "/pakai", "/ganti"):
+        if not arg:
+            return {"ok": True, "topic": "command",
+                    "reply": "Pakai: /model <nama>. Lihat daftar: /models"}
+        r = select_model(arg)
+        if not r.get("ok"):
+            return {"ok": True, "topic": "command",
+                    "reply": f"Gagal: {r.get('error')}. Cek /models."}
+        return {"ok": True, "topic": "command", "model_size": r["active"],
+                "reply": (f"Beralih ke {r['active']} "
+                          f"({r['params']/1e6:.1f} jt param). "
+                          f"Engine lama dimatikan: {', '.join(r['dimatikan']) or 'tidak ada'}. "
+                          "Sesi chat dimulai fresh.")}
+    if cmd == "/status":
+        topik = ""
+        try:
+            eng = _engines.get(ACTIVE["model"])
+            if eng and session_id:
+                topik = (eng._sesi.get(session_id) or {}).get("topik") or ""
+        except Exception:
+            pass
+        return {"ok": True, "topic": "command",
+                "reply": (f"Model aktif: {ACTIVE['model']}\nTopik sesi: {topik or '-'}")}
+    return {"ok": True, "topic": "command",
+            "reply": f"Perintah tak dikenal: {cmd}. Ketik /help."}
+
+
 @app.route("/api/chat", methods=["POST"])
 def chat_api():
     if not _cek_token():
@@ -181,6 +231,8 @@ def chat_api():
     session_id = (data.get("session", "") or request.form.get("session", "")).strip()
     if not text:
         return jsonify({"ok": False, "error": "Pesan kosong."}), 400
+    if text.startswith("/"):
+        return jsonify(cmd_chat(text, session_id))
     try:
         if size:
             # Minta model eksplisit = pindah beneran (matikan yg lain).
