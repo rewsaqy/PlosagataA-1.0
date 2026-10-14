@@ -13,6 +13,8 @@ HOAX_KEYWORDS = [
     "info bocoran", "katanya", "konon", "tanpa sumber",
     "klik link ini", "ambil hadiah", "giveaway", "transfer dulu",
     "chip", "microchip", "vaksin menyebabkan", "bumbu dapur menyembuhkan kanker",
+    "viral", "menyebar", "sebarkan", "tanpa izin", "tanpa menyebutkan",
+    "tidak menyebutkan", "tanpa nama", "tanpa bukti", "matikan",
     "wajib sebarkan", "jangan diam saja", "sebelum terlambat",
     "terbukti", "100% ampuh", "dijamin", "garansi",
     "obat herbal", "resep dokter terkenal", "rahasia",
@@ -94,9 +96,11 @@ def final_label(model_label: str, skor: int, fiksi: bool = False) -> str:
         return "fiksi"
     if skor >= 60:
         return "hoaks"
+    if (model_label or "") == "hoaks":
+        # Model yakin hoaks + ada bukti heuristik (skor>=10) -> ikut model.
+        # Tanpa bukti sama sekali -> meragukan (jujur, bukan valid).
+        return "hoaks" if skor >= 10 else "meragukan"
     if skor >= 35:
-        if (model_label or "") == "hoaks":
-            return "hoaks"
         return "meragukan"
     if (model_label or "") == "meragukan" and skor >= 20:
         return "meragukan"
