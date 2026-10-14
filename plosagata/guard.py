@@ -168,12 +168,27 @@ def sagi_redirect(prompt: str = "") -> str:
     return SAGI_REDIRECT_VARIANTS[n % len(SAGI_REDIRECT_VARIANTS)]
 
 
+# Akar penting yg gagal diurai aturan imbuhan (dicek DULUAN).
+PENGECUALIAN = {
+    "memberitakan": "berita", "diberitakan": "berita",
+    "pemberitaan": "berita",
+    "diketahui": "tahu", "mengetahui": "tahu", "diketahuinya": "tahu",
+    "menyatakan": "nyata", "dinyatakan": "nyata", "pernyataan": "nyata",
+    "dilaporkan": "lapor", "melaporkan": "lapor", "laporan": "lapor",
+    "kebakaran": "bakar", "terbakar": "bakar", "membakar": "bakar",
+}
+
+
 def stem_id(kata: str) -> str:
     """Stemmer mini Indonesia: buang imbuhan agar cocok kata utuh.
 
-    "memberitakan"->"berita" (tetap lolos), "buang"->"buang" (bukan "uang").
+    Aturan imbuhan BUTA akar ("memberitakan" akan jadi "mberita"),
+    jadi akar penting didaftarkan eksplisit di PENGECUALIAN.
+    "buang"->"buang" (bukan "uang") tetap dijamin.
     """
     w = kata.lower()
+    if w in PENGECUALIAN:
+        return PENGECUALIAN[w]
     for pre, ganti in (("menge", ""), ("meny", "s"), ("meng", ""), ("mem", "m"),
                        ("men", "n"), ("penge", ""), ("peny", "s"), ("peng", ""),
                        ("pem", "m"), ("pen", "n"), ("ber", ""), ("ter", ""),
