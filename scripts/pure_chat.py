@@ -66,7 +66,7 @@ def main():
     a = ap.parse_args()
 
     cfg = CONFIGS[a.size]
-    if a.size != "Plosagata_Go":
+    if a.size in ("Plosagata_More", "Plosagata_Next"):
         print("[model besar di CPU lambat; untuk serius pakai GPU + checkpoint hasil training]")
 
     if a.vocab_file and os.path.exists(a.vocab_file):
