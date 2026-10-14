@@ -18,7 +18,7 @@ model unduhan dari pihak mana pun.
 > **Peta dokumen:** `README.md` (dokumen ini) · `howitworks/Cara_kerja_sagi.md`
 > (penjelasan santai) · `docs/ARSITEKTUR.md` (teknis) · `docs/PANDUAN_FINETUNE.md`
 > (training) · `howitworks/cara_pindahinIQsagi.md` (pindah PC) ·
-> `howitworks/Cara_nambah_file.md` (nambah file)
+> `howitworks/Cara_nambah_file.md` (nambah file) · `BUGS.md` (catatan bug jujur)
 
 ---
 
@@ -95,6 +95,8 @@ Verifikasi mandiri:
 .venv/bin/python scripts/gpt_pure.py Plosagata_Next
 .venv/bin/python scripts/eval_verdict.py   # akurasi + probe regresi klasifier
 .venv/bin/python scripts/eval_fiksi.py     # uji deteksi fiksi/simulasi
+.venv/bin/python scripts/eval_topik.py     # uji guard + memori sesi (7/7)
+.venv/bin/python scripts/eval_rag.py --mini  # smoke RAG + latensi p95
 ```
 
 Detail matematis tiap lapisan: `docs/ARSITEKTUR.md`.
@@ -143,8 +145,11 @@ klaim berita → diproses model + verdict 12M.
 | Rute | Fungsi |
 |---|---|
 | `/` | Validator: tempel teks / unggah poster → label, skor, riwayat, statistik |
-| `/chat` | Chatbot: sidebar, riwayat tersimpan, tombol cepat, indikator mengetik, badge verdict, tombol salin, pemilih model, dukungan token remote |
-| `/api/check` · `/api/chat` · `/api/history` · `/api/stats` | API JSON |
+| `/chat` | Chatbot: sidebar, riwayat tersimpan, tombol cepat, indikator mengetik, badge verdict, tombol salin, dukungan token remote |
+| `/models` | Daftar 4 model + ganti beneran (engine lama dibongkar, sesi fresh) |
+| `/api/check` · `/api/chat` · `/api/history` · `/api/stats` · `/api/models` | API JSON |
+
+Slash-command di dalam chat: `/models`, `/model <nama>`, `/status`, `/help`.
 
 Stabilitas server: reloader nonaktif bawaan (konflik thread PyTorch),
 thread CPU dibatasi. Aktifkan reload saat pengembangan UI:

@@ -16,3 +16,4 @@ data/vocab_hf.json
 # RAG offline (besar, dibangun lokal)
 data/korpus.txt
 data/rag_index/
+data/wiki-*.xml.bz2

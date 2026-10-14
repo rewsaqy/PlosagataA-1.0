@@ -32,7 +32,7 @@ async function muat(){
     el.innerHTML = `<h3>${m.display} ${aktif ? '● AKTIF' : ''}</h3>
       <p><span class="tag">${(m.params/1e6).toFixed(1)} jt param</span>
       <span class="tag">${m.layers} layer</span><span class="tag">dim ${m.dim}</span>
-      <span class="tag">${m.loaded ? (m.trained ? 'terlatih ✅' : 'acak ⚠️') : 'mati 💤'}</span></p>
+      <span class="tag">${m.loaded ? (m.trained ? 'terlatih ✅' : 'acak ⚠️') : 'mati 💤'}</span><span class="tag">${(m.ckpt_tersedia||[]).length ? 'ckpt ada 💾' : 'tanpa ckpt'}</span></p>
       <button ${aktif ? 'disabled' : ''} data-m="${m.name}">${aktif ? 'Dipakai' : 'Pakai model ini'}</button>`;
     box.appendChild(el);
   });

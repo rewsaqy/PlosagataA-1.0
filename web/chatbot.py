@@ -24,7 +24,11 @@ class SagiEngine:
 
         # tokenizer chat — urutan: JSON penuh > dict+pieces > build fallback.
         # JSON penuh memulihkan backend BPE persis seperti saat training.
-        self.ckpt = ckpt or self._cari_ckpt_otomatis(size)
+        # Eksplisit > implisit: ckpt HANYA dari param/env, tidak auto-attach.
+        # (Auto-attach file liar bikin perilaku tak tentu — mis. eval gagal
+        # karena mesin tetangga. Lihat BUGS.md.)
+        # Untuk LIHAT ketersediaan tanpa memakai: _ckpt_tersedia(size).
+        self.ckpt = ckpt
         self.ckpt_dir = Path(ckpt_dir)
         self.trained = bool(self.ckpt and Path(self.ckpt).exists())
         self.use_pieces = False
@@ -77,28 +81,25 @@ class SagiEngine:
             self.vtok, self.vmodel = None, None
 
     @staticmethod
-    def _cari_ckpt_otomatis(size):
-        """Cari checkpoint pasangan di folder proyek (pure-<size>*.pt).
-
-        Biar model yang dinyalakan langsung terlatih bila file-nya ada,
-        tanpa harus set SAGI_CKPT manual.
-        """
+    def _ckpt_tersedia(size):
+        """Daftar file ckpt pasangan di folder proyek (hanya info/display)."""
         from pathlib import Path as _P
-        cands = sorted(_P(".").glob(f"pure-{size}*.pt")) + \
-                sorted(_P(".").glob("pure-*.pt"))
-        best = None
-        for p in cands:
-            if p.suffixes[-2:] == [".vocab", ".pt"] or ".vocab." in p.name:
+        ada = []
+        for p in list(_P(".").glob(f"pure-{size}*.pt")) + list(_P(".").glob("pure-*.pt")):
+            if ".vocab." in p.name:
                 continue
             try:
                 from plosagata import detect_size
                 if detect_size(str(p)) == size:
-                    if "-best" in p.name:
-                        return str(p)
-                    best = best or str(p)
+                    ada.append(str(p))
             except Exception:
                 continue
-        return best or ""
+        return ada
+
+    @staticmethod
+    def _cari_ckpt_otomatis(size):
+        """DIPENSIUNKAN, jangan pakai (lihat BUGS.md). Disimpan agar API lama tak pecah."""
+        return ""
 
     def _get_model(self):
         if self.model is None:

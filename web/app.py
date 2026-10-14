@@ -177,11 +177,21 @@ def models_page():
 def models_api():
     from plosagata import DISPLAY, PARAMS
     items = []
+    try:
+        from web.chatbot import SagiEngine as _SE
+    except ImportError:
+        from chatbot import SagiEngine as _SE
     for n in CONFIGS:
+        ckpts = []
+        try:
+            ckpts = _SE._ckpt_tersedia(n)
+        except Exception:
+            pass
         items.append({"name": n, "display": DISPLAY.get(n, n),
                       "params": PARAMS.get(n, 0),
                       "layers": CONFIGS[n].layers, "dim": CONFIGS[n].dim,
                       "loaded": n in _engines,
+                      "ckpt_tersedia": ckpts,
                       "trained": bool(_engines[n].trained) if n in _engines else False})
     return jsonify({"ok": True, "active": ACTIVE["model"], "models": items})
 
