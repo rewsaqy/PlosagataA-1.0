@@ -75,7 +75,7 @@ via `deteksi_fiksi` agar tidak dinilai sebagai berita faktual.
 
 | Model | Parameter | Peran | Status |
 |---|---|---|---|
-| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | Terlatih (val 94,9%, probe regresi 6/6) |
+| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | Terlatih (val 90,3%, probe regresi 5/6, diukur 15 Okt 2026) |
 | Plosagata_Flash | **12.665.856** | Chat super ringan — CPU kentang, demo kilat | Arsitektur siap |
 | Plosagata_Go | **91.593.216** | Chat ringan untuk CPU/laptop | Pra-latih + instruction-tune (eksperimental) |
 | Plosagata_More | **912.008.192** | Chat utama Sagi, target training GPU | Arsitektur siap |
@@ -113,7 +113,7 @@ cd PlosagataA-1.0
 uv venv --python 3.12
 uv pip install -r requirements.txt
 # Untuk GPU (contoh CUDA 12.6):
-.venv/bin/pip install --force-reinstall torch --index-url https://download.pytorch.org/whl/cu126
+uv pip install --python .venv/bin/python --force-reinstall torch --index-url https://download.pytorch.org/whl/cu126
 .venv/bin/python scripts/infer.py --text "Giveaway iPhone, klik link ini!"
 .venv/bin/python web/app.py
 # → http://localhost:5000  (validator)  +  /chat  (chatbot)
@@ -211,10 +211,11 @@ SAGI_PURE_THINK=1 .venv/bin/python web/app.py
 
 | Dataset | Isi | Untuk |
 |---|---|---|
-| `data/contoh_dataset.csv` | 514 baris (tumbuh via `auto_collect.py`) | Klasifier |
-| `data/contoh_chat.jsonl` | 187 percakapan (slang, penolakan, sapaan) | Gaya Sagi |
-| `data/train_chat.jsonl` | 701 (gabungan + generate) | Instruction-tuning |
-| `data/vocab_seed.txt` | Bank kata inti | Build vocab otomatis |
+| `data/contoh_dataset.csv` | 617 baris (322 valid / 165 hoaks / 130 meragukan, tumbuh via `auto_collect.py`) | Klasifier |
+| `data/contoh_chat.jsonl` | 237 percakapan (slang, penolakan, sapaan) | Gaya Sagi |
+| `data/train_chat.jsonl` | 854 (gabungan + generate) | Instruction-tuning |
+| `data/vocab_seed.txt` | 106 ribu kata | Build vocab otomatis |
+| `data/korpus.txt` | ±1,7 GB teks Wikipedia ID (tidak masuk Git) | Pra-latih |
 
 - `plosagata/slang.py` berisi 199 entri slang → formal yang dipakai saat
   training **dan** inferensi agar konsisten.
@@ -269,10 +270,10 @@ mana pun. Dokumentasi arsitektur per berkas: [`docs/ARSITEKTUR.md`](docs/ARSITEK
 
 ## Peta Jalan
 
-- [x] Klasifier 12M terlatih (val 94,9%, probe 6/6) + web validator + OCR poster
+- [x] Klasifier 12M terlatih (val 90,3%) + web validator + OCR poster
 - [x] Arsitektur Plosagata Go/More/Next + guard topik + slang + retrieval sumber
 - [x] Web chatbot + API + akses remote bertoken
-- [x] Pra-latih Go di GPU (korpus Wikipedia 2000 artikel) + instruction-tuning bervalidasi
+- [~] Checkpoint Go dari GPU teman (`pure-Go-sagi-best.pt`, via Drive — belum dievaluasi formal)
 - [ ] Pra-latih More di GPU (korpus Wikipedia, ±5 hari)
 - [ ] Instruction-tuning → `pure-Plosagata_More.pt` rilis pertama
 - [ ] Evaluasi: matriks konfusi, uji 100 klaim nyata, demo poster
