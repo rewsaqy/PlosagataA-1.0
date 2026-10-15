@@ -45,6 +45,8 @@ def main():
     ap.add_argument("--max-gb", type=float, default=4.0)
     ap.add_argument("--out", default="data/korpus.txt")
     ap.add_argument("--min-char", type=int, default=500)
+    ap.add_argument("--hapus-dump", action="store_true",
+                    help="Hapus file .bz2 setelah parse selesai (hemat disk)")
     a = ap.parse_args()
 
     url = DUMP.format(lang=a.lang)
@@ -71,18 +73,27 @@ def main():
                 bersih = bersihkan(mentah)
                 n_artikel += 1
                 if len(bersih) >= a.min_char:
-                    o.write("\n" + bersih[:12000] + "\n")
-                    ditulis += len(bersih)
+                    potong = bersih[:12000]
+                    o.write("\n" + potong + "\n")
+                    ditulis += len(potong)
                     n_tulis += 1
                     if n_tulis % 2000 == 0:
-                        print(f"  {n_tulis} artikel, +{ditulis/1e9:.2f} GB", flush=True)
+                        print(f"  {n_tulis} artikel, +{(ditulis-punya)/1e9:.2f} GB", flush=True)
                     if ditulis - punya >= target:
                         print(f"TARGET tercapai: {n_tulis} artikel")
-                        return
+                        break
             # sisakan ekor tak-lengkap
             tail = buf.rfind(b"</text>")
             buf = buf[tail + 7:] if tail != -1 else buf[-1_000_000:]
+            if ditulis - punya >= target:
+                break
     print(f"selesai: {n_tulis}/{n_artikel} artikel -> {a.out}")
+    if a.hapus_dump:
+        try:
+            dump.unlink()
+            print(f"dump {dump} dihapus.")
+        except Exception as e:
+            print(f"gagal hapus dump: {e}")
 
 
 if __name__ == "__main__":
