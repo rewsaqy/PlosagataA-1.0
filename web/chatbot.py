@@ -215,9 +215,16 @@ class SagiEngine:
         verdict = {**v, "label": lv["label_final"],
                    "skor": lv["skor_hoaks"], "kesimpulan": lv["kesimpulan"]}
         if not self.trained and not pure_think:
-            isi = ringkasan_hasil(verdict["label"], lv["skor_hoaks"],
-                                  lv["kesimpulan"], sumber,
-                                  lv["sinyal"].get("fiksi_hits"))
+            isi = ringkasan_hasil(
+                label=verdict["label"],
+                skor=lv["skor_hoaks"],
+                kesimpulan=lv["kesimpulan"],
+                sumber=sumber,
+                fiksi=lv["sinyal"].get("fiksi_hits"),
+                teks=klaim,
+                sinyal=lv["sinyal"],
+                saran=lv["saran"],
+            )
             if topic == "followup":
                 isi = "Merujuk berita tadi:\n" + isi
             return {"reply": isi, "topic": topic,

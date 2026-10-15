@@ -90,9 +90,26 @@ SLANG = {
     "jastip": "jasa titip", "po": "pesan", "ready": "tersedia",
     "tf": "transfer", "trf": "transfer", "dp": "uang muka",
     "cod": "bayar di tempat", "ovo": "dompet digital", "gopay": "dompet digital",
+    # istilah negara / luar negeri
+    "russia": "rusia", "ukraine": "ukraina", "america": "amerika",
+    "england": "inggris", "china": "tiongkok",
+    # istilah validasi
+    "hoax": "hoaks", "beneran": "benar", "benerkah": "benarkah",
 }
 
+import json as _json
+from pathlib import Path as _Path
 import re as _re
+
+# Muat kamus slang komprehensif dari JSON
+_json_path = _Path(__file__).parent / "kamus_slang.json"
+if _json_path.exists():
+    try:
+        with open(_json_path, encoding="utf-8") as _f:
+            _tambahan = _json.load(_f)
+            SLANG.update(_tambahan)
+    except Exception:
+        pass
 
 _PATTERN = None
 
@@ -100,8 +117,10 @@ _PATTERN = None
 def _get_pattern():
     global _PATTERN
     if _PATTERN is None:
-        keys = sorted(SLANG.keys(), key=len, reverse=True)
-        _PATTERN = _re.compile(r"\b(" + "|".join(map(_re.escape, keys)) + r")\b",
+        # Prioritaskan frasa multi-kata dan token panjang lebih dulu
+        valid_keys = [k for k in SLANG.keys() if k and _re.match(r"^[a-zA-Z0-9_\-\s]+$", k)]
+        valid_keys.sort(key=len, reverse=True)
+        _PATTERN = _re.compile(r"\b(" + "|".join(map(_re.escape, valid_keys)) + r")\b",
                                flags=_re.IGNORECASE)
     return _PATTERN
 
@@ -110,11 +129,12 @@ def normalize_slang(text: str) -> str:
     """Ubah slang jadi formal. 'Gaskeun ngab!' -> 'lanjutkan bang!'."""
     if not text:
         return text
-    return _get_pattern().sub(lambda m: SLANG[m.group(0).lower()], text)
+    return _get_pattern().sub(lambda m: SLANG.get(m.group(0).lower(), m.group(0)), text)
 
 
 if __name__ == "__main__":
     for s in ["Gaskeun ngab, spill info giveawaydong wkwk",
               "Sagi, bener gak info maxwin gacor ini? fr!",
-              "Aku gabut banget, healing yuk bestie"]:
+              "Aku gabut banget, healing yuk bestie",
+              "abis boker gw lgsg otw k ktr, satset bgt nasgornya bro"]:
         print(f"{s}\n  -> {normalize_slang(s)}\n")

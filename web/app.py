@@ -12,7 +12,8 @@ sys.path.insert(0, str(ROOT))
 import torch
 from flask import Flask, jsonify, render_template, request
 
-from hoaxcore import ID2LABEL, TinyHoaxTransformer, WordTokenizer, final_label, local_verdict, ocr_poster
+from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, final_label,
+                      format_creator_script, local_verdict, ocr_poster)
 from plosagata import CONFIGS
 
 app = Flask(__name__)
@@ -321,12 +322,14 @@ def check():
         "label": label,
         "skor": verifikasi["skor_hoaks"],
     })
+    creator_pack = format_creator_script(text, verifikasi)
     return jsonify({
         "ok": True,
         "input": text[:2000],
         "poster_text": poster_text[:2000],
         "model": hasil_model,
         "verifikasi": verifikasi,
+        "creator_pack": creator_pack,
     })
 
 

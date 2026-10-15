@@ -17,7 +17,22 @@ para sebuah tersebut tentang antara setiap semua sangat lebih kurang
 pagi siang sore malam halo hai bang kak pak bu saya kamu kita mereka
 bener benar benarkah betul apa apakah siapa kapan dimana bagaimana
 gimana beritanya tolong dong kok sih nya lah kah pun per jadi agar
-supaya bahwa agar yang""".split())
+supaya bahwa agar yang
+katanya kabarnya katany katanye denger dengar dapet dapat kabar info isu gosip
+viralkan viral beneran perihal mengenai soal terkait omongan dibilang bilang
+katain pergi jalan bikin buat ikutan ikut mau ingin hendak
+whatsapp wa telegram facebook fb instagram ig tiktok twitter sosmed medsos
+grup group broadcast pesan chat inbox dm channel
+teman kawan keluarga saudara rekan bapak ibu
+baca dibaca selesai sebarkan bagikan share forward teruskan
+jangan segera buruan terlambat menunggu awas waspada
+pukul jam hari tanggal detik menit
+orang beberapa disebut setelah menerima muncul utama
+menghindari memutuskan koneksi kehilangan
+hanya cuma saja lagi pula tapi namun padahal
+cepat cepatnya cepet lambat banget bgt amat sekali infonya kabarnya nih tuh deh kek gitu gini satset
+nanti terjadi kejadian adanya berlangsung rencana berencana bakal bakalan kira perkiraan
+mulai sampai isi""".split())
 
 
 def basic_clean(text: str) -> str:

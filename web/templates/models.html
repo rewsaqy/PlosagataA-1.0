@@ -1,49 +1,129 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sagi — Daftar Model</title>
-<style>
-body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;background:#212121;color:#ececec}
-.card{background:#1a2233;border:1px solid #33405f;border-radius:14px;padding:1.1rem;margin-bottom:.9rem}
-.card.on{border-color:#10a37f}
-h1{font-size:1.3rem}small{color:#9aa4c0}
-button{background:#10a37f;color:#04110b;border:0;padding:.6rem 1.1rem;border-radius:10px;cursor:pointer;font-weight:700}
-button:disabled{opacity:.4;cursor:default}
-.tag{display:inline-block;font-size:.72rem;background:#232d45;border:1px solid #33405f;border-radius:99px;padding:.15rem .6rem;margin-right:.3rem}
-a{color:#8fb0ff}
-#msg{min-height:1.4em;color:#ffd479}
-</style>
-</head>
-<body>
-<h1>🤖 Model Sagi</h1>
-<p><small>Ganti model = engine lama <b>dibongkar total</b> (RAM kembali), engine baru dinyalakan dengan sesi fresh. <a href="/chat">← ke chat</a></small></p>
-<div id="msg"></div>
-<div id="list">Memuat...</div>
+<title>Sagi Neural — Model Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: {
+    fontFamily: {
+      sans: ['"Plus Jakarta Sans"','system-ui','sans-serif'],
+      serif: ['"Instrument Serif"','Georgia','serif'],
+      mono: ['"JetBrains Mono"','monospace'],
+    },
+    colors: {
+      obsidian: { 950:'#090a0f', 900:'#0f1118', 850:'#141722', 800:'#1a1e2c', 700:'#262c3f' },
+      champagne: { 300:'#eedec5', 400:'#e3c59a' },
+      brand: { bronze:'#d4a86a' },
+    },
+  } },
+};
+</script>
+</head>
+<body class="bg-obsidian-950 text-slate-100 font-sans min-h-screen">
+<div class="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,168,106,0.07),transparent_55%)]"></div>
+
+<header class="border-b border-white/[0.06] bg-obsidian-950/80 backdrop-blur-xl sticky top-0 z-50">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3 group">
+      <div class="w-8 h-8 rounded-lg bg-obsidian-850 border border-brand-bronze/40 flex items-center justify-center group-hover:border-brand-bronze transition-colors">
+        <span class="font-serif italic text-brand-bronze text-lg font-bold">S</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-semibold text-sm tracking-tight text-slate-100">Sagi Engine</span>
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-bronze/10 text-brand-bronze border border-brand-bronze/20">MODEL LAB</span>
+        </div>
+        <p class="text-[10px] font-mono text-slate-400">SWAPPABLE NEURAL CORES</p>
+      </div>
+    </a>
+    <div class="flex items-center gap-3">
+      <a href="/" class="hidden sm:flex text-xs font-mono text-slate-300 hover:text-brand-bronze px-3 py-1.5 rounded-lg border border-white/[0.08] transition-colors">● Scanner & OCR</a>
+      <a href="/chat" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-champagne-300 hover:bg-champagne-400 text-obsidian-950 text-xs font-semibold transition-all">
+        <span>Tanya Sagi AI</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8 relative z-10">
+  <div class="text-center max-w-2xl mx-auto space-y-3">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.07] text-[11px] font-mono text-slate-400">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+      <span>HOT-SWAP RUNTIME · SATU ENGINE AKTIF</span>
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-serif font-normal tracking-tight text-slate-100">Pilih Otak Sagi</h1>
+    <p class="text-sm text-slate-400 font-light max-w-md mx-auto">
+      Ganti model = engine lama <b class="text-slate-200">dibongkar total</b> (RAM kembali), engine baru dinyalakan dengan sesi fresh.
+    </p>
+  </div>
+
+  <div id="msg" class="min-h-[1.4em] text-center text-xs font-mono text-amber-300"></div>
+  <div id="list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <p class="text-sm font-mono text-slate-400 col-span-full text-center">Memuat daftar model…</p>
+  </div>
+</main>
+
+<script>
+function fmtParam(n){
+  if (n >= 1e9) return (n/1e9).toFixed(2) + ' M param';
+  return (n/1e6).toFixed(1) + ' jt param';
+}
 async function muat(){
-  const j = await (await fetch('/api/models')).json();
+  let j;
+  try {
+    j = await (await fetch('/api/models')).json();
+  } catch(e) {
+    document.getElementById('list').innerHTML = '<p class="text-sm font-mono text-rose-300 col-span-full text-center">⚠️ Server tidak merespons. Pastikan backend berjalan.</p>';
+    return;
+  }
   const box = document.getElementById('list'); box.innerHTML = '';
   j.models.forEach(m => {
     const aktif = m.name === j.active;
+    const status = m.loaded ? (m.trained ? 'terlatih ✅' : 'acak ⚠️') : 'mati 💤';
+    const ckpt = (m.ckpt_tersedia||[]).length ? 'ckpt ada 💾' : 'tanpa ckpt';
     const el = document.createElement('div');
-    el.className = 'card' + (aktif ? ' on' : '');
-    el.innerHTML = `<h3>${m.display} ${aktif ? '● AKTIF' : ''}</h3>
-      <p><span class="tag">${(m.params/1e6).toFixed(1)} jt param</span>
-      <span class="tag">${m.layers} layer</span><span class="tag">dim ${m.dim}</span>
-      <span class="tag">${m.loaded ? (m.trained ? 'terlatih ✅' : 'acak ⚠️') : 'mati 💤'}</span><span class="tag">${(m.ckpt_tersedia||[]).length ? 'ckpt ada 💾' : 'tanpa ckpt'}</span></p>
-      <button ${aktif ? 'disabled' : ''} data-m="${m.name}">${aktif ? 'Dipakai' : 'Pakai model ini'}</button>`;
+    el.className = 'bg-obsidian-900/80 backdrop-blur-xl border rounded-2xl p-5 space-y-3 transition-all '
+      + (aktif ? 'border-brand-bronze/50 shadow-[0_0_30px_rgba(212,168,106,0.12)]' : 'border-white/[0.08] hover:border-white/[0.16]');
+    el.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div class="text-xs font-mono font-bold tracking-wider ${aktif ? 'text-brand-bronze' : 'text-slate-300'}">${m.display}</div>
+        ${aktif ? '<span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-brand-bronze/15 text-brand-bronze border border-brand-bronze/30">● AKTIF</span>' : ''}
+      </div>
+      <div class="flex flex-wrap gap-1.5">
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300">${fmtParam(m.params)}</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300">${m.layers} layer</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300">dim ${m.dim}</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300">${status}</span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300">${ckpt}</span>
+      </div>
+      <button ${aktif ? 'disabled' : ''} data-m="${m.name}"
+        class="w-full px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${aktif
+          ? 'bg-white/[0.04] text-slate-500 border border-white/[0.06] cursor-default'
+          : 'bg-champagne-300 hover:bg-champagne-400 text-obsidian-950'}">
+        ${aktif ? '✓ Sedang Dipakai' : 'Pakai model ini →'}</button>`;
     box.appendChild(el);
   });
   box.querySelectorAll('button[data-m]').forEach(b => b.onclick = async () => {
-    document.getElementById('msg').innerText = 'Mematikan engine lama, menyalakan ' + b.dataset.m + '...';
-    const r = await fetch('/api/models/select', {method:'POST',
-      headers:{'Content-Type':'application/json'}, body: JSON.stringify({model:b.dataset.m})});
-    const j2 = await r.json();
-    document.getElementById('msg').innerText = j2.ok
-      ? `Aktif: ${j2.active} (${(j2.params/1e6).toFixed(1)} jt param). Dimatikan: ${j2.dimatikan.join(', ')||'tidak ada'}.`
-      : ('Gagal: ' + j2.error);
+    const msg = document.getElementById('msg');
+    msg.innerText = 'Mematikan engine lama, menyalakan ' + b.dataset.m + '…';
+    b.disabled = true;
+    try {
+      const r = await fetch('/api/models/select', {method:'POST',
+        headers:{'Content-Type':'application/json'}, body: JSON.stringify({model:b.dataset.m})});
+      const j2 = await r.json();
+      msg.innerText = j2.ok
+        ? `✅ Aktif: ${j2.active} (${fmtParam(j2.params)}). Dimatikan: ${j2.dimatikan.join(', ')||'tidak ada'}. Nyala dalam ${j2.nyala_detik||'?'} dtk.`
+        : ('❌ Gagal: ' + (j2.error || 'unknown'));
+    } catch(e) {
+      msg.innerText = '❌ Server tidak merespons.';
+    }
     muat();
   });
 }

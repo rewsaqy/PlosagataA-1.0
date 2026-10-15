@@ -154,11 +154,15 @@ SAGI_REDIRECT_VARIANTS = [
 
 
 def sagi_hello(prompt: str = "") -> str:
-    """Sapaan bervariasi tapi deterministik (stabil untuk demo).
-
-    Pakai md5, BUKAN hash() bawaan — hash() Python diacak tiap proses
-    (PYTHONHASHSEED) sehingga varian berubah-ubah antar restart.
-    """
+    """Sapaan bervariasi tapi deterministik (stabil untuk demo)."""
+    p = prompt.lower()
+    if any(k in p for k in ["siapa", "fungsi", "tugas", "bisa apa", "namamu", "apa aja"]):
+        return (
+            "Halo! Saya Sagi, asisten AI verifikasi fakta dan pelurus berita hoaks. "
+            "Tugas saya membantu kamu memeriksa kebenaran isu viral, broadcast WhatsApp, kabar bencana, "
+            "penipuan digital, atau berita apa pun yang kamu ragukan. Cukup tanyakan atau tempel naskah "
+            "berita di sini, nanti saya bantu analisis dan luruskan faktanya!"
+        )
     n = int(_hl.md5(prompt.encode()).hexdigest(), 16)
     return SAGI_HELLO_VARIANTS[n % len(SAGI_HELLO_VARIANTS)]
 
@@ -254,6 +258,13 @@ def is_news_topic(text: str) -> str:
     if mentioned and not rest:
         return "greeting"  # cuma manggil "Sagi!" -> sapa balik
     t = rest if mentioned else text.lower().strip()
+    is_intro = any(k in t for k in [
+        "kamu siapa", "siapa kamu", "kamu ini siapa", "siapa namamu", "siapa anda",
+        "fungsimu apa", "fungsinya apa", "bisa apa", "kamu bisa apa", "bisa bantu apa",
+        "apa fungsimu", "apa tugasmu", "tugas kamu apa", "tugasmu apa", "siapa sagi"
+    ])
+    if is_intro:
+        return "greeting"
     if _is_greeting(t) and not ada_kata_berita(t):
         return "greeting"
     if ada_kata_berita(t):

@@ -184,9 +184,16 @@ def main():
                 sumber = cari_sumber(kueri)
             except Exception:
                 sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
-            isi = ringkasan_hasil(lv["label_final"],
-                                  lv["skor_hoaks"], lv["kesimpulan"], sumber,
-                                  lv["sinyal"].get("fiksi_hits"))
+            isi = ringkasan_hasil(
+                label=lv["label_final"],
+                skor=lv["skor_hoaks"],
+                kesimpulan=lv["kesimpulan"],
+                sumber=sumber,
+                fiksi=lv["sinyal"].get("fiksi_hits"),
+                teks=klaim,
+                sinyal=lv["sinyal"],
+                saran=lv["saran"],
+            )
             return ("Merujuk berita tadi:\n" + isi) if rujuk else isi
         # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode
         src = kueri if rujuk else clean
