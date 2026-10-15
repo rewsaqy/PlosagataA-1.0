@@ -55,9 +55,22 @@ def main():
     punya = Path(a.out).stat().st_size if Path(a.out).exists() else 0
     print(f"korpus sekarang: {punya/1e9:.2f} GB, target tambah: {a.max_gb} GB")
 
-    if not dump.exists() or dump.stat().st_size < 10_000_000:
-        print(f"download {url} ... (resume otomatis, lama)")
-        subprocess.run(["wget", "-c", "-O", str(dump), url], check=True)
+    import urllib.request
+    def remote_size(url):
+        try:
+            req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "Sagi/1.0"})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                n = r.headers.get("Content-Length")
+                return int(n) if n else 0
+        except Exception:
+            return 0
+    perlu = remote_size(url)
+    lokal = dump.stat().st_size if dump.exists() else 0
+    if not dump.exists() or (perlu and lokal < perlu):
+        print(f"download/resume {url} ... (lokal {lokal/1e9:.2f}GB / remote {perlu/1e9:.2f}GB)")
+        subprocess.run(["wget", "-c", "--tries=20", "--timeout=60", "-O", str(dump), url], check=True)
+    else:
+        print(f"dump lengkap ({lokal/1e9:.2f}GB), langsung parse.")
 
     pola = re.compile(rb"<text[^>]*>(.*?)</text>", re.S)
     buf, n_artikel, n_tulis, ditulis = b"", 0, 0, punya
