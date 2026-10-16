@@ -75,7 +75,7 @@ via `deteksi_fiksi` agar tidak dinilai sebagai berita faktual.
 
 | Model | Parameter | Peran | Status |
 |---|---|---|---|
-| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | Terlatih (val 90,3%, probe regresi 5/6, diukur 15 Okt 2026) |
+| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | Terlatih (val 94,6%, probe regresi 6/6, diukur 16 Okt 2026) |
 | Plosagata_Flash | **12.665.856** | Chat super ringan — CPU kentang, demo kilat | Arsitektur siap |
 | Plosagata_Go | **91.593.216** | Chat ringan untuk CPU/laptop | Pra-latih + instruction-tune (eksperimental) |
 | Plosagata_More | **912.008.192** | Chat utama Sagi, target training GPU | Arsitektur siap |
