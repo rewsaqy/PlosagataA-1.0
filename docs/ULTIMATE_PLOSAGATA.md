@@ -1,6 +1,6 @@
 # ULTIMATE PlosagataA-1.0 — Satu Kesatuan Dokumentasi
 
-> Digenerate otomatis 2026-10-14 oleh `scripts/gabung_dok.py`. JANGAN edit file ini — edit file sumbernya, lalu generate ulang.
+> Digenerate otomatis 2026-10-17 oleh `scripts/gabung_dok.py`. JANGAN edit file ini — edit file sumbernya, lalu generate ulang.
 
 ## Daftar Isi
 
@@ -11,8 +11,9 @@
 5. [Pintu How-It-Works](#bagian-5)
 6. [Pindah IQ](#bagian-6)
 7. [Nambah File](#bagian-7)
-8. [Catatan Bug](#bagian-8)
-9. [Kontribusi](#bagian-9)
+8. [Panduan Training 12M](#bagian-8)
+9. [Catatan Bug](#bagian-9)
+10. [Kontribusi](#bagian-10)
 
 
 ---
@@ -42,7 +43,8 @@ model unduhan dari pihak mana pun.
 > **Peta dokumen:** `README.md` (dokumen ini) · `howitworks/Cara_kerja_sagi.md`
 > (penjelasan santai) · `docs/ARSITEKTUR.md` (teknis) · `docs/PANDUAN_FINETUNE.md`
 > (training) · `howitworks/cara_pindahinIQsagi.md` (pindah PC) ·
-> `howitworks/Cara_nambah_file.md` (nambah file) · `BUGS.md` (catatan bug jujur)
+> `howitworks/Cara_nambah_file.md` (nambah file) ·
+> `howitworks/Panduan_Training_12M.md` (latih 12M) · `BUGS.md` (catatan bug jujur)
 
 ---
 
@@ -100,22 +102,23 @@ via `deteksi_fiksi` agar tidak dinilai sebagai berita faktual.
 
 | Model | Parameter | Peran | Status |
 |---|---|---|---|
-| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | Terlatih (val 94,9%, probe regresi 6/6) |
-| Plosagata_Flash | **12.665.856** | Chat super ringan — CPU kentang, demo kilat | Arsitektur siap |
-| Plosagata_Go | **91.593.216** | Chat ringan untuk CPU/laptop | Pra-latih + instruction-tune (eksperimental) |
-| Plosagata_More | **912.008.192** | Chat utama Sagi, target training GPU | Arsitektur siap |
-| Plosagata_Next | **1.549.927.424** | Varian besar untuk GPU 12 GB+ / klaster | Arsitektur saja |
+| **Plosagata_Browser** | **25.379.840** | **Flagship 25M: Hybrid RAG, Real-Time Internet Web Search & Anti-Hoaks Kekinian** | Arsitektur siap — ckpt belum ada (latih: `scripts/train_browser.py`) |
+| **Plosagata_12M** | **12.665.856** | Chatbot 12M Reworked: Super Ringan, Ramah, Percakapan Santai & Cek Fakta | **Terlatih di CPU** — ckpt `checkpoints/pure-Plosagata_12M-best.pt` |
+| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor risiko 0–100 | Terlatih (Akurasi 94,6%, probe regresi 6/6) |
+| Plosagata_Flash | **12.665.856** | Chat super ringan — CPU kentang, demo kilat | Kompatibel 12M |
+| Plosagata_Go | **91.593.216** | Chat respon cepat untuk CPU/laptop menengah | Pra-latih + instruction-tune (eksperimental) |
+| Plosagata_More | **912.008.192** | Chat besar B1, target pelatihan klaster GPU 6GB+ | Arsitektur siap |
+| Plosagata_Next | **1.549.927.424** | Varian raksasa untuk GPU 16 GB+ / multi-GPU | Arsitektur saja |
 
-Ganti model beneran di browser: buka `/models` — engine lama dibongkar total
+Ganti model beneran di browser: buka `/models` atau ketik `/model Plosagata_Browser` di chat — engine lama dibongkar total
 (RAM kembali), engine baru nyala dengan sesi fresh. Bukan dropdown pura-pura.
 
 Verifikasi mandiri:
 
 ```bash
-.venv/bin/python scripts/gpt_pure.py Plosagata_Flash
+.venv/bin/python scripts/gpt_pure.py Plosagata_Browser
+.venv/bin/python scripts/gpt_pure.py Plosagata_12M
 .venv/bin/python scripts/gpt_pure.py Plosagata_Go
-.venv/bin/python scripts/gpt_pure.py Plosagata_More
-.venv/bin/python scripts/gpt_pure.py Plosagata_Next
 .venv/bin/python scripts/eval_verdict.py   # akurasi + probe regresi klasifier
 .venv/bin/python scripts/eval_fiksi.py     # uji deteksi fiksi/simulasi
 .venv/bin/python scripts/eval_topik.py     # uji guard + memori sesi (7/7)
@@ -138,7 +141,7 @@ cd PlosagataA-1.0
 uv venv --python 3.12
 uv pip install -r requirements.txt
 # Untuk GPU (contoh CUDA 12.6):
-.venv/bin/pip install --force-reinstall torch --index-url https://download.pytorch.org/whl/cu126
+uv pip install --python .venv/bin/python --force-reinstall torch --index-url https://download.pytorch.org/whl/cu126
 .venv/bin/python scripts/infer.py --text "Giveaway iPhone, klik link ini!"
 .venv/bin/python web/app.py
 # → http://localhost:5000  (validator)  +  /chat  (chatbot)
@@ -169,7 +172,7 @@ klaim berita → diproses model + verdict 12M.
 |---|---|
 | `/` | Validator: tempel teks / unggah poster → label, skor, riwayat, statistik |
 | `/chat` | Chatbot: sidebar, riwayat tersimpan, tombol cepat, indikator mengetik, badge verdict, tombol salin, dukungan token remote |
-| `/models` | Daftar 4 model + ganti beneran (engine lama dibongkar, sesi fresh) |
+| `/models` | Daftar model + ganti beneran (engine lama dibongkar, sesi fresh) |
 | `/api/check` · `/api/chat` · `/api/history` · `/api/stats` · `/api/models` | API JSON |
 
 Slash-command di dalam chat: `/models`, `/model <nama>`, `/status`, `/help`.
@@ -200,35 +203,38 @@ Dataset `data/contoh_dataset.csv` (`text,label` → valid/hoaks/meragukan):
 
 Validasi dipisah **sebelum** augmentasi, jadi angka akurasinya jujur.
 
-### Plosagata: pra-latih lalu instruction-tuning (GPU disarankan)
+### Pelatihan Mandiri (Self-Training Lokal)
+
+#### 1. Plosagata_Browser (25.3M Core) — Model Flagship OTN 2026
+Arsitektur 25M yang memadukan penalaran Transformer Causal dengan Hybrid RAG & Real-Time Web Search:
 
 ```bash
-# 1. Korpus Wikipedia Indonesia (sumber: wikimedia/wikipedia):
-.venv/bin/python scripts/build_corpus.py --out data/korpus.wiki.txt --limit 2000
-cat data/korpus.txt data/korpus.wiki.txt > data/korpus.full.txt
-# 2. Pra-latih dari nol (ada split validasi otomatis):
-.venv/bin/python scripts/train_pure.py --size Plosagata_Go --corpus data/korpus.full.txt \
-  --epochs 1 --batch 16 --fp16 --val-split 0.02 --out pure-Go-pretrain.pt
-# 3. Instruction-tuning menjadi Sagi (WAJIB pakai vocab pretrain agar embedding cocok):
-.venv/bin/python scripts/train_pure.py --size Plosagata_Go --data data/train_chat.jsonl \
-  --epochs 5 --batch 8 --fp16 --lr 2e-4 --val-split 0.1 \
-  --ckpt pure-Go-pretrain-best.pt --vocab-file pure-Go-pretrain.pt.vocab.pt \
-  --out pure-Go-sagi.pt
+# Latihan mandiri 4 epoch (selesai ~15 menit di 16-core CPU):
+.venv/bin/python scripts/train_browser.py --epochs 4 --batch 8 --lr 3e-4
+
+# Uji coba chat interaktif setelah training:
+.venv/bin/python scripts/pure_chat.py --size Plosagata_Browser --ckpt checkpoints/pure-Plosagata_Browser-best.pt
 ```
 
-Setiap `--out X.pt` otomatis menyimpan `X.pt.vocab.pt` di sebelahnya, dan
-checkpoint val terbaik (`X-best.pt` + `X-best.pt.vocab.pt`). Jangan pernah
-memisahkan `.pt` dari `.vocab.pt` pasangannya.
-
-Bobot `.pt` tidak masuk Git (lihat `.gitignore`). Bagikan via
-Release/Drive. Panduan pindah PC: `howitworks/cara_pindahinIQsagi.md`.
-
-Mode berpikir-murni (semua pesan lewat model, perlu model terlatih):
+#### 2. Plosagata_12M (12.6M Core) — Super Ringan & Cepat
+Cocok untuk demonstrasi kilat dan latihan super cepat:
 
 ```bash
-.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --pure-think
-SAGI_PURE_THINK=1 .venv/bin/python web/app.py
+# Latihan 5 epoch (selesai ~10 menit di CPU):
+.venv/bin/python scripts/train_12m.py --epochs 5 --batch 16 --lr 3e-4
 ```
+
+#### 3. Generator Dataset Hoaks Kekinian
+Perluas dataset hoaks modern (APK sniffing, AI deepfake, phishing bansos, megathrust, dll.):
+
+```bash
+.venv/bin/python scripts/generate_modern_hoaks.py --target 5000
+```
+
+Setiap proses pelatihan otomatis menyimpan pasangan checkpoint:
+- `checkpoints/pure-*-best.pt` (bobot terbaik berdasarkan validation loss terendah)
+- `checkpoints/pure-*.vocab.pt` & `checkpoints/pure-*.tokenizer.json` (kamus token pasangan)
+- Menjalankan *smoke test* otomatis di terminal begitu training selesai.
 
 ---
 
@@ -236,12 +242,13 @@ SAGI_PURE_THINK=1 .venv/bin/python web/app.py
 
 | Dataset | Isi | Untuk |
 |---|---|---|
-| `data/contoh_dataset.csv` | 514 baris (tumbuh via `auto_collect.py`) | Klasifier |
-| `data/contoh_chat.jsonl` | 187 percakapan (slang, penolakan, sapaan) | Gaya Sagi |
-| `data/train_chat.jsonl` | 701 (gabungan + generate) | Instruction-tuning |
-| `data/vocab_seed.txt` | Bank kata inti | Build vocab otomatis |
+| `data/train_chat.jsonl` | **10.866+ percakapan** (kasus hoaks modern, APK sniffing, deepfake, gaya Sagi, dll.) | Training Causal LM (Plosagata_Browser & 12M) |
+| `data/contoh_dataset.csv` | 617 baris (322 valid / 165 hoaks / 130 meragukan) | Klasifier 12M |
+| `data/contoh_chat.jsonl` | 249 percakapan dasar (slang, penolakan sopan, identitas, sapaan hangat) | Ground truth percakapan |
+| `data/vocab_seed.txt` | 106 ribu kata dasar Indonesia | Build kamus subword BPE otomatis |
+| `data/korpus.txt` | ±12 GB teks Wikipedia campur ID + EN (opsional, tidak masuk Git) | Pra-latih korpus raksasa |
 
-- `plosagata/slang.py` berisi 199 entri slang → formal yang dipakai saat
+- `plosagata/slang.py` berisi 2.173 entri slang → formal yang dipakai saat
   training **dan** inferensi agar konsisten.
 - Tokenizer BPE mengeja kata asing per potongan (tanpa OOV); vocab lebih
   besar via `--vocab-size` + latih ulang.
@@ -294,10 +301,11 @@ mana pun. Dokumentasi arsitektur per berkas: [`docs/ARSITEKTUR.md`](docs/ARSITEK
 
 ## Peta Jalan
 
-- [x] Klasifier 12M terlatih (val 94,9%, probe 6/6) + web validator + OCR poster
-- [x] Arsitektur Plosagata Go/More/Next + guard topik + slang + retrieval sumber
+- [x] Klasifier 12M terlatih (val 94,6%) + web validator + OCR poster
+- [x] Arsitektur Plosagata Go/More/Next/Browser + guard topik + slang + retrieval sumber
+- [x] Plosagata_12M chat-tuning di CPU (ckpt `pure-Plosagata_12M-best.pt`)
 - [x] Web chatbot + API + akses remote bertoken
-- [x] Pra-latih Go di GPU (korpus Wikipedia 2000 artikel) + instruction-tuning bervalidasi
+- [~] Checkpoint Go dari GPU teman (`pure-Go-sagi-best.pt`, via Drive — belum dievaluasi formal)
 - [ ] Pra-latih More di GPU (korpus Wikipedia, ±5 hari)
 - [ ] Instruction-tuning → `pure-Plosagata_More.pt` rilis pertama
 - [ ] Evaluasi: matriks konfusi, uji 100 klaim nyata, demo poster
@@ -915,7 +923,145 @@ tambahkan juga linknya di sini + di `README.md`.
 
 <a id="bagian-8"></a>
 
-# Bagian 8: Catatan Bug
+# Bagian 8: Panduan Training 12M
+
+(Sumber: `howitworks/Panduan_Training_12M.md`)
+
+# Panduan Pelatihan Mandiri AI Plosagata 12M
+
+Dokumen ini adalah panduan lengkap dan praktis bagi Anda untuk melatih (training) model kecerdasan buatan **Plosagata 12M** secara mandiri di komputer sendiri (baik menggunakan CPU laptop maupun GPU lokal).
+
+---
+
+## 1. Mengenal Arsitektur Plosagata 12M
+
+**Plosagata 12M** adalah varian model *Causal Language Model (Decoder-Only Transformer)* karya anak bangsa yang dibangun mandiri dari nol tanpa ketergantungan API pihak ketiga (seperti OpenAI atau Anthropic).
+
+### Spesifikasi Arsitektur:
+- **Total Parameter**: `12,665,856` (12.66 Juta Parameter)
+- **Ukuran Dimensi ($d_{model}$)**: `384`
+- **Jumlah Lapisan (Layers)**: `6`
+- **Jumlah Attention Heads**: `6` (masing-masing berdimensi 64)
+- **Dimensi Feed-Forward ($d_{ff}$)**: `1536` ($4 \times d_{model}$)
+- **Panjang Konteks Maksimum**: `256 token`
+- **Ukuran Kosakata (Vocab)**: `5,000 subword` (dioptimasi khusus Bahasa Indonesia & slang medsos)
+- **Komponen Modern**:
+  - RMSNorm (normalisasi cepat & stabil)
+  - RoPE (Rotary Position Embeddings)
+  - SwiGLU Activation Function
+  - Tied Embedding Weights (efisiensi memori)
+
+> **Kenapa 12M sangat cocok untuk dilatih mandiri?**  
+> Model berukuran 12M parameter memiliki titik temu sempurna antara kecerdasan bahasa dan efisiensi komputasi. Anda tidak memerlukan GPU server mahal; pelatihan 5-10 epoch dapat selesai dalam hitungan menit di CPU laptop biasa, dan di bawah 1 menit jika menggunakan kartu grafis Nvidia (CUDA).
+
+---
+
+## 2. Struktur Dataset Pelatihan
+
+Dataset instruksi dan obrolan disimpan di folder `data/`:
+1. `data/contoh_chat.jsonl` : Percakapan multi-turn, identitas Sagi, kapabilitas, literasi digital, dan klarifikasi fakta.
+2. `data/chat_hoaks.jsonl` : Konversi ribuan kasus hoaks aktual di Indonesia.
+3. `data/train_chat.jsonl` : Gabungan dataset lengkap siap latih (10.866+ sampel obrolan).
+
+Format setiap baris adalah JSON Lines:
+```json
+{"messages": [
+  {"role": "system", "content": "Kamu Sagi, asisten AI validator hoaks dan informasi digital Indonesia yang ramah, cerdas, dan komunikatif."},
+  {"role": "user", "content": "Kamu bisa bantu apa aja?"},
+  {"role": "assistant", "content": "Halo! Aku Sagi, asisten AI verifikasi fakta berbasis arsitektur Plosagata 12M..."}
+]}
+```
+
+---
+
+## 3. Langkah Menjalankan Pelatihan (Training)
+
+Kami telah merancang skrip pelatihan khusus `scripts/train_12m.py` yang otomatis menangani:
+- Tokenisasi subword Bahasa Indonesia
+- Pembagian data latih (90%) dan data uji validasi (10%)
+- Masking target padding (`-100`) agar model tidak menghafal padding
+- Learning Rate Scheduler (*Cosine Decay* dengan *Linear Warmup*)
+- Gradient Clipping untuk menjaga stabilitas pelatihan
+- Penyimpanan otomatis checkpoint terbaik (*Best Validation Loss*)
+- Smoke test interaktif langsung di terminal begitu pelatihan usai.
+
+### A. Perintah Standar (Rekomendasi di CPU)
+Cukup jalankan perintah berikut di terminal proyek:
+```bash
+python scripts/train_12m.py
+```
+*Skrip akan otomatis melatih model selama 5 epoch dengan batch size 8.*
+
+### B. Menyesuaikan Parameter Latihan
+Anda dapat mengatur jumlah epoch, batch size, atau learning rate sesuai keinginan:
+```bash
+# Melatih 10 epoch dengan batch 16:
+python scripts/train_12m.py --epochs 10 --batch 16 --lr 3e-4
+
+# Melanjutkan pelatihan dari checkpoint sebelumnya:
+python scripts/train_12m.py --epochs 5 --resume checkpoints/pure-Plosagata_12M-best.pt
+```
+
+### C. Melatih di Komputer Ber-GPU (Nvidia CUDA)
+Jika komputer Anda memiliki kartu grafis Nvidia, skrip otomatis mendeteksi CUDA dan mengaktifkan akselerasi FP16:
+```bash
+python scripts/train_12m.py --epochs 10 --batch 32 --device cuda --fp16
+```
+
+---
+
+## 4. Hasil Checkpoint & Tokenizer
+
+Setelah pelatihan selesai, skrip otomatis menghasilkan file berikut di folder `checkpoints/` dan membuat salinan di root proyek:
+
+| File Checkpoint | Fungsi |
+| :--- | :--- |
+| `checkpoints/pure-Plosagata_12M-best.pt` | Bobot neural network model terbaik (berdasarkan validation loss terendah) |
+| `checkpoints/pure-Plosagata_12M.pt` | Bobot checkpoint epoch terakhir |
+| `checkpoints/pure-Plosagata_12M.vocab.pt` | Kamus token subword pasangan model |
+| `checkpoints/pure-Plosagata_12M.tokenizer.json` | Konfigurasi tokenizer BPE penuh |
+
+---
+
+## 5. Menguji & Menggunakan Model Hasil Latihan
+
+### A. Uji Coba Chat di Terminal (CLI)
+Gunakan skrip `scripts/pure_chat.py`:
+
+```bash
+# Chat dengan sistem terintegrasi (guard + model 12M):
+python scripts/pure_chat.py --size Plosagata_12M --ckpt checkpoints/pure-Plosagata_12M-best.pt --prompt "Halo Sagi!"
+
+# Tanya kapabilitas Sagi:
+python scripts/pure_chat.py --size Plosagata_12M --ckpt checkpoints/pure-Plosagata_12M-best.pt --prompt "Kamu bisa bantu apa aja?"
+
+# Uji generasi murni neural network (Pure Think):
+python scripts/pure_chat.py --size Plosagata_12M --ckpt checkpoints/pure-Plosagata_12M-best.pt --pure-think --prompt "user: Bener gak bansos cair hari ini?\nassistant:"
+```
+
+### B. Menjalankan di Antarmuka Web Chatbot
+Untuk menggunakan model 12M hasil latihan Anda di Web Chatbot (port 5000):
+```bash
+SAGI_SIZE=Plosagata_12M SAGI_CKPT=checkpoints/pure-Plosagata_12M-best.pt python web/app.py
+```
+Buka browser di `http://localhost:5000`. Sagi akan langsung ditenagai oleh model Plosagata 12M hasil latihan Anda sendiri!
+
+---
+
+## 6. Tips Mengembangkan Dataset Sendiri
+
+Jika Anda ingin menambahkan variasi pertanyaan atau kasus hoaks baru ke model:
+1. Buka file `data/contoh_chat.jsonl`.
+2. Tambahkan baris baru dengan format JSON yang sama.
+3. Jalankan kembali `python scripts/train_12m.py`.
+Model akan mempelajari pola kalimat baru tersebut dan semakin fasih merespons!
+
+
+---
+
+<a id="bagian-9"></a>
+
+# Bagian 9: Catatan Bug
 
 (Sumber: `BUGS.md`)
 
@@ -931,7 +1077,7 @@ tambahkan juga linknya di sini + di `README.md`.
 | B-01 | Badge VALID padahal skor 100 (label model vs kesimpulan heuristic kontradiksi) | `final_label()` satu pintu di `hoaxcore/factcheck.py` | Kasus bumbu-dapur → HOAKS 100 |
 | B-02 | Tokenizer BPE backend hilang (train simpan dict saja → inferensi `<unk>` massal) | `train_pure` simpan `.tokenizer.json` penuh; loader `JSON > dict+pieces > seeds` | ckpt Go ke-load + generate kata ID |
 | B-03 | Guard bypass `?` ("Siapa pacarmu?" jadi follow-up saat ada topik) | `is_follow_up_safe`: kata off-topic mem-veto | `pacar? → False`, `kapan cairnya? → True` |
-| B-04 | `eval_fiksi` baris 44 gagal | **TIDAK TERBUKTI** — lulus 3x di sini. Dugaan analis: versi basi. Tetap dimonitor tiap push | `EVAL-FIKSI LULUS` |
+| B-04 | `eval_fiksi` baris 44 gagal (`belum terverifikasi` hilang dari kesimpulan `no_source`) | Sinkronisasi `kesimpulan` di `hoaxcore/factcheck.py` memuat frasa `belum terverifikasi` | `EVAL-FIKSI LULUS` 100% |
 | B-05 | Substring guard ("buang"→"uang") | Stemmer mini + cocok kata-per-kata (frasa multi-kata tetap substring) | `buang→offtopic`, `memberitakan→news` |
 | B-06 | Sapaan acak antar restart (`hash()` Python) | `hashlib.md5` deterministik | stabil lintas proses |
 | B-07 | Loss melatih token padding (mode instruction) | Target pad → `-100` di `ChatLMDataset` | loss turun wajar, bukan hafal pad |
@@ -941,6 +1087,16 @@ tambahkan juga linknya di sini + di `README.md`.
 | B-11 | Generate tanpa EOS stop + O(N²) tanpa cache | Stop di `<sep>` + KV-cache (teruji identik 1,7e-6) | berhenti dini + cepat |
 | B-12 | Auto-ckpt liar: file `.pt` tetangga mengubah perilaku engine (eval_topik gagal misterius) | Auto-attach **dihapus**; ckpt hanya eksplisit (`--ckpt`/env). `/api/models` tampilkan `ckpt_tersedia` saja | `EVAL-TOPIK LULUS` stabil |
 | B-13 | Salah pasang ukuran (ckpt Go → model More = dinding `size mismatch`) | `detect_size()` + auto-alih + pesan manusiawi | request More+ckpt Go → jalan sebagai Go |
+| B-14 | Follow-up crash `TypeError: unsupported operand + for NoneType and str` saat topik None | Fallback aman `klaim = topik or text` dan `kueri = f"{topik} {text}".strip() if topik else text` | chat followup tanpa topik tetap aman |
+| B-15 | `/api/check` & `/api/chat` payload error / AttributeError saat body non-form / bertukar key | Handler seragam `request.get_json(silent=True)` + deteksi fleksibel `message` / `text` | request REST API aman dari malformed JSON |
+| B-16 | Checkpoint best (`-best.pt`) kehilangan `.tokenizer.json` BPE backend saat auto-save | `train_pure.py` otomatis copy `.tokenizer.json` bersamaan dengan `.vocab.pt` | loader menemukan BPE backend utuh di ckpt best |
+| B-17 | Dictionary key duplikat `"healing"` dan `"bsk"` di `plosagata/slang.py` | Hapus entry duplikat dan optimasi `k in SLANG` | dictionary bersih & linter valid |
+| B-18 | Regex ref tag di `fetch_wiki_dump.py` memakai `{{0,1}}` literal di non-fstring | Perbaiki pola regex `<ref[^>]*?/>|<ref.*?</ref>` | pembersihan sitasi akurat tanpa artefak |
+| B-19 | PyTorch UserWarning konversi `float(loss)` requiring grad di `gpt_pure.py` | Gunakan `loss.item()` standar PyTorch | forward berjalan bersih tanpa warning |
+| B-20 | Tombol kirim terkunci permanen setelah error API (UI mati, `btn.disabled` tidak pernah pulih) | Reset `btn.disabled=false` di semua jalur error/selesai `web/templates/chat.html` | uji paksa error → tombol hidup lagi (bee26f6) |
+| B-21 | Potensi XSS pada link sumber (href dirender dari data, bisa `javascript:`) | `safeUrl()` whitelist `http/https` sebelum render link | render link sumber lewat `safeUrl()` (bee26f6) |
+| B-22 | `localStorage` korup → halaman chat blank (`JSON.parse` melempar saat load) | `try/catch` fallback `[]` + regenerate `sagi_sid` | reload dengan storage korup tetap jalan (bee26f6) |
+| B-23 | `eval_rag` smoke gagal `AssertionError` setelah `cari_sumber` menambah kunci `web` | Assert kunci disinkronkan: `{kueri, wikipedia, web, cek_fakta}` | `eval_rag --mini` lulus lagi |
 
 ## Keterbatasan sadar (DOKUMEN, bukan bug)
 
@@ -950,6 +1106,7 @@ tambahkan juga linknya di sini + di `README.md`.
 | L-02 | Hit RAG rendah di korpus kecil (hit@3 3-7/20) | Obatnya korpus 100+ chunk, bukan kode |
 | L-03 | Model < terlatih penuh = cadel | `ringkasan_hasil` ekstraktif menutupinya; `--pure-think` jujur apa adanya |
 | L-04 | More/Next di RAM 19GB berisiko OOM-killer (SIGKILL) | `select_model` fallback ke Go + pesan jelas |
+| L-05 | DuckDuckGo tidak bisa diakses dari jaringan ini (handshake TLS gagal) → `cari_web_live` selalu `[]` | Web live fail-safe (tanpa crash), tapi belum terbukti memberi hasil; butuh provider/API alternatif atau jaringan tanpa blokir |
 
 ## Cara lapor bug baru (untuk kontributor)
 
@@ -960,9 +1117,9 @@ tambahkan juga linknya di sini + di `README.md`.
 
 ---
 
-<a id="bagian-9"></a>
+<a id="bagian-10"></a>
 
-# Bagian 9: Kontribusi
+# Bagian 10: Kontribusi
 
 (Sumber: `CONTRIBUTING.md`)
 

@@ -1,9 +1,8 @@
 """Skrip penambah dataset penalaran investigasi tinggi (High-Density Reasoning Data).
 Menambahkan percakapan mendalam dengan analisis multi-step dan ratusan sampel klaim nyata.
 """
-import json
 import csv
-import os
+import json
 
 print("=== Menyiapkan Dataset Penalaran Investigasi Hoaks ===")
 
@@ -161,12 +160,10 @@ for text, label in csv_samples:
     chat_entries.append(entry)
 
 with open('data/contoh_chat.jsonl', 'a', encoding='utf-8') as f:
-    for item in chat_entries:
-        f.write(json.dumps(item, ensure_ascii=False) + '\n')
+    f.writelines(json.dumps(item, ensure_ascii=False) + '\n' for item in chat_entries)
 
 with open('data/train_chat.jsonl', 'a', encoding='utf-8') as f:
-    for item in chat_entries:
-        f.write(json.dumps(item, ensure_ascii=False) + '\n')
+    f.writelines(json.dumps(item, ensure_ascii=False) + '\n' for item in chat_entries)
 
 print(f"-> Ditambahkan {len(chat_entries)} percakapan penalaran mendalam ke data/train_chat.jsonl")
 print("=== Selesai Mempersiapkan Dataset! ===")

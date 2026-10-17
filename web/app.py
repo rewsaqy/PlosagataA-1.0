@@ -12,8 +12,13 @@ sys.path.insert(0, str(ROOT))
 import torch
 from flask import Flask, jsonify, render_template, request
 
-from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, final_label,
-                      format_creator_script, local_verdict, ocr_poster)
+from hoaxcore import (
+    ID2LABEL,
+    final_label,
+    format_creator_script,
+    local_verdict,
+    ocr_poster,
+)
 from plosagata import CONFIGS
 
 app = Flask(__name__)
@@ -88,10 +93,11 @@ def select_model(name):
         import torch as _th
         with _th.no_grad():
             _th.manual_seed(0)
-            probe = eng.model.generate(
-                _th.tensor([[eng.tok.cls_id]]).to(eng.device),
-                max_new=3, temperature=0.7, top_k=20,
-                ignore_ids=eng.ign) if hasattr(eng, "model") else None
+            if hasattr(eng, "model") and eng.model is not None:
+                eng.model.generate(
+                    _th.tensor([[eng.tok.cls_id]]).to(eng.device),
+                    max_new=3, temperature=0.7, top_k=20,
+                    ignore_ids=eng.ign)
         dt = _t.time() - t0
     except Exception as e:
         unload_engine(name)
@@ -207,7 +213,7 @@ def models_select():
 
 def cmd_chat(text, session_id=""):
     """Slash-command ala OpenCode di dalam chat. Return dict respons API."""
-    from plosagata import DISPLAY, PARAMS
+    from plosagata import PARAMS
     parts = text.strip().split()
     cmd = parts[0].lower()
     arg = " ".join(parts[1:]).strip()
@@ -262,7 +268,7 @@ def chat_api():
     if not _cek_token():
         return jsonify({"ok": False, "error": "Token salah / hilang."}), 401
     data = request.get_json(silent=True) or {}
-    text = (data.get("message", "") or request.form.get("text", "")).strip()
+    text = (data.get("message") or data.get("text") or request.form.get("message") or request.form.get("text") or "").strip()
     size = data.get("model", "") or request.form.get("model", "")
     session_id = (data.get("session", "") or request.form.get("session", "")).strip()
     if not text:
@@ -286,7 +292,8 @@ def chat_api():
 
 @app.route("/api/check", methods=["POST"])
 def check():
-    text = request.form.get("text", "") or (request.json.get("text") if request.is_json else "")
+    body_json = request.get_json(silent=True) or {}
+    text = (request.form.get("text") or request.form.get("message") or body_json.get("text") or body_json.get("message") or "").strip()
     poster_text = ""
 
     # upload poster opsional

@@ -17,11 +17,22 @@ os.chdir(ROOT)
 
 import torch
 
-from plosagata import (CONFIGS, PureGPT, is_news_topic, sagi_hello,
-                       sagi_redirect, normalize_slang)
-from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
-                      piece_decode, piece_encode,
-                      final_label, local_verdict, ringkasan_hasil)
+from hoaxcore import (
+    WordTokenizer,
+    cari_sumber,
+    local_verdict,
+    piece_decode,
+    piece_encode,
+    ringkasan_hasil,
+)
+from plosagata import (
+    CONFIGS,
+    PureGPT,
+    is_news_topic,
+    normalize_slang,
+    sagi_hello,
+    sagi_redirect,
+)
 
 
 def build_tokenizer(vocab_size: int):
@@ -124,7 +135,7 @@ def main():
         return _model
 
     def cmd_terminal(text: str) -> str:
-        from plosagata import DISPLAY, PARAMS
+        from plosagata import PARAMS
         parts = text.split()
         cmd = parts[0].lower()
         if cmd in ("/help", "/bantuan"):

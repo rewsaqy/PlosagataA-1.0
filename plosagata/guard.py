@@ -133,36 +133,98 @@ def is_follow_up_safe(text: str) -> bool:
 WAKE_WORD = "sagi"
 
 SAGI_HELLO = (
-    "Halo! Saya Sagi, asisten validator berita Plosagata. "
-    "Tempel berita atau klaim yang mau dicek kebenarannya untuk mulai."
+    "Halo! Saya Sagi, asisten validator berita dan edukasi disinformasi Plosagata 12M. "
+    "Ketik *'Kamu bisa bantu apa aja?'* untuk melihat kapabilitasku, atau tempel berita yang mau diverifikasi."
 )
 
 SAGI_HELLO_VARIANTS = [
     SAGI_HELLO,
-    "Halo! Sagi di sini. Ada berita yang meragukan? Tempel saja, saya cek.",
-    "Hai! Saya Sagi, penjaga berita biar kamu tidak termakan hoaks. Mana beritanya?",
+    "Halo! Sagi di sini. Ada kabar viral atau broadcast WhatsApp yang meragukan? Tempel saja, yuk kita cek bersama.",
+    "Hai! Saya Sagi, pendamping digitalmu biar tidak mudah termakan hoaks. Apa yang ingin kamu tanyakan hari ini?",
 ]
 
 SAGI_REDIRECT_VARIANTS = [
-    "Maaf, saya hanya bisa membahas seputar berita dan cek fakta. "
-    "Ada berita atau klaim yang mau dicek kebenarannya? Tempel saja di sini.",
-    "Itu di luar tugas saya — saya Sagi, khusus validasi berita. "
-    "Coba tempel klaim atau berita yang mau dicek.",
-    "Saya tolak dengan sopan ya — Sagi hanya melayani cek fakta berita. "
-    "Ada berita yang mau diverifikasi?",
+    (
+        "Wah, topik yang menarik! Namun sebagai **Sagi**, keahlian utamaku difokuskan penuh untuk mendampingi kamu "
+        "memverifikasi berita, cek fakta kabar viral, dan literasi digital di Indonesia.\n\n"
+        "Kalau kamu punya potongan berita, artikel viral, atau broadcast WhatsApp yang ingin diperiksa kebenarannya, "
+        "langsung tempelkan di sini—aku siap bantu urai faktanya!"
+    ),
+    (
+        "Pertanyaan tersebut berada di luar ruang lingkup tugasku. Aku adalah Sagi, asisten AI khusus validasi berita "
+        "dan pelurus disinformasi berbasis arsitektur Plosagata 12M.\n\n"
+        "Ada isu terkini, kabar politik, klaim bantuan/bansos, atau pesan berantai yang mau kita cek kebenarannya bersama?"
+    ),
+    (
+        "Maaf ya, saat ini aku belum bisa melayani topik tersebut karena sistemku difokuskan khusus untuk memeriksa fakta "
+        "dan keabsahan informasi publik di Indonesia.\n\n"
+        "Yuk, tanyakan hal seputar kemampuanku atau tempel klaim berita yang membuatmu ragu!"
+    ),
 ]
 
 
 def sagi_hello(prompt: str = "") -> str:
-    """Sapaan bervariasi tapi deterministik (stabil untuk demo)."""
-    p = prompt.lower()
-    if any(k in p for k in ["siapa", "fungsi", "tugas", "bisa apa", "namamu", "apa aja"]):
+    """Sapaan interaktif, ramah, dan komunikatif seputar Sagi & Plosagata."""
+    p = prompt.lower().strip()
+
+    # 1. Pertanyaan seputar Kapabilitas & Bantuan ("kamu bisa bantu apa aja", "fitur", dll.)
+    if any(k in p for k in [
+        "bisa apa", "bisa bantu", "bantu apa", "bantu aku apa", "fitur", "kemampuan",
+        "fungsi", "tugas", "apa yang bisa kamu", "cara pakai", "cara kerja", "ngapain aja"
+    ]):
         return (
-            "Halo! Saya Sagi, asisten AI verifikasi fakta dan pelurus berita hoaks. "
-            "Tugas saya membantu kamu memeriksa kebenaran isu viral, broadcast WhatsApp, kabar bencana, "
-            "penipuan digital, atau berita apa pun yang kamu ragukan. Cukup tanyakan atau tempel naskah "
-            "berita di sini, nanti saya bantu analisis dan luruskan faktanya!"
+            "Halo! Aku **Sagi**, asisten kecerdasan buatan pelurus hoaks dan analis informasi digital "
+            "berbasis arsitektur **Plosagata 12M** 🤖.\n\n"
+            "Aku siap membantu kamu dalam berbagai hal seputar verifikasi informasi dan literasi digital, antara lain:\n\n"
+            "1. 🔍 **Cek Fakta & Verifikasi Klaim**: Tempel berita, artikel medsos, atau broadcast WhatsApp "
+            "yang meragukan. Aku akan menelaah apakah itu fakta valid, hoaks, atau masih meragukan.\n"
+            "2. ⚠️ **Analisis Indikator Disinformasi**: Mendeteksi pola clickbait, kalimat provokatif, "
+            "tanda seru berlebih, dan desakan menyebarkan kabar (*'sebarkan sebelum dihapus'*).\n"
+            "3. 🎭 **Penyaring Entitas Fiksi & Satir**: Membedakan kejadian nyata dari konten fiktif, "
+            "humor, atau parodi yang sering disalahpahami masyarakat.\n"
+            "4. 📚 **Pencocokan Sumber Kredibel**: Menelusuri pangkalan data cek fakta resmi dan "
+            "referensi ensiklopedia terpercaya untuk meluruskan fakta sebenarnya.\n"
+            "5. 💬 **Tanya Jawab Interaktif Multi-Turn**: Setelah mengecek klaim, kamu bisa terus bertanya "
+            "lanjutan seperti *'siapa tokoh aslinya?'*, *'kapan peristiwa itu terjadi?'*, atau *'kenapa ini disebut hoaks?'*.\n"
+            "6. 💡 **Edukasi & Literasi Digital**: Memberikan panduan cara mengenali ciri-ciri kabar bohong "
+            "agar kamu dan keluargamu tidak mudah tertipu di ruang digital.\n\n"
+            "Ada isu viral atau pesan berantai yang lagi bikin kamu penasaran hari ini? Tempelkan saja di sini, yuk kita bedah bareng!"
         )
+
+    # 2. Pertanyaan seputar Identitas & Pembuat ("kamu siapa", "siapa sagi", "arsitektur", "plosagata")
+    if any(k in p for k in [
+        "siapa kamu", "kamu siapa", "siapa namamu", "namamu siapa", "siapa sagi",
+        "siapa anda", "kamu ini siapa", "profil", "tentang kamu", "plosagata",
+        "pembuatmu", "yang buat kamu"
+    ]):
+        return (
+            "Hai! Kenalkan, aku **Sagi** (Sahabat Anti-Disinformasi), asisten AI independen yang ditenagai oleh "
+            "arsitektur murni **Plosagata 12M** (Indonesian Causal LLM) 🇮🇩.\n\n"
+            "Aku dikembangkan mandiri dari nol tanpa ketergantungan pada API cloud luar negeri. Arsitektur Plosagata 12M "
+            "menggunakan transformer decoder modern (Rotary Position Embeddings, RMSNorm, SwiGLU, serta tokenizer subword Indonesia) "
+            "yang dirancang agar ringan dijalankan di laptop maupun CPU biasa, namun tetap tangguh dalam menganalisis bahasa Indonesia.\n\n"
+            "Tujuan utamaku adalah membantu masyarakat menyaring derasnya arus informasi di media sosial dan grup percakapan. "
+            "Ada kabar yang ingin kamu tanyakan padaku sekarang?"
+        )
+
+    # 3. Ucapan Terima Kasih & Apresiasi ("makasih", "terima kasih", "hebat", "keren", "pintar")
+    if any(k in p for k in [
+        "terima kasih", "terimakasih", "makasih", "makasi", "thanks", "tengkyu",
+        "maturnuwun", "hebat", "pintar", "keren", "mantap", "bagus"
+    ]):
+        return (
+            "Sama-sama! Senang sekali bisa membantu kamu meluruskan informasi dan membendung hoaks 🙌.\n\n"
+            "Ingat selalu prinsip kita bersama: **Saring sebelum Sharing**! Jangan ragu colek aku kapan saja kalau ada kabar viral atau broadcast WhatsApp yang mencurigakan ya."
+        )
+
+    # 4. Small talk seputar kabar ("apa kabar", "gimana kabar", "lagi apa", "sedang apa")
+    if any(k in p for k in ["apa kabar", "gimana kabar", "kabar baik", "lagi apa", "sedang apa"]):
+        return (
+            "Kabar baik dan selalu siap siaga! Aku lagi stand by membaca dan menganalisis berbagai pola disinformasi terbaru ⚡.\n\n"
+            "Bagaimana kabarmu hari ini? Semoga aktivitasmu lancar dan harimu menyenangkan! Ada berita viral atau pesan grup yang bikin kamu penasaran?"
+        )
+
+    # 5. Sapaan umum / Panggilan nama Sagi
     n = int(_hl.md5(prompt.encode()).hexdigest(), 16)
     return SAGI_HELLO_VARIANTS[n % len(SAGI_HELLO_VARIANTS)]
 
@@ -252,18 +314,36 @@ def _is_greeting(t: str) -> bool:
     return t in GREETING_ONLY or (bool(words) and words[0] in GREETING_ONLY)
 
 
+CONVERSATIONAL_INTENTS = [
+    # Identitas & Profil
+    "kamu siapa", "siapa kamu", "kamu ini siapa", "siapa namamu", "namamu siapa",
+    "siapa anda", "siapa sagi", "tentang kamu", "profilmu", "siapa pembuatmu",
+    "siapa yang buat kamu", "pembuatmu siapa", "apa itu plosagata", "arsitektur plosagata",
+    # Kapabilitas & Fitur
+    "kamu bisa apa", "bisa apa aja", "bisa apa saja", "bisa apa", "apa kemampuanmu",
+    "kemampuan kamu apa", "apa saja kemampuanmu", "bisa bantu apa", "kamu bisa bantu apa",
+    "bisa bantu apa aja", "bisa bantu apa saja", "kamu bisa bantu apa aja",
+    "bisa bantu aku apa", "bisa bantu aku apa aja", "bantu aku apa aja", "bantu apa aja",
+    "apa fungsimu", "fungsimu apa", "fungsinya apa", "apa tugasmu", "tugas kamu apa",
+    "tugasmu apa", "fitur apa aja", "fiturmu apa", "fitur kamu apa", "apa fiturmu",
+    "cara pakaimu gimana", "gimana cara kerjamu", "gimana cara pakai", "cara pakainya",
+    "apa yang bisa kamu lakukan", "bisa ngapain aja", "ngapain aja kamu",
+    # Kabar & Sapaan Kasual
+    "apa kabar", "gimana kabarnya", "gimana kabar", "lagi apa", "sedang apa",
+    # Apresiasi & Terima Kasih
+    "terima kasih", "terimakasih", "makasih", "makasi", "makasih ya", "makasih banyak",
+    "thanks", "tengkyu", "maturnuwun", "kamu hebat", "kamu pintar", "keren banget",
+    "mantap sagi", "bagus banget",
+]
+
+
 def is_news_topic(text: str) -> str:
     """Return 'greeting' | 'news' | 'offtopic'."""
     mentioned, rest = strip_wake(text)
     if mentioned and not rest:
         return "greeting"  # cuma manggil "Sagi!" -> sapa balik
     t = rest if mentioned else text.lower().strip()
-    is_intro = any(k in t for k in [
-        "kamu siapa", "siapa kamu", "kamu ini siapa", "siapa namamu", "siapa anda",
-        "fungsimu apa", "fungsinya apa", "bisa apa", "kamu bisa apa", "bisa bantu apa",
-        "apa fungsimu", "apa tugasmu", "tugas kamu apa", "tugasmu apa", "siapa sagi"
-    ])
-    if is_intro:
+    if any(k in t for k in CONVERSATIONAL_INTENTS):
         return "greeting"
     if _is_greeting(t) and not ada_kata_berita(t):
         return "greeting"

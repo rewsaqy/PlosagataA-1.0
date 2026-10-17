@@ -48,7 +48,7 @@ SLANG = {
     "cancel": "boikot", "di-cancel": "dibatalkan",
     "spill the tea": "bocorkan gosip", "tea": "gosip",
     "era": "zaman", "vibes": "suasana", "aesthetic": "indah",
-    "healing": "liburan", "staycation": "liburan", "ngadem": "berteduh",
+    "staycation": "liburan", "ngadem": "berteduh",
     "mabar": "main bersama", "push rank": "naik peringkat",
     "afk": "tidak aktif", "gg": "bagus", "ez": "mudah",
     "noob": "pemula", "pro": "ahli", "suhu": "ahli",
@@ -75,7 +75,7 @@ SLANG = {
     "bsk": "besok", "skrg": "sekarang", "skrng": "sekarang",
     "td": "tadi", "udh": "sudah", "udah": "sudah", "blm": "belum",
     "blum": "belum", "jgn": "jangan", "jngn": "jangan",
-    "bsk": "besok", "dpt": "dapat", "dpet": "dapat",
+    "dpt": "dapat", "dpet": "dapat",
     "bs": "bisa", "bisa": "bisa", "gak": "tidak", "ga": "tidak",
     "nggak": "tidak", "engga": "tidak", "kagak": "tidak",
     "tdk": "tidak", "tak": "tidak",
@@ -98,8 +98,8 @@ SLANG = {
 }
 
 import json as _json
-from pathlib import Path as _Path
 import re as _re
+from pathlib import Path as _Path
 
 # Muat kamus slang komprehensif dari JSON
 _json_path = _Path(__file__).parent / "kamus_slang.json"
@@ -118,7 +118,7 @@ def _get_pattern():
     global _PATTERN
     if _PATTERN is None:
         # Prioritaskan frasa multi-kata dan token panjang lebih dulu
-        valid_keys = [k for k in SLANG.keys() if k and _re.match(r"^[a-zA-Z0-9_\-\s]+$", k)]
+        valid_keys = [k for k in SLANG if k and _re.match(r"^[a-zA-Z0-9_\-\s]+$", k)]
         valid_keys.sort(key=len, reverse=True)
         _PATTERN = _re.compile(r"\b(" + "|".join(map(_re.escape, valid_keys)) + r")\b",
                                flags=_re.IGNORECASE)

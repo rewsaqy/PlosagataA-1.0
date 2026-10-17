@@ -5,6 +5,7 @@ Kalau ada OPENAI_API_KEY / GEMINI_API_KEY, tinggal aktifkan fungsi di bawah.
 Untuk lomba: jelaskan ini sebagai modul RAG — model 12M kasih skor cepat,
 LLM kasih verifikasi + sumber.
 """
+import hashlib as _hl
 import os
 import re
 
@@ -331,7 +332,7 @@ def local_verdict(text: str, model_result: dict) -> dict:
         kesimpulan = "BELUM TERKONFIRMASI — masih bersifat rumor atau kabar burung; belum ada pernyataan resmi."
     elif sig.get("no_source"):
         skor = max(skor, 35)
-        kesimpulan = "MERAGUKAN — ketiadaan sumber resmi yang memvalidasi klaim ini."
+        kesimpulan = "MERAGUKAN — belum terverifikasi, ketiadaan sumber resmi yang memvalidasi klaim ini."
     else:
         kesimpulan = "Tampak VALID — informasi didukung oleh rujukan resmi."
 
@@ -367,6 +368,45 @@ def local_verdict(text: str, model_result: dict) -> dict:
     }
 
 
+def _bangun_pembuka_natural(teks: str) -> str:
+    """Deteksi emosi & intensitas kueri warganet untuk sapaan alami non-robotik."""
+    t = (teks or "").lower()
+    is_panik = any(k in t for k in ["takut", "ngeri", "gawat", "parah", "aduh", "beneran nih", "merinding", "panik", "resah", "bahaya"])
+    is_skeptis = any(k in t for k in ["masa sih", "kok aneh", "kayak bohong", "gak masuk akal", "hoaks bukan", "bener gak sih", "ragu", "beneran gak"])
+    is_kasual = any(k in t for k in ["halo", "hai", "min", "gan", "kak", "bang", "sagi", "bro", "pagi", "malam", "siang"])
+
+    n = int(_hl.md5((teks or "default").encode()).hexdigest(), 16)
+
+    if is_panik:
+        pilihan = [
+            "Tenang dulu ya, jangan buru-buru cemas atau panik. Wajar sekali kabar mengejutkan semacam ini bikin resah saat berseliweran di ponselmu. Mari kita telusuri faktanya secara jernih bersama-sama:",
+            "Tarik nafas dulu sejenak ya! Informasi heboh semacam ini memang sengaja dirancang oleh pembuatnya untuk memicu kepanikan emosional warga. Yuk kita lihat bukti-bukti konkret di baliknya:",
+            "Aku paham sekali kenapa kabar ini bikin kamu khawatir. Kabar viral yang bernada genting memang sering memicu kepanikan. Tapi sebelum kamu resah, ini fakta sebenarnya yang wajib kamu tahu:",
+        ]
+        return pilihan[n % len(pilihan)]
+    if is_skeptis:
+        pilihan = [
+            "Insting kamu untuk skeptis dan kroscek dulu sudah tepat banget! Memang ada banyak sekali kejanggalan pada narasi ini jika kita telaah secara kritis:",
+            "Kecurigaanmu sangat beralasan! Narasi semacam ini memang memuat pola rekayasa informasi yang sering mengecoh masyarakat. Mari kita buktikan faktanya:",
+            "Pertanyaan kritis yang cerdas! Menjawab keraguanmu, berikut hasil penelusuran fakta mendalam yang berhasil kami rangkum:",
+        ]
+        return pilihan[n % len(pilihan)]
+    if is_kasual:
+        pilihan = [
+            "Halo! Pertanyaan yang sangat bagus dan tepat waktu. Isu ini belakangan memang lagi ramai berseliweran di linimasa dan grup obrolan. Mari kita kupas tuntas:",
+            "Hai! Senang banget kamu membiasakan diri kroscek dulu ke aku sebelum percaya atau membagikannya. Yuk kita bedah faktanya bareng-bareng:",
+            "Halo juga! Siap, mari kita telusuri bukti resmi di balik kabar viral tersebut langkah demi langkah:",
+        ]
+        return pilihan[n % len(pilihan)]
+
+    pilihan = [
+        "Mengenai kabar atau informasi yang kamu tanyakan, berikut hasil analisis investigasi fakta dan pemeriksaan bukti resminya:",
+        "Menanggapi klaim tersebut, mari kita bedah duduk perkaranya berdasarkan konfirmasi otoritas resmi dan pangkalan data cek fakta:",
+        "Terima kasih sudah menanyakan keabsahan informasi ini. Berikut telaah mendalam fakta di lapangan:",
+    ]
+    return pilihan[n % len(pilihan)]
+
+
 def susun_jawaban_cerdas(
     teks: str = "",
     label: str = "meragukan",
@@ -377,18 +417,20 @@ def susun_jawaban_cerdas(
     sinyal: dict | None = None,
     saran: list | None = None,
 ) -> str:
-    """Susun jawaban pelurusan fakta yang cerdas, kontekstual, manusiawi, dan tidak menggunakan template kaku."""
+    """Susun jawaban pelurusan fakta yang cerdas, kontekstual, manusiawi, dan natural seperti AI berfikir."""
     t_clean = (teks or "").lower()
     sig = sinyal or {}
     ctx = sig.get("konteks") or analisis_konteks_pesan(teks)
+    pembuka = _bangun_pembuka_natural(teks)
 
     # 1. Konten Fiksi / Simulasi
     if fiksi:
         return (
-            "### 📢 Klarifikasi Karya Fiksi\n\n"
-            "Konten yang kamu tanyakan ini merupakan **karya fiksi / rekaan cerita hiburan**, bukan peristiwa nyata.\n\n"
-            "Di dalam teksnya sendiri sudah terdapat penanda cerita fiksi. Skenario drama atau cerita pendek seperti ini tentu tidak boleh disalahartikan sebagai berita kriminal atau kejadian aktual di dunia nyata.\n\n"
-            "**Saran Sagi:** Nikmati sebagai bacaan hiburan, dan jangan disebarkan ke grup keluarga seolah-olah kejadian beneran ya!"
+            f"{pembuka}\n\n"
+            "📌 **Status Analisis**: **KARYA FIKSI / SIMULASI CERITA REKAAN**\n\n"
+            "Konten yang kamu tanyakan ini merupakan **karya fiksi / rekaan cerita hiburan**, bukan peristiwa nyata di dunia kriminal atau bencana. "
+            "Di dalam naskahnya sendiri secara eksplisit telah tercantum penanda bahwa nama tokoh, latar, dan peristiwa di dalamnya adalah rekaan artistik.\n\n"
+            "💡 **Saran Sahabat Sagi**: Nikmati karya tersebut murni sebagai bahan bacaan fiksi atau edukasi literasi media, dan jangan diteruskan ke grup obrolan seolah-olah kejadian nyata di lapangan ya!"
         )
 
     # 2. Demo / Unjuk Rasa / Aksi Massa
@@ -396,14 +438,13 @@ def susun_jawaban_cerdas(
         lok = ctx.get("lokasi_str") or "wilayah tersebut"
         wkt = f" pada {ctx.get('waktu_str')}" if ctx.get("waktu_str") else ""
         return (
-            f"### 🔍 Analisis Fakta Sagi\n\n"
-            f"Mengenai isu rencana aksi demonstrasi/unjuk rasa di **{lok}**{wkt}, status informasinya saat ini **BELUM TERKONFIRMASI / MASIH BERSIFAT RUMOR**.\n\n"
-            f"**Fakta & Logika Pemeriksaan:**\n"
-            f"1. **Prosedur Pemberitahuan Aksi (STTP):** Di Indonesia, aksi penyampaian pendapat di muka umum wajib melayangkan Surat Tanda Terima Pemberitahuan (STTP) ke Satintelkam Polresta/Polres setempat. Sampai saat ini, belum ada rilis resmi dari Polresta {lok} maupun Satlantas mengenai pengamanan ataupun pengalihan arus lalu lintas di jam tersebut.\n"
+            f"{pembuka}\n\n"
+            f"🔍 **Status Isu**: **BELUM TERKONFIRMASI / MASIH BERSIFAT RUMOR**\n\n"
+            f"Terkait isu rencana aksi demonstrasi/unjuk rasa di **{lok}**{wkt}, berikut fakta hasil investigasi:\n\n"
+            f"1. **Prosedur Pemberitahuan Aksi (STTP):** Di Indonesia, setiap aksi penyampaian pendapat di muka umum wajib melayangkan Surat Tanda Terima Pemberitahuan (STTP) ke kepolisian setempat. Sampai saat ini, belum ada rilis resmi dari Polresta {lok} maupun Satlantas mengenai pengamanan ataupun pengalihan arus lalu lintas di jam tersebut.\n"
             f"2. **Nihil Pemberitaan Media Kredibel:** Belum ada laporan dari kantor berita arus utama atau media lokal terverifikasi Dewan Pers yang mengabarkan jadwal aksi unjuk rasa tersebut.\n"
-            f"3. **Karakteristik Kabar Burung WhatsApp:** Pesan berantai di grup percakapan kerap mendaur ulang selebaran aksi lama, membesar-besarkan isu yang belum tentu ada penanggung jawabnya, atau sengaja dibuat untuk memicu kepanikan pengguna jalan.\n\n"
-            f"**Saran Sagi:**\n"
-            f"Jika kamu berencana melintas di sekitar titik-titik keramaian di {lok}, tetap tenang dan pantau akun resmi kepolisian (seperti akun media sosial TMC Satlantas Polresta {lok} atau Dishub). Jangan langsung menyebarkan kabar yang belum jelas sumbernya ke grup lain."
+            f"3. **Karakteristik Pesan Berantai:** Pesan berantai di grup percakapan kerap mendaur ulang selebaran aksi lama atau sengaja dibuat untuk memicu kepanikan pengguna jalan.\n\n"
+            f"💡 **Saran Sahabat Sagi**: Jika kamu berencana melintas di titik-titik keramaian di {lok}, tetap tenang dan pantau akun resmi kepolisian (seperti akun media sosial TMC Satlantas Polresta {lok} atau Dishub). Jangan langsung membagikan kabar yang belum jelas sumbernya."
         )
 
     # 3. Operasi Kepolisian / Razia Kendaraan
@@ -411,25 +452,25 @@ def susun_jawaban_cerdas(
         lok = ctx.get("lokasi_str") or "lokasi tersebut"
         wkt = f" {ctx.get('waktu_str')}" if ctx.get("waktu_str") else ""
         return (
-            f"### 🔍 Analisis Fakta Sagi\n\n"
-            f"Terkait kabar adanya razia kendaraan bermotor di **{lok}**{wkt}, status kabar ini **BELUM TERVERIFIKASI RESMI**.\n\n"
-            f"**Hal yang Perlu Kamu Tahu Soal Razia Resmi:**\n"
+            f"{pembuka}\n\n"
+            f"🔍 **Status Isu**: **BELUM TERVERIFIKASI RESMI**\n\n"
+            f"Mengenai kabar razia kendaraan bermotor di **{lok}**{wkt}, ini hal penting yang perlu kamu ketahui:\n\n"
             f"1. **Surat Perintah Tugas (Sprin):** Operasi penertiban lalu lintas resmi kepolisian selalu dilengkapi Surat Perintah Tugas resmi dan wajib memasang plang razia minimal 50–100 meter sebelum lokasi.\n"
-            f"2. **Pola Hoaks Lokasi Razia:** Pesan broadcast berisi daftar panjang titik razia di grup WA hampir selalu merupakan pesan hoaks daur ulang dari tahun-tahun sebelumnya.\n"
-            f"3. **Pengumuman Resmi:** Operasi besar kepolisian (seperti Operasi Zebra atau Operasi Patuh) selalu diumumkan secara terbuka terlebih dahulu melalui kanal resmi Humas Polri dan TMC Korlantas.\n\n"
-            f"**Saran Sagi:** Selalu lengkapi surat kendaraan (SIM & STNK aktif), gunakan helm/sabuk pengaman, dan patuhi rambu lalu lintas kapan pun berkendara, terlepas dari ada atau tidaknya razia."
+            f"2. **Pola Hoaks Daftar Razia:** Pesan broadcast berisi daftar panjang titik razia di grup WA hampir selalu merupakan pesan hoaks daur ulang dari tahun-tahun sebelumnya yang terus diputar ulang.\n"
+            f"3. **Kanal Resmi:** Operasi besar kepolisian (seperti Operasi Zebra atau Operasi Patuh) selalu diumumkan secara terbuka terlebih dahulu melalui kanal resmi Humas Polri dan TMC Korlantas.\n\n"
+            f"💡 **Saran Sahabat Sagi**: Selalu lengkapi surat kendaraan (SIM & STNK aktif), gunakan helm/sabuk pengaman, dan patuhi rambu lalu lintas kapan pun berkendara, terlepas dari ada atau tidaknya razia."
         )
 
     # 4. Pemadaman Listrik / Gangguan Air Bersih
     if ctx.get("is_pemadaman"):
         lok = ctx.get("lokasi_str") or "daerah Anda"
         return (
-            f"### 🔍 Analisis Fakta Sagi\n\n"
-            f"Mengenai informasi pemadaman listrik/air di **{lok}**, saat ini **BELUM DITEMUKAN PENGUMUMAN RESMI**.\n\n"
-            f"**Pemeriksaan Fakta:**\n"
-            f"1. Pemadaman terencana oleh PLN selalu disertai informasi detail mengenai jadwal pemeliharaan dan wilayah gardu terdampak melalui aplikasi resmi **PLN Mobile** atau akun resmi PLN Distribusi daerah terkait.\n"
-            f"2. Pesan broadcast yang hanya menyebut kota tanpa rincian nomor gardu atau surat edaran resmi PLN/PDAM biasanya merupakan kabar simpang siur.\n\n"
-            f"**Saran Sagi:** Cek langsung status pemeliharaan terkini lewat aplikasi PLN Mobile (menu Informasi Pemadaman) atau hubungi Contact Center PLN 123."
+            f"{pembuka}\n\n"
+            f"🔍 **Status Isu**: **BELUM DITEMUKAN PENGUMUMAN RESMI**\n\n"
+            f"Terkait informasi pemadaman listrik/air di **{lok}**, berikut hasil kroscek:\n\n"
+            f"1. **SOP Pemeliharaan PLN:** Pemadaman terencana oleh PLN selalu disertai informasi detail mengenai jadwal pemeliharaan dan wilayah gardu terdampak melalui aplikasi resmi **PLN Mobile** atau akun resmi PLN Distribusi daerah terkait.\n"
+            f"2. **Ciri Kabar Burung:** Pesan broadcast yang hanya menyebut kota tanpa rincian nomor gardu atau surat edaran resmi PLN/PDAM biasanya merupakan kabar simpang siur.\n\n"
+            f"💡 **Saran Sahabat Sagi**: Cek langsung status pemeliharaan terkini lewat aplikasi PLN Mobile (menu Informasi Pemadaman) atau hubungi Contact Center PLN 123."
         )
 
     # 5. Saldo E-Wallet / Bank Hangus / Pembaruan Sistem Pembayaran Nasional
@@ -439,13 +480,14 @@ def susun_jawaban_cerdas(
     )
     if is_ewallet_bank or sig.get("hoaks_ewallet"):
         return (
-            "### 📢 Pelurusan Fakta Sagi\n\n"
+            f"{pembuka}\n\n"
+            "🚨 **Status Investigasi**: **HOAKS REKAYASA SOSIAL (MANIPULASI PERBANKAN)**\n\n"
             "Kabar yang menyebutkan **saldo dompet digital (e-wallet) atau rekening bank akan terpotong/hangus otomatis karena pembaruan sistem pembayaran nasional adalah HOAKS TOTAL**.\n\n"
-            "**Fakta Sebenarnya:**\n"
+            "💳 **Fakta Regulasi Moneter Sebenarnya**:\n"
             "1. **Regulasi Bank Indonesia (BI):** Pembaruan infrastruktur sistem pembayaran nasional (seperti BI-FAST, SNAP, atau QRIS) dikelola terpusat oleh BI. Sistem perbankan maupun dompet digital resmi tidak pernah mengurangi atau menghanguskan saldo pengguna sepihak dengan dalih pemeliharaan sistem atau nomor telepon lama.\n"
             "2. **Keamanan Saldo Pengguna:** Saldo kamu di dompet digital resmi (DANA, GoPay, OVO, ShopeePay, dll.) tersimpan aman di rekening penampung (*escrow account*) yang diawasi BI dan OJK. Saldo HANYA bisa berkurang jika ada transaksi yang kamu setujui sendiri via PIN atau kode OTP rahasia.\n"
             "3. **Trik Psikologis Pembuat Panik:** Pesan ini sengaja mencatut 'informasi orang dalam' dan menentukan batas waktu genting fiktif ('malam ini jam 00.00') agar orang panik dan langsung meneruskannya ke mana-mana.\n\n"
-            "**Saran Sagi:** Saldo kamu aman, tidak perlu putuskan sambungan akun, dan abaikan pesan tersebut."
+            "💡 **Saran Sahabat Sagi**: Saldo kamu aman 100%. Jangan pernah percaya ajakan memutuskan sambungan akun secara tergesa-gesa, dan yang paling penting: jangan pernah berikan kode OTP atau PIN ke siapa pun!"
         )
 
     # 6. Kunjungan Kenegaraan / Prabowo / Jokowi / Perang Rusia-Ukraina
@@ -453,13 +495,14 @@ def susun_jawaban_cerdas(
     is_war_topic = any(k in t_clean for k in ["rusia", "russia", "perang", "ukraina", "putin", "moskow", "pasukan", "kirim tentara", "tempur"])
     if (is_foreign_visit and is_war_topic) or sig.get("hoaks_perang"):
         return (
-            "### 📢 Pelurusan Fakta Sagi\n\n"
-            "Klaim yang menyebut bahwa **Prabowo Subianto pergi ke Rusia untuk ikut berperang adalah HOAKS TOTAL**.\n\n"
-            "**Fakta Sebenarnya:**\n"
-            "1. **Diplomasi Bilateral Resmi:** Pertemuan Prabowo Subianto dengan Presiden Vladimir Putin di Moskow merupakan agenda kerja kenegaraan resmi bilateral antarnegara, membahas kerja sama pertahanan, ekonomi, perdagangan, dan ketahanan pangan.\n"
-            "2. **Politik Luar Negeri Bebas-Aktif:** Sesuai amanat konstitusi, Indonesia menganut prinsip politik luar negeri Bebas dan Aktif. Indonesia TIDAK PERNAH mengirimkan personel militer atau prajurit TNI untuk bertempur dalam perang Rusia-Ukraina.\n"
-            "3. **Manipulasi Konteks Dokumentasi:** Dokumentasi kunjungan kenegaraan sengaja diplintir narasinya oleh pembuat konten tidak bertanggung jawab demi mendulang penonton.\n\n"
-            "**Saran Sagi:** Kroscek selalu isu hubungan internasional lewat portal resmi Kementerian Luar Negeri RI (kemlu.go.id) atau media berita arus utama."
+            f"{pembuka}\n\n"
+            "📢 **Status Investigasi**: **HOAKS MANIPULASI KONTEKS DIPLOMASI**\n\n"
+            "Klaim yang menyebut bahwa **tokoh kenegaraan Indonesia pergi ke Rusia untuk ikut berperang adalah HOAKS TOTAL**.\n\n"
+            "🇮🇩 **Fakta Hubungan Internasional Sebenarnya**:\n"
+            "1. **Diplomasi Bilateral Resmi:** Pertemuan bilateral dengan kepala negara asing di Moskow merupakan agenda kerja kenegaraan resmi, membahas kerja sama pertahanan, ekonomi, perdagangan, dan ketahanan pangan.\n"
+            "2. **Politik Luar Negeri Bebas-Aktif:** Sesuai amanat konstitusi UUD 1945, Indonesia menganut prinsip politik luar negeri Bebas dan Aktif. Indonesia TIDAK PERNAH mengirimkan personel militer atau prajurit TNI untuk bertempur dalam perang antarnegara lain.\n"
+            "3. **Manipulasi Dokumentasi:** Foto dan video dokumentasi kunjungan kenegaraan sengaja diplintir narasinya oleh pembuat konten tidak bertanggung jawab demi mendulang penonton (*clickbait viewer*).\n\n"
+            "💡 **Saran Sahabat Sagi**: Kroscek selalu isu hubungan internasional lewat portal resmi Kementerian Luar Negeri RI (kemlu.go.id) atau media berita arus utama terverifikasi."
         )
 
     # 7. Penipuan Bansos / BLT / Saldo Gratis Phishing
@@ -467,107 +510,113 @@ def susun_jawaban_cerdas(
     is_phish = any(k in t_clean for k in ["link", "tautan", "wa", "whatsapp", "klik", "daftar", "cairkan", "bit.ly", "s.id", "form", "isi data", "otp"]) or sig.get("shortened_url") or sig.get("phone_number")
     if (is_aid and is_phish) or sig.get("hoaks_bansos"):
         return (
-            "### 📢 Pelurusan Fakta Sagi\n\n"
-            "Kabar pembagian bantuan tunai, bansos, atau saldo gratis lewat tautan pesan tersebut adalah **HOAKS PENIPUAN (PHISHING)**.\n\n"
-            "**Fakta Sebenarnya:**\n"
-            "1. **Bukan Prosedur Resmi Pemerintah:** Bantuan resmi dari kementerian hanya disalurkan lewat Bank Himbara (BRI, BNI, Mandiri, BTN) atau PT Pos Indonesia dengan pengumuman di domain resmi `.go.id`, bukan lewat tautan pendek bit.ly/s.id atau broadcast WhatsApp.\n"
-            "2. **Modus Pencurian Data Pribadi:** Tautan itu sengaja dibuat untuk memancing kamu mengisi data rahasia seperti NIK KTP, nomor HP, dan kode OTP m-banking untuk dibobol.\n\n"
-            "**Saran Sagi:** JANGAN PERNAH mengklik tautan tersebut, jangan isi form data apa pun, dan jangan pernah membagikan kode OTP ke siapa pun."
+            f"{pembuka}\n\n"
+            "🚨 **Status Investigasi**: **HOAKS PENIPUAN DIGITAL (MODUS PHISHING)**\n\n"
+            "Kabar pembagian bantuan uang tunai, bansos sembako, saldo dompet digital gratis, atau kuota 100GB melalui tautan tersebut adalah **100% HOAKS PENIPUAN (PHISHING)**.\n\n"
+            "🔍 **Fakta & Cara Mengetahui Kepalsuannya**:\n"
+            "1. **Bukan Prosedur Resmi Pemerintah:** Bantuan resmi dari kementerian hanya disalurkan lewat Bank Himbara (BRI, BNI, Mandiri, BTN) atau PT Pos Indonesia dengan pengumuman di domain resmi `.go.id` (seperti `cekbansos.kemensos.go.id`), bukan lewat tautan pendek bit.ly/s.id atau broadcast WhatsApp.\n"
+            "2. **Modus Pencurian Data Pribadi:** Tautan itu sengaja dibuat untuk memancing kamu mengisi data rahasia seperti NIK KTP, nomor HP, foto selfie buku tabungan, atau kode OTP m-banking untuk dibobol.\n\n"
+            "💡 **Saran Sahabat Sagi**: JANGAN PERNAH mengklik tautan tersebut, jangan isi form data apa pun, dan jangan pernah membagikan kode OTP ke siapa pun!"
         )
 
     # 8. Malware File .APK
     is_apk_scam = sig.get("has_apk") or (any(k in t_clean for k in [".apk", "surat tilang", "undangan pernikahan", "resi kurir", "kurir paket", "tagihan pln"]) and any(k in t_clean for k in ["apk", "unduh", "install", "buka", "paket"]))
     if is_apk_scam:
         return (
-            "### ⚠️ Peringatan Bahaya Kejahatan Siber\n\n"
-            "Pesan yang mengirimkan file berformat **.APK** (dengan dalih undangan pernikahan, surat tilang kepolisian, atau resi paket ekspedisi) adalah **MODUS KEJAHATAN MALWARE SNIFFER PERBANKAN**.\n\n"
-            "**Fakta Bahayanya:**\n"
-            "1. Surat tilang elektronik (ETLE) asli hanya dikirim lewat surat fisik pos resmi ke alamat pemilik kendaraan, bukan file .APK di WhatsApp. Begitu pula undangan pernikahan atau resi kurir resmi.\n"
-            "2. File .APK tersebut adalah virus Trojan. Kalau diinstal di HP Android, aplikasi jahat ini akan menyadap SMS OTP perbankan kamu sehingga saldo m-banking bisa dikuras habis.\n\n"
-            "**Langkah Darurat Jika Terlanjur Klik:** Langsung nyalakan **Mode Pesawat (Airplane Mode)**, hapus aplikasi tersebut lewat menu Pengaturan HP -> Kelola Aplikasi, lalu hubungi pihak bank untuk memblokir sementara rekening Anda."
+            f"{pembuka}\n\n"
+            "⚠️ **Status Investigasi**: **MODUS KEJAHATAN SIBER TINGKAT TINGGI (MALWARE SNIFFER APK)**\n\n"
+            "Pesan yang mengirimkan file berformat **.APK** (dengan dalih undangan pernikahan, surat tilang kepolisian ETLE, foto paket kurir rusak, atau tagihan PLN) adalah **MODUS PENCURIAN SALDO REKENING BANK**.\n\n"
+            "🛡️ **Fakta Bahaya & Cara Kerjanya**:\n"
+            "1. Surat tilang elektronik (ETLE) asli hanya dikirim lewat surat fisik pos resmi ke alamat pemilik kendaraan, bukan file .APK di WhatsApp pribadi. Begitu pula undangan pernikahan atau resi kurir resmi.\n"
+            "2. File .APK tersebut adalah virus Trojan. Kalau diinstal di HP Android, aplikasi jahat ini akan menyadap SMS kode OTP perbankan kamu sehingga saldo m-banking bisa dikuras habis secara senyap.\n\n"
+            "🚨 **Langkah Darurat Jika Terlanjur Klik**:\n"
+            "Segera nyalakan **Mode Pesawat (Airplane Mode)** seketika, copot/uninstall aplikasi tersebut lewat menu Pengaturan HP -> Kelola Aplikasi, lalu hubungi pihak bank untuk memblokir sementara rekening Anda."
         )
 
     # 9. Obat Ajaib / Pseudosains Medis
     is_health = any(k in t_clean for k in ["kanker", "stroke", "diabetes", "ginjal", "jantung", "tumor", "obat herbal", "ramuan", "vaksin", "autis"])
-    is_miracle = any(k in t_clean for k in ["3 hari", "sembuh total", "100%", "tanpa operasi", "rahasia dokter", "bikin autis", "racun", "ajaib"])
+    is_miracle = any(k in t_clean for k in ["3 hari", "sembuh total", "100%", "tanpa operasi", "rahasia dokter", "bikin autis", "racun", "ajaib", "paku"])
     if (is_health and is_miracle) or sig.get("hoaks_obat"):
         return (
-            "### 📢 Pelurusan Fakta Medis Sagi\n\n"
-            "Klaim ramuan ajaib yang menyembuhkan penyakit kronis dalam hitungan hari, atau kabar hoaks vaksin menyebabkan autis/penyakit, adalah **HOAKS MEDIS YANG BERBAHAYA**.\n\n"
-            "**Fakta Ilmiah Medis:**\n"
-            "1. Pengobatan penyakit kronis (seperti kanker atau diabetes) memerlukan terapi medis terukur di bawah penanganan dokter spesialis dan obat yang telah lulus uji klinis BPOM.\n"
+            f"{pembuka}\n\n"
+            "🚨 **Status Investigasi**: **HOAKS MEDIS BERBAHAYA (PSEUDOSAINS)**\n\n"
+            "Klaim ramuan ajaib yang menyembuhkan penyakit kronis dalam hitungan hari, atau kabar hoaks vaksin menyebabkan autis/penyakit, adalah **HOAKS MEDIS YANG BERISIKO FATAL**.\n\n"
+            "🩺 **Fakta Ilmiah Medis Sebenarnya**:\n"
+            "1. Pengobatan penyakit kronis (seperti kanker atau diabetes) memerlukan terapi medis terukur di bawah penanganan dokter spesialis onkologi dan obat yang telah lulus uji klinis BPOM.\n"
             "2. Menghentikan obat resep dokter demi ramuan herbal viral yang belum teruji secara klinis sangat berisiko fatal bagi keselamatan jiwa pasien.\n\n"
-            "**Saran Sagi:** Jangan tergiur testimoni tanpa rujukan jurnal medis. Selalu konsultasikan kondisi kesehatan Anda ke dokter atau fasilitas kesehatan resmi terdekat."
+            "💡 **Saran Sahabat Sagi**: Jangan tergiur testimoni tanpa rujukan jurnal medis. Selalu konsultasikan kondisi kesehatan Anda ke dokter atau fasilitas kesehatan resmi terdekat."
         )
 
     # 10. Ramalan Bencana Alam Gempa / Megathrust
     is_disaster = any(k in t_clean for k in ["megathrust", "gempa", "tsunami", "ramalan gempa", "prediksi gempa", "kiamat", "gempa susulan"]) and any(k in t_clean for k in ["tanggal", "besok", "pasti terjadi", "ramal", "prediksi", "jam", "hari ini"])
     if is_disaster or sig.get("hoaks_gempa"):
         return (
-            "### 📢 Pelurusan Fakta Kebencanaan Sagi\n\n"
-            "Klaim yang menyebutkan tanggal dan jam pasti terjadinya gempa bumi megathrust atau tsunami adalah **HOAKS & SPEKULASI MENYESATKAN**.\n\n"
-            "**Fakta Ilmiah Kebencanaan:**\n"
+            f"{pembuka}\n\n"
+            "📢 **Status Investigasi**: **HOAKS & SPEKULASI KEBENCANAAN MENYESATKAN**\n\n"
+            "Klaim yang menyebutkan tanggal dan jam pasti terjadinya gempa bumi megathrust atau tsunami adalah **HOAKS TOTAL**.\n\n"
+            "🌍 **Fakta Ilmiah Kebencanaan**:\n"
             "1. **Keterbatasan Sains Dunia:** Sampai hari ini, belum ada satu pun teknologi di dunia yang bisa memprediksi hari, tanggal, dan jam terjadinya gempa secara akurat.\n"
             "2. **Potensi Geologis vs Jadwal:** Zona megathrust memang zona pertemuan lempeng tektonik yang memiliki potensi gempa, namun tidak ada kepastian waktu kapan gempa tersebut akan dilepaskan.\n"
             "3. **Lembaga Resmi:** Satu-satunya lembaga resmi negara yang berwenang menyampaikan info gempa dan peringatan dini tsunami di Indonesia adalah **BMKG (bmkg.go.id)**.\n\n"
-            "**Saran Sagi:** Tetap tenang, pelajari langkah mitigasi gempa mandiri bersama keluarga, dan jangan mudah terpancing narasi kiamat/panik di media sosial."
+            "💡 **Saran Sahabat Sagi**: Tetap tenang, pelajari langkah mitigasi gempa mandiri bersama keluarga, dan jangan mudah terpancing narasi kiamat/panik di media sosial."
         )
 
     # 11. Isu Kriminalitas Viral (Penculikan Anak / Begal)
     if ctx.get("is_kriminal"):
         lok = ctx.get("lokasi_str") or "daerah tersebut"
         return (
-            f"### 🔍 Analisis Fakta Sagi\n\n"
-            f"Terkait kabar kriminalitas (isu penculikan anak atau begal) di **{lok}**, statusnya saat ini **BELUM DAPAT DIBUKTIKAN / PERLU DIWASPADAI SEBAGAI RUMOR**.\n\n"
-            f"**Fakta di Lapangan:**\n"
+            f"{pembuka}\n\n"
+            f"🔍 **Status Isu**: **BELUM DAPAT DIBUKTIKAN / PERLU DIWASPADAI SEBAGAI RUMOR**\n\n"
+            f"Terkait kabar kriminalitas (isu penculikan anak atau begal) di **{lok}**, berikut fakta di lapangan:\n\n"
             f"1. **Pola Daur Ulang Pesan Penculikan:** Pesan berantai tentang penculikan anak hampir selalu merupakan kabar daur ulang menakut-nakuti warga. Di berbagai daerah, foto orang dengan gangguan jiwa (ODGJ) sering kali difitnah dan disebarkan sebagai foto pelaku penculikan.\n"
             f"2. **Nihil Laporan Polisi:** Hingga saat ini belum ada laporan polisi resmi maupun rilis dari Polsek/Polres di {lok} terkait kejadian tersebut.\n\n"
-            f"**Saran Sagi:** Kewaspadaan terhadap anak-anak dan keamanan lingkungan memang selalu penting, tapi jangan panik dan jangan main hakim sendiri terhadap orang yang dicurigai tanpa bukti yang jelas."
+            f"💡 **Saran Sahabat Sagi**: Kewaspadaan terhadap anak-anak dan keamanan lingkungan memang selalu penting, tapi jangan panik dan jangan main hakim sendiri terhadap orang yang dicurigai tanpa bukti yang jelas."
         )
 
     # 12. Kabar Wafat Tokoh Publik (Hoaks Innalillahi)
     is_death_hoax = sig.get("hoaks_wafat") or (any(k in t_clean for k in ["innalillahi", "meninggal dunia", "wafat", "tewas", "kabar duka"]) and any(p in t_clean for p in ["jokowi", "prabowo", "megawati", "anies", "ganjar", "gibran", "tokoh"]))
     if is_death_hoax:
         return (
-            "### 📢 Pelurusan Fakta Sagi\n\n"
+            f"{pembuka}\n\n"
+            "📢 **Status Investigasi**: **HOAKS KABAR DUKA PALSU (CLICKBAIT)**\n\n"
             "Kabar duka yang menyebutkan tokoh publik tersebut meninggal dunia adalah **HOAKS TIDAK BENAR**.\n\n"
             "Tokoh yang bersangkutan saat ini dalam kondisi sehat dan masih beraktivitas menjalankan tugas seperti biasa. Tidak ada pernyataan duka resmi dari pihak keluarga maupun kantor berita nasional. Konten duka palsu seperti ini biasanya sengaja dibuat oleh oknum pengelola akun untuk memancing klik dan kehebohan (*clickbait*).\n\n"
-            "**Saran Sagi:** Hindari menyebarkan berita duka sebelum ada konfirmasi resmi dari pihak keluarga atau media kredibel."
+            "💡 **Saran Sahabat Sagi**: Hindari menyebarkan berita duka sebelum ada konfirmasi resmi dari pihak keluarga atau media kredibel."
         )
 
     # 13. General Hoaks
     status_label = label.lower()
     if status_label == "hoaks" or skor >= 60:
         return (
-            "### 📢 Pelurusan Fakta Sagi\n\n"
-            "Berdasarkan verifikasi fakta dan analisis indikator, klaim yang kamu tanyakan terindikasi kuat sebagai **HOAKS / INFORMASI TIDAK BENAR**.\n\n"
-            "**Alasan & Temuan:**\n"
-            f"1. **Status Isu:** {kesimpulan}\n"
-            "2. **Ketiadaan Bukti Sah:** Informasi ini tidak didukung oleh rilis resmi dari lembaga yang berwenang maupun pemberitaan media massa terpercaya.\n"
-            "3. **Ciri Penyesatan:** Narasi menggunakan bahasa yang memancing emosi atau kepanikan tanpa menyertakan data primer yang dapat dipertanggungjawabkan.\n\n"
-            "**Saran Sagi:** Jangan jadikan kabar ini sebagai rujukan dan tahan diri untuk tidak membagikannya ke media sosial atau grup obrolan."
+            f"{pembuka}\n\n"
+            "🚨 **Status Investigasi**: **TERINDIKASI KUAT SEBAGAI HOAKS / KABAR TIDAK BENAR**\n\n"
+            f"Berdasarkan verifikasi fakta dan analisis indikator disinformasi:\n\n"
+            f"1. **Status Temuan:** {kesimpulan}\n"
+            f"2. **Nihil Data Sah:** Informasi ini tidak didukung oleh rilis resmi dari lembaga yang berwenang maupun pemberitaan media massa terpercaya.\n"
+            f"3. **Ciri Penyesatan:** Narasi menggunakan bahasa provokatif yang memancing emosi atau kepanikan tanpa menyertakan data primer yang dapat dipertanggungjawabkan.\n\n"
+            f"💡 **Saran Sahabat Sagi**: Jangan jadikan kabar ini sebagai rujukan dan tahan diri untuk tidak membagikannya ke media sosial atau grup obrolan. Jadilah pemutus rantai hoaks!"
         )
 
     # 14. General Valid (Hanya jika benar-benar ada bukti dan konfirmasi resmi)
     if status_label == "valid" and skor < 30 and not sig.get("no_source") and not ctx.get("is_tanya"):
         return (
-            "### 📢 Konfirmasi Fakta Sagi\n\n"
-            "Berdasarkan penelusuran rujukan resmi, informasi yang kamu tanyakan adalah **VALID / TERKONFIRMASI FAKTUAL**.\n\n"
-            "**Poin Penjelasan:**\n"
+            f"{pembuka}\n\n"
+            "✅ **Status Konfirmasi**: **FAKTUAL / TERKONFIRMASI RESMI**\n\n"
+            "Berdasarkan penelusuran rujukan resmi dan pangkalan data kredibel:\n\n"
             "1. **Sesuai Rujukan Resmi:** Informasi ini sejalan dengan pernyataan resmi yang telah dirilis oleh institusi berwenang atau media arus utama nasional.\n"
             "2. **Penyampaian Riil:** Narasi menyampaikan peristiwa nyata tanpa adanya rekayasa data atau pemutarbalikan fakta.\n\n"
-            "**Catatan Sagi:** Informasi ini dapat dipertanggungjawabkan. Pastikan masyarakat tetap merujuk pada kanal komunikasi resmi institusi terkait untuk petunjuk teknis lebih lanjut."
+            "📌 **Catatan Sahabat Sagi**: Informasi ini dapat dipertanggungjawabkan. Pastikan masyarakat tetap merujuk pada kanal komunikasi resmi institusi terkait untuk petunjuk teknis lebih lanjut."
         )
 
     # 15. General Meragukan / Belum Terkonfirmasi (Default Aman untuk Rumor/Pertanyaan)
     return (
-        "### 🔍 Analisis Fakta Sagi\n\n"
-        "Mengenai isu atau pertanyaan yang kamu sampaikan, statusnya saat ini masih **BELUM DAPAT DIKONFIRMASI / BERSIFAT RUMOR**.\n\n"
-        "**Poin Pemeriksaan Fakta:**\n"
-        "1. **Belum Ada Bukti Otentik:** Hingga saat ini, belum ada rilis resmi dari instansi berwenang maupun pemberitaan dari media arus utama terpercaya yang memvalidasi kebenaran narasi ini.\n"
+        f"{pembuka}\n\n"
+        "🔍 **Status Investigasi**: **BELUM DAPAT DIKONFIRMASI / BERSIFAT RUMOR**\n\n"
+        "Mengenai isu atau pertanyaan yang kamu sampaikan, statusnya saat ini masih **BELUM MEMILIKI BUKTI OTENTIK**:\n\n"
+        "1. **Nihil Rilis Resmi:** Hingga saat ini, belum ada rilis resmi dari instansi berwenang maupun pemberitaan dari media arus utama terpercaya yang memvalidasi kebenaran narasi ini.\n"
         "2. **Potensi Informasi Simpang Siur:** Pesan yang beredar tanpa tautan sumber terverifikasi kemungkinan besar merupakan desas-desus, potongan peristiwa lama yang didaur ulang, atau opini sepihak yang belum tentu terbukti di lapangan.\n"
-        "3. **Prinsip Tabayyun / Kroscek:** Di era digital, sebuah peristiwa baru bisa dipastikan benar jika didukung oleh sumber primer yang jelas penanggung jawabnya.\n\n"
-        "**Saran Sagi:** Tahan diri dan jangan terburu-buru menyebarkan informasi ini ke grup percakapan atau media sosial sebelum ada klarifikasi resmi dari pihak berwenang."
+        "3. **Prinsip Tabayyun:** Di era digital, sebuah peristiwa baru bisa dipastikan benar jika didukung oleh sumber primer yang jelas penanggung jawabnya.\n\n"
+        "💡 **Saran Sahabat Sagi**: Tahan diri dan jangan terburu-buru menyebarkan informasi ini ke grup percakapan atau media sosial sebelum ada klarifikasi resmi dari pihak berwenang."
     )
 
 
@@ -635,9 +684,10 @@ def format_creator_script(text: str, verdict: dict, sumber: dict | None = None) 
         poin.append("Himbauan: Tahan diri untuk tidak membagikan kabar ini sebelum ada rilis resmi (Saring Sebelum Sharing).")
 
     # 3. Draft Caption Medsos Siap Salin
+    snip = text[:80] + ("..." if len(text) > 80 else "")
     caption = (
         f"🚨 [FAKTA ATAU HOAKS?]\n\n"
-        f"Lagi viral narasi: \"{text[:80]}...\"\n\n"
+        f"Lagi viral narasi: \"{snip}\"\n\n"
         f"📌 STATUS: {label.upper()} (Skor Indikator: {skor}/100)\n\n"
         f"💡 PENJELASAN:\n"
         f"• {poin[1]}\n"

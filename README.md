@@ -17,7 +17,8 @@ model unduhan dari pihak mana pun.
 > **Peta dokumen:** `README.md` (dokumen ini) · `howitworks/Cara_kerja_sagi.md`
 > (penjelasan santai) · `docs/ARSITEKTUR.md` (teknis) · `docs/PANDUAN_FINETUNE.md`
 > (training) · `howitworks/cara_pindahinIQsagi.md` (pindah PC) ·
-> `howitworks/Cara_nambah_file.md` (nambah file) · `BUGS.md` (catatan bug jujur)
+> `howitworks/Cara_nambah_file.md` (nambah file) ·
+> `howitworks/Panduan_Training_12M.md` (latih 12M) · `BUGS.md` (catatan bug jujur)
 
 ---
 
@@ -75,22 +76,23 @@ via `deteksi_fiksi` agar tidak dinilai sebagai berita faktual.
 
 | Model | Parameter | Peran | Status |
 |---|---|---|---|
-| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor 0–100 | Terlatih (val 94,6%, probe regresi 6/6, diukur 16 Okt 2026) |
-| Plosagata_Flash | **12.665.856** | Chat super ringan — CPU kentang, demo kilat | Arsitektur siap |
-| Plosagata_Go | **91.593.216** | Chat ringan untuk CPU/laptop | Pra-latih + instruction-tune (eksperimental) |
-| Plosagata_More | **912.008.192** | Chat utama Sagi, target training GPU | Arsitektur siap |
-| Plosagata_Next | **1.549.927.424** | Varian besar untuk GPU 12 GB+ / klaster | Arsitektur saja |
+| **Plosagata_Browser** | **25.379.840** | **Flagship 25M: Hybrid RAG, Real-Time Internet Web Search & Anti-Hoaks Kekinian** | Arsitektur siap — ckpt belum ada (latih: `scripts/train_browser.py`) |
+| **Plosagata_12M** | **12.665.856** | Chatbot 12M Reworked: Super Ringan, Ramah, Percakapan Santai & Cek Fakta | **Terlatih di CPU** — ckpt `checkpoints/pure-Plosagata_12M-best.pt` |
+| Klasifier 12M | **11.584.515** | Penilai Valid / Hoaks / Meragukan + skor risiko 0–100 | Terlatih (Akurasi 94,6%, probe regresi 6/6) |
+| Plosagata_Flash | **12.665.856** | Chat super ringan — CPU kentang, demo kilat | Kompatibel 12M |
+| Plosagata_Go | **91.593.216** | Chat respon cepat untuk CPU/laptop menengah | Pra-latih + instruction-tune (eksperimental) |
+| Plosagata_More | **912.008.192** | Chat besar B1, target pelatihan klaster GPU 6GB+ | Arsitektur siap |
+| Plosagata_Next | **1.549.927.424** | Varian raksasa untuk GPU 16 GB+ / multi-GPU | Arsitektur saja |
 
-Ganti model beneran di browser: buka `/models` — engine lama dibongkar total
+Ganti model beneran di browser: buka `/models` atau ketik `/model Plosagata_Browser` di chat — engine lama dibongkar total
 (RAM kembali), engine baru nyala dengan sesi fresh. Bukan dropdown pura-pura.
 
 Verifikasi mandiri:
 
 ```bash
-.venv/bin/python scripts/gpt_pure.py Plosagata_Flash
+.venv/bin/python scripts/gpt_pure.py Plosagata_Browser
+.venv/bin/python scripts/gpt_pure.py Plosagata_12M
 .venv/bin/python scripts/gpt_pure.py Plosagata_Go
-.venv/bin/python scripts/gpt_pure.py Plosagata_More
-.venv/bin/python scripts/gpt_pure.py Plosagata_Next
 .venv/bin/python scripts/eval_verdict.py   # akurasi + probe regresi klasifier
 .venv/bin/python scripts/eval_fiksi.py     # uji deteksi fiksi/simulasi
 .venv/bin/python scripts/eval_topik.py     # uji guard + memori sesi (7/7)
@@ -144,7 +146,7 @@ klaim berita → diproses model + verdict 12M.
 |---|---|
 | `/` | Validator: tempel teks / unggah poster → label, skor, riwayat, statistik |
 | `/chat` | Chatbot: sidebar, riwayat tersimpan, tombol cepat, indikator mengetik, badge verdict, tombol salin, dukungan token remote |
-| `/models` | Daftar 4 model + ganti beneran (engine lama dibongkar, sesi fresh) |
+| `/models` | Daftar model + ganti beneran (engine lama dibongkar, sesi fresh) |
 | `/api/check` · `/api/chat` · `/api/history` · `/api/stats` · `/api/models` | API JSON |
 
 Slash-command di dalam chat: `/models`, `/model <nama>`, `/status`, `/help`.
@@ -175,35 +177,38 @@ Dataset `data/contoh_dataset.csv` (`text,label` → valid/hoaks/meragukan):
 
 Validasi dipisah **sebelum** augmentasi, jadi angka akurasinya jujur.
 
-### Plosagata: pra-latih lalu instruction-tuning (GPU disarankan)
+### Pelatihan Mandiri (Self-Training Lokal)
+
+#### 1. Plosagata_Browser (25.3M Core) — Model Flagship OTN 2026
+Arsitektur 25M yang memadukan penalaran Transformer Causal dengan Hybrid RAG & Real-Time Web Search:
 
 ```bash
-# 1. Korpus Wikipedia Indonesia (sumber: wikimedia/wikipedia):
-.venv/bin/python scripts/build_corpus.py --out data/korpus.wiki.txt --limit 2000
-cat data/korpus.txt data/korpus.wiki.txt > data/korpus.full.txt
-# 2. Pra-latih dari nol (ada split validasi otomatis):
-.venv/bin/python scripts/train_pure.py --size Plosagata_Go --corpus data/korpus.full.txt \
-  --epochs 1 --batch 16 --fp16 --val-split 0.02 --out pure-Go-pretrain.pt
-# 3. Instruction-tuning menjadi Sagi (WAJIB pakai vocab pretrain agar embedding cocok):
-.venv/bin/python scripts/train_pure.py --size Plosagata_Go --data data/train_chat.jsonl \
-  --epochs 5 --batch 8 --fp16 --lr 2e-4 --val-split 0.1 \
-  --ckpt pure-Go-pretrain-best.pt --vocab-file pure-Go-pretrain.pt.vocab.pt \
-  --out pure-Go-sagi.pt
+# Latihan mandiri 4 epoch (selesai ~15 menit di 16-core CPU):
+.venv/bin/python scripts/train_browser.py --epochs 4 --batch 8 --lr 3e-4
+
+# Uji coba chat interaktif setelah training:
+.venv/bin/python scripts/pure_chat.py --size Plosagata_Browser --ckpt checkpoints/pure-Plosagata_Browser-best.pt
 ```
 
-Setiap `--out X.pt` otomatis menyimpan `X.pt.vocab.pt` di sebelahnya, dan
-checkpoint val terbaik (`X-best.pt` + `X-best.pt.vocab.pt`). Jangan pernah
-memisahkan `.pt` dari `.vocab.pt` pasangannya.
-
-Bobot `.pt` tidak masuk Git (lihat `.gitignore`). Bagikan via
-Release/Drive. Panduan pindah PC: `howitworks/cara_pindahinIQsagi.md`.
-
-Mode berpikir-murni (semua pesan lewat model, perlu model terlatih):
+#### 2. Plosagata_12M (12.6M Core) — Super Ringan & Cepat
+Cocok untuk demonstrasi kilat dan latihan super cepat:
 
 ```bash
-.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --pure-think
-SAGI_PURE_THINK=1 .venv/bin/python web/app.py
+# Latihan 5 epoch (selesai ~10 menit di CPU):
+.venv/bin/python scripts/train_12m.py --epochs 5 --batch 16 --lr 3e-4
 ```
+
+#### 3. Generator Dataset Hoaks Kekinian
+Perluas dataset hoaks modern (APK sniffing, AI deepfake, phishing bansos, megathrust, dll.):
+
+```bash
+.venv/bin/python scripts/generate_modern_hoaks.py --target 5000
+```
+
+Setiap proses pelatihan otomatis menyimpan pasangan checkpoint:
+- `checkpoints/pure-*-best.pt` (bobot terbaik berdasarkan validation loss terendah)
+- `checkpoints/pure-*.vocab.pt` & `checkpoints/pure-*.tokenizer.json` (kamus token pasangan)
+- Menjalankan *smoke test* otomatis di terminal begitu training selesai.
 
 ---
 
@@ -211,13 +216,13 @@ SAGI_PURE_THINK=1 .venv/bin/python web/app.py
 
 | Dataset | Isi | Untuk |
 |---|---|---|
-| `data/contoh_dataset.csv` | 617 baris (322 valid / 165 hoaks / 130 meragukan, tumbuh via `auto_collect.py`) | Klasifier |
-| `data/contoh_chat.jsonl` | 237 percakapan (slang, penolakan, sapaan) | Gaya Sagi |
-| `data/train_chat.jsonl` | 854 (gabungan + generate) | Instruction-tuning |
-| `data/vocab_seed.txt` | 106 ribu kata | Build vocab otomatis |
-| `data/korpus.txt` | ±1,7 GB teks Wikipedia ID (tidak masuk Git) | Pra-latih |
+| `data/train_chat.jsonl` | **10.866+ percakapan** (kasus hoaks modern, APK sniffing, deepfake, gaya Sagi, dll.) | Training Causal LM (Plosagata_Browser & 12M) |
+| `data/contoh_dataset.csv` | 617 baris (322 valid / 165 hoaks / 130 meragukan) | Klasifier 12M |
+| `data/contoh_chat.jsonl` | 249 percakapan dasar (slang, penolakan sopan, identitas, sapaan hangat) | Ground truth percakapan |
+| `data/vocab_seed.txt` | 106 ribu kata dasar Indonesia | Build kamus subword BPE otomatis |
+| `data/korpus.txt` | ±12 GB teks Wikipedia campur ID + EN (opsional, tidak masuk Git) | Pra-latih korpus raksasa |
 
-- `plosagata/slang.py` berisi 199 entri slang → formal yang dipakai saat
+- `plosagata/slang.py` berisi 2.173 entri slang → formal yang dipakai saat
   training **dan** inferensi agar konsisten.
 - Tokenizer BPE mengeja kata asing per potongan (tanpa OOV); vocab lebih
   besar via `--vocab-size` + latih ulang.
@@ -270,8 +275,9 @@ mana pun. Dokumentasi arsitektur per berkas: [`docs/ARSITEKTUR.md`](docs/ARSITEK
 
 ## Peta Jalan
 
-- [x] Klasifier 12M terlatih (val 90,3%) + web validator + OCR poster
-- [x] Arsitektur Plosagata Go/More/Next + guard topik + slang + retrieval sumber
+- [x] Klasifier 12M terlatih (val 94,6%) + web validator + OCR poster
+- [x] Arsitektur Plosagata Go/More/Next/Browser + guard topik + slang + retrieval sumber
+- [x] Plosagata_12M chat-tuning di CPU (ckpt `pure-Plosagata_12M-best.pt`)
 - [x] Web chatbot + API + akses remote bertoken
 - [~] Checkpoint Go dari GPU teman (`pure-Go-sagi-best.pt`, via Drive — belum dievaluasi formal)
 - [ ] Pra-latih More di GPU (korpus Wikipedia, ±5 hari)

@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="id" class="dark">
+<html lang="id" class="dark" data-theme="obsidian">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sagi Neural — AI News & Fact Verification</title>
+<title>Sagi Neural — Next-Gen AI News & Fact Verification</title>
 
-<!-- Fonts: Instrument Serif / Plus Jakarta Sans & JetBrains Mono -->
+<!-- Fonts: Plus Jakarta Sans, JetBrains Mono, Instrument Serif -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- Tailwind CSS via Official CDN -->
+<!-- Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -21,37 +21,6 @@ tailwind.config = {
         sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
         serif: ['"Instrument Serif"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
-      },
-      colors: {
-        obsidian: {
-          950: '#090a0f',
-          900: '#0f1118',
-          850: '#141722',
-          800: '#1a1e2c',
-          700: '#262c3f',
-          600: '#353c54',
-        },
-        champagne: {
-          100: '#fdfbf7',
-          200: '#f7f1e6',
-          300: '#eedec5',
-          400: '#e3c59a',
-          500: '#d4a86a',
-          600: '#bc8a4b',
-        },
-        brand: {
-          bronze: '#d4a86a',
-          copper: '#c27847',
-          terracotta: '#bc544b',
-          sage: '#4e8774',
-          crimson: '#b94747',
-          amber: '#c78635',
-        }
-      },
-      boxShadow: {
-        'glow-bronze': '0 0 24px -4px rgba(212, 168, 106, 0.15)',
-        'glow-subtle': '0 0 40px -10px rgba(255, 255, 255, 0.03)',
-        'dock': '0 20px 40px -15px rgba(0, 0, 0, 0.7)',
       }
     }
   }
@@ -59,211 +28,519 @@ tailwind.config = {
 </script>
 
 <style>
-/* Custom Architectural Micro-Details */
-::selection {
-  background: rgba(212, 168, 106, 0.25);
-  color: #fff;
+/* ==========================================================================
+   DYNAMIC CIAMIK COLOR PALETTES (Claude, AntiGravity, Cursor, Matrix, Nebula)
+   ========================================================================== */
+:root {
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* DEFAULT: Obsidian Bronze (AntiGravity) */
+  --bg-app: #08090d;
+  --bg-sidebar: #0e1017;
+  --bg-card: rgba(18, 21, 31, 0.75);
+  --bg-card-hover: rgba(26, 30, 44, 0.85);
+  --bg-user-bubble: #171b28;
+  --bg-bot-bubble: rgba(14, 17, 26, 0.85);
+  --bg-composer: rgba(16, 19, 29, 0.92);
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(212, 168, 106, 0.35);
+  --accent-primary: #d4a86a;
+  --accent-hover: #e3c59a;
+  --accent-rgb: 212, 168, 106;
+  --accent-glow: rgba(212, 168, 106, 0.25);
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --dot-color: rgba(255, 255, 255, 0.05);
 }
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+
+[data-theme="claude"] {
+  /* Claude 3.7 Warm Terracotta & Ivory Slate */
+  --bg-app: #12100f;
+  --bg-sidebar: #191614;
+  --bg-card: rgba(30, 26, 23, 0.8);
+  --bg-card-hover: rgba(42, 36, 32, 0.9);
+  --bg-user-bubble: #28221e;
+  --bg-bot-bubble: rgba(26, 22, 20, 0.9);
+  --bg-composer: rgba(32, 27, 24, 0.95);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(222, 122, 94, 0.4);
+  --accent-primary: #da7756;
+  --accent-hover: #e88d67;
+  --accent-rgb: 218, 119, 86;
+  --accent-glow: rgba(218, 119, 86, 0.28);
+  --text-main: #faf5f0;
+  --text-muted: #b8aba0;
+  --text-subtle: #7d7268;
+  --dot-color: rgba(218, 119, 86, 0.06);
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+
+[data-theme="cursor"] {
+  /* Cursor Dark Neon Cyber */
+  --bg-app: #07080b;
+  --bg-sidebar: #0d0f15;
+  --bg-card: rgba(16, 19, 28, 0.8);
+  --bg-card-hover: rgba(24, 29, 42, 0.9);
+  --bg-user-bubble: #161b2b;
+  --bg-bot-bubble: rgba(13, 16, 24, 0.9);
+  --bg-composer: rgba(14, 18, 27, 0.95);
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(0, 242, 254, 0.45);
+  --accent-primary: #00f2fe;
+  --accent-hover: #4facfe;
+  --accent-rgb: 0, 242, 254;
+  --accent-glow: rgba(0, 242, 254, 0.3);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --dot-color: rgba(0, 242, 254, 0.05);
 }
+
+[data-theme="matrix"] {
+  /* Bio-Tech Neural Emerald */
+  --bg-app: #060c09;
+  --bg-sidebar: #0b1410;
+  --bg-card: rgba(14, 26, 20, 0.75);
+  --bg-card-hover: rgba(20, 38, 29, 0.85);
+  --bg-user-bubble: #12241b;
+  --bg-bot-bubble: rgba(11, 20, 16, 0.9);
+  --bg-composer: rgba(13, 24, 18, 0.95);
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(16, 185, 129, 0.4);
+  --accent-primary: #10b981;
+  --accent-hover: #34d399;
+  --accent-rgb: 16, 185, 129;
+  --accent-glow: rgba(16, 185, 129, 0.28);
+  --text-main: #ecfdf5;
+  --text-muted: #a7f3d0;
+  --text-subtle: #059669;
+  --dot-color: rgba(16, 185, 129, 0.06);
+}
+
+[data-theme="nebula"] {
+  /* Nebula Velvet & Royal Amethyst */
+  --bg-app: #090812;
+  --bg-sidebar: #100f1f;
+  --bg-card: rgba(22, 20, 42, 0.8);
+  --bg-card-hover: rgba(33, 30, 62, 0.9);
+  --bg-user-bubble: #201b3b;
+  --bg-bot-bubble: rgba(17, 15, 33, 0.9);
+  --bg-composer: rgba(19, 17, 36, 0.95);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(168, 85, 247, 0.45);
+  --accent-primary: #a855f7;
+  --accent-hover: #c084fc;
+  --accent-rgb: 168, 85, 247;
+  --accent-glow: rgba(168, 85, 247, 0.3);
+  --text-main: #faf5ff;
+  --text-muted: #d8b4fe;
+  --text-subtle: #7e22ce;
+  --dot-color: rgba(168, 85, 247, 0.06);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 99px;
+  background: var(--border-subtle);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(var(--accent-rgb), 0.3);
 }
 
-.bg-dot-matrix {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 24px 24px;
+/* Grid Pattern Background */
+.bg-grid-tech {
+  background-image: 
+    linear-gradient(to right, var(--dot-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--dot-color) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-@keyframes pulseSubtle {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
+/* Animations */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.04); }
 }
-.animate-pulse-subtle {
-  animation: pulseSubtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.animate-glow-pulse { animation: glowPulse 6s ease-in-out infinite; }
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -20px); }
 }
+.animate-float-orb { animation: floatOrb 12s ease-in-out infinite; }
 
 @keyframes waveBar {
-  0%, 100% { transform: scaleY(0.3); }
+  0%, 100% { transform: scaleY(0.25); }
   50% { transform: scaleY(1); }
 }
-.wave-1 { animation: waveBar 1s ease-in-out infinite; }
-.wave-2 { animation: waveBar 1s ease-in-out infinite 0.2s; }
-.wave-3 { animation: waveBar 1s ease-in-out infinite 0.4s; }
+.wave-1 { animation: waveBar 0.9s ease-in-out infinite; }
+.wave-2 { animation: waveBar 0.9s ease-in-out infinite 0.18s; }
+.wave-3 { animation: waveBar 0.9s ease-in-out infinite 0.36s; }
+.wave-4 { animation: waveBar 0.9s ease-in-out infinite 0.54s; }
+
+/* Typing cursor blink */
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.typing-cursor {
+  display: inline-block;
+  width: 6px;
+  height: 15px;
+  background-color: var(--accent-primary);
+  margin-left: 3px;
+  vertical-align: middle;
+  animation: cursorBlink 0.8s infinite;
+  border-radius: 1px;
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+}
+.glass-panel:hover {
+  border-color: var(--border-strong);
+}
+
+.composer-glass {
+  background: var(--bg-composer);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.7), 0 0 30px -10px var(--accent-glow);
+}
+
+/* Smooth transitions */
+body, aside, main, header, div, button, textarea {
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s ease,
+              box-shadow 0.25s ease;
+}
 </style>
 </head>
 
-<body class="bg-obsidian-950 text-slate-100 font-sans h-screen flex overflow-hidden antialiased selection:bg-brand-bronze/20 selection:text-champagne-200">
+<body class="h-screen w-screen flex overflow-hidden font-sans select-none antialiased text-slate-100" style="background-color: var(--bg-app);">
 
-<!-- SIDEBAR (Antigravity & Opencode Inspired) -->
-<aside id="sidebar" class="w-72 bg-obsidian-900 border-r border-white/[0.06] p-4 flex flex-col gap-4 flex-shrink-0 transition-transform duration-300 z-50 md:translate-x-0 -translate-x-full fixed md:relative h-full">
+<!-- Canvas Interactive Ambient Particle Layer -->
+<canvas id="ambientCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+<!-- Top Ambient Radial Glows -->
+<div class="fixed top-[-100px] left-1/2 -translate-x-1/2 w-[900px] h-[450px] rounded-full pointer-events-none animate-glow-pulse blur-[140px] z-0"
+     style="background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);"></div>
+
+<!-- ========================================================================
+     SIDEBAR: ANTIGRAVITY / CURSOR INSPIRED WORKSPACE MANAGER
+     ======================================================================== -->
+<aside id="sidebar" class="w-80 border-r flex flex-col z-40 fixed md:relative h-full transition-all duration-300 -translate-x-full md:translate-x-0 select-text"
+       style="background-color: var(--bg-sidebar); border-color: var(--border-subtle);">
   
-  <!-- Logo & Version Tag -->
-  <div class="flex items-center justify-between pb-3 border-b border-white/[0.05]">
+  <!-- Sidebar Header: Brand Monogram & Live Version -->
+  <div class="p-4 border-b flex items-center justify-between" style="border-color: var(--border-subtle);">
     <a href="/chat" class="flex items-center gap-3 group">
-      <!-- Monogram Glyph -->
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-obsidian-800 to-obsidian-850 border border-brand-bronze/40 flex items-center justify-center shadow-glow-bronze group-hover:border-brand-bronze transition-colors">
-        <span class="font-serif italic text-brand-bronze text-lg font-bold">S</span>
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center font-serif text-lg font-bold shadow-md transition-all group-hover:scale-105"
+           style="background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.25), rgba(var(--accent-rgb), 0.05)); border: 1px solid var(--border-strong); color: var(--accent-primary);">
+        <span>S</span>
       </div>
       <div>
-        <div class="flex items-center gap-1.5">
-          <span class="font-semibold text-sm tracking-tight text-slate-100">Sagi Neural</span>
-          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-bronze/10 text-brand-bronze border border-brand-bronze/20">v1.2</span>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-sm tracking-tight" style="color: var(--text-main);">Sagi Neural</span>
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider"
+                style="background: rgba(var(--accent-rgb), 0.15); color: var(--accent-primary); border: 1px solid rgba(var(--accent-rgb), 0.3);">
+            v2.0
+          </span>
         </div>
-        <p class="text-[11px] text-slate-400 font-mono tracking-wider">HYBRID VERIFIER</p>
+        <p class="text-[11px] font-mono flex items-center gap-1.5" style="color: var(--text-subtle);">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          HYBRID REASONING ENGINE
+        </p>
       </div>
     </a>
-    <button id="closeSidebar" class="md:hidden text-slate-400 hover:text-white p-1 rounded-md">✕</button>
+    <button id="closeSidebar" class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.05]">
+      ✕
+    </button>
   </div>
 
-  <!-- New Chat Button (Command Palette Style) -->
-  <button id="newchat" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.07] hover:border-white/[0.14] text-xs font-medium text-slate-200 transition-all group shadow-sm">
-    <div class="flex items-center gap-2.5">
-      <svg class="w-4 h-4 text-brand-bronze" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-      </svg>
-      <span>Sesi Percakapan Baru</span>
-    </div>
-    <kbd class="text-[10px] font-mono text-slate-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-white/[0.06] group-hover:text-slate-300">⌘N</kbd>
-  </button>
+  <!-- New Session Action -->
+  <div class="p-3">
+    <button id="newchat" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all group shadow-sm hover:scale-[1.01]"
+            style="background: rgba(var(--accent-rgb), 0.12); color: var(--accent-primary); border: 1px solid rgba(var(--accent-rgb), 0.25);">
+      <div class="flex items-center gap-2.5">
+        <svg class="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span>Mulai Sesi Baru</span>
+      </div>
+      <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded opacity-70 group-hover:opacity-100"
+           style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle);">⌘N</kbd>
+    </button>
+  </div>
 
-  <!-- History Group List -->
-  <div class="flex-1 flex flex-col min-h-0">
-    <div class="flex items-center justify-between px-1 py-1 text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+  <!-- Search Session Input -->
+  <div class="px-3 pb-1">
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs"
+         style="background: rgba(0,0,0,0.25); border-color: var(--border-subtle);">
+      <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <input id="searchConv" type="text" placeholder="Cari sesi percakapan..." class="w-full bg-transparent text-xs outline-none text-slate-200 placeholder:text-slate-500">
+    </div>
+  </div>
+
+  <!-- Conversations List -->
+  <div class="flex-1 flex flex-col min-h-0 px-2 py-2">
+    <div class="flex items-center justify-between px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500">
       <span>Riwayat Cek Fakta</span>
-      <span class="text-[10px] text-slate-500" id="chatCount">0 sesi</span>
+      <span id="chatCount" class="font-mono text-[10px] text-slate-400">0 sesi</span>
     </div>
     <div id="convs" class="flex-1 overflow-y-auto space-y-1 pr-1 mt-1">
-      <!-- Dynamic chat sessions populated via JS -->
+      <!-- Populated dynamically via JS -->
     </div>
   </div>
 
-  <!-- Bottom Configurations (Opencode Inspector Style) -->
-  <div class="pt-3 border-t border-white/[0.05] space-y-3">
+  <!-- Sidebar Bottom Panel: Metrics & Shortcuts -->
+  <div class="p-3 border-t space-y-3" style="border-color: var(--border-subtle); background: rgba(0,0,0,0.2);">
     
-    <!-- Model Engine Selector -->
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <label class="text-[11px] font-mono text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          Engine Model
-        </label>
-        <span class="text-[10px] font-mono text-slate-400">12M + RAG</span>
-      </div>
-      <div class="relative">
-        <div id="activeModel" class="w-full bg-obsidian-850 text-xs font-mono text-slate-200 border border-white/[0.08] rounded-lg px-3 py-2">
-          …memuat model aktif…
+    <!-- Active Neural Core Card -->
+    <div class="p-2.5 rounded-xl border flex flex-col gap-1.5"
+         style="background: var(--bg-card); border-color: var(--border-subtle);">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-[11px] font-mono" style="color: var(--text-muted);">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Core Aktif</span>
         </div>
+        <a href="/models" class="text-[10px] font-mono hover:underline" style="color: var(--accent-primary);">Ganti Core →</a>
       </div>
-      <a href="/models" class="text-[11px] font-mono text-brand-bronze hover:underline">Ganti model → /models</a>
+      <div class="flex items-center justify-between">
+        <div id="sidebarActiveModel" class="font-bold text-xs font-mono" style="color: var(--text-main);">
+          Plosagata_Go
+        </div>
+        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.04] text-slate-400 border border-white/[0.06]">
+          12M + RAG
+        </span>
+      </div>
     </div>
 
-    <!-- Remote Token (Collapsible subtle) -->
-    <div>
-      <details class="group">
-        <summary class="text-[11px] font-mono text-slate-400 hover:text-slate-300 cursor-pointer flex items-center justify-between py-0.5">
-          <span>Auth Token (Remote)</span>
-          <span class="text-[10px] text-slate-500 group-open:rotate-180 transition-transform">▼</span>
-        </summary>
-        <div class="mt-2">
-          <input id="tok" type="password" placeholder="X-Sagi-Token..." class="w-full bg-obsidian-850 text-xs font-mono text-slate-200 placeholder:text-slate-400 border border-white/[0.08] rounded-lg px-3 py-1.5 outline-none focus:border-brand-bronze/50">
-        </div>
-      </details>
-    </div>
-
-    <!-- Navigation to Scanner (Claude / Antigravity style switch) -->
-    <a href="/" class="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] hover:border-white/[0.1] text-xs text-slate-300 transition-colors">
-      <div class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    <!-- Quick Navigation Hub -->
+    <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+      <a href="/" class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg border hover:bg-white/[0.04] text-slate-300 transition-colors"
+         style="border-color: var(--border-subtle);">
+        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
-        <span>Mode Scanner & OCR</span>
+        <span>Scanner/OCR</span>
+      </a>
+      <a href="/models" class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg border hover:bg-white/[0.04] text-slate-300 transition-colors"
+         style="border-color: var(--border-subtle);">
+        <svg class="w-3.5 h-3.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        <span>Model Lab</span>
+      </a>
+    </div>
+
+    <!-- Token Collapsible Drawer -->
+    <details class="group text-xs font-mono">
+      <summary class="cursor-pointer text-slate-400 hover:text-slate-200 flex items-center justify-between py-1">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+          </svg>
+          <span>Auth Token (Remote)</span>
+        </span>
+        <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="mt-2">
+        <input id="tok" type="password" placeholder="X-Sagi-Token..." 
+               class="w-full bg-black/40 text-xs font-mono text-slate-200 placeholder:text-slate-500 border rounded-lg px-2.5 py-1.5 outline-none focus:border-amber-400"
+               style="border-color: var(--border-subtle);">
       </div>
-      <span class="text-slate-500 text-xs">→</span>
-    </a>
+    </details>
 
   </div>
 </aside>
 
-<!-- MAIN WORKSPACE -->
-<main class="flex-1 flex flex-col h-full bg-obsidian-950 bg-dot-matrix relative overflow-hidden">
+<!-- ========================================================================
+     MAIN WORKSPACE: CLAUDE 3.7 & CURSOR INSPIRED CHAT INTERFACE
+     ======================================================================== -->
+<main class="flex-1 flex flex-col h-full relative overflow-hidden bg-grid-tech z-10" style="background-color: var(--bg-app);">
   
-  <!-- Subtle Ambient Glow (Warm Ochre / Champagne) -->
-  <div class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-brand-bronze/[0.03] blur-[120px] rounded-full"></div>
-
-  <!-- Top Navigation Header -->
-  <header class="h-14 border-b border-white/[0.05] bg-obsidian-950/80 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between flex-shrink-0 z-20">
+  <!-- Navigation Bar -->
+  <header class="h-16 border-b px-4 sm:px-8 flex items-center justify-between flex-shrink-0 z-30 backdrop-blur-xl"
+          style="background-color: rgba(var(--accent-rgb), 0.02); border-color: var(--border-subtle);">
+    
+    <!-- Left: Sidebar Toggle & Model Pill -->
     <div class="flex items-center gap-3">
-      <button id="openSidebar" class="md:hidden text-slate-400 hover:text-white p-1.5 rounded-lg border border-white/[0.08] bg-obsidian-900">
+      <button id="openSidebar" class="md:hidden p-2 rounded-xl border text-slate-300 hover:text-white"
+              style="background: var(--bg-card); border-color: var(--border-subtle);">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
 
-      <!-- Engine Breadcrumb Indicator -->
-      <div class="flex items-center gap-2 text-xs font-mono">
-        <span class="text-slate-400">workspace</span>
+      <!-- Active Core Pill Indicator -->
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-mono shadow-sm"
+           style="background: var(--bg-card); border-color: var(--border-subtle);">
+        <span class="w-2 h-2 rounded-full" style="background-color: var(--accent-primary);"></span>
+        <span id="modelIndicatorText" class="font-bold" style="color: var(--text-main);">Plosagata_Go</span>
         <span class="text-slate-600">/</span>
-        <span class="text-slate-300 font-medium flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-brand-bronze/80"></span>
-          <span id="modelIndicatorText">Plosagata_Go</span>
-        </span>
+        <span class="text-[11px] text-slate-400 hidden sm:inline">12M Verifier Active</span>
       </div>
     </div>
 
-    <!-- Status Badges -->
-    <div class="flex items-center gap-3">
-      <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] text-[11px] font-mono text-slate-400">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-        <span>Local CPU · ~12ms</span>
+    <!-- Right: Theme Switcher & Audio Sound FX & Direct Links -->
+    <div class="flex items-center gap-2.5">
+      
+      <!-- Sound FX Toggle Button -->
+      <button id="soundToggle" title="Toggle Sound FX Audio" class="p-2 rounded-xl border text-slate-300 hover:text-white transition-all flex items-center gap-1.5 text-xs font-mono"
+              style="background: var(--bg-card); border-color: var(--border-subtle);">
+        <span id="soundIcon">🔊</span>
+        <span class="hidden lg:inline text-[11px] text-slate-400">Audio FX</span>
+      </button>
+
+      <!-- Palette Switcher Dropdown -->
+      <div class="relative" id="themeDropdownContainer">
+        <button id="themeToggleBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-mono text-slate-200 transition-all shadow-sm hover:border-amber-400/50"
+                style="background: var(--bg-card); border-color: var(--border-subtle);">
+          <span class="w-3 h-3 rounded-full border border-white/20" style="background-color: var(--accent-primary);"></span>
+          <span id="themeNameLabel" class="font-medium hidden sm:inline">Obsidian</span>
+          <span class="text-[10px] text-slate-400">▼</span>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="themeMenu" class="hidden absolute right-0 mt-2 w-52 rounded-2xl border p-2 shadow-2xl z-50 backdrop-blur-2xl"
+             style="background: var(--bg-sidebar); border-color: var(--border-strong);">
+          <div class="text-[10px] font-mono uppercase px-2 py-1 text-slate-400 font-semibold border-b border-white/[0.06] mb-1">
+            Pilih Color Palette
+          </div>
+          <button data-palette="obsidian" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-[#d4a86a]"></span>
+              <span>AntiGravity Obsidian</span>
+            </div>
+            <span class="text-[10px] font-mono text-amber-400 font-bold">Gold</span>
+          </button>
+          <button data-palette="claude" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-[#da7756]"></span>
+              <span>Claude Terracotta</span>
+            </div>
+            <span class="text-[10px] font-mono text-rose-400 font-bold">Warm</span>
+          </button>
+          <button data-palette="cursor" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-[#00f2fe]"></span>
+              <span>Cursor Cyber Cyan</span>
+            </div>
+            <span class="text-[10px] font-mono text-cyan-400 font-bold">Neon</span>
+          </button>
+          <button data-palette="matrix" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-[#10b981]"></span>
+              <span>Neural Emerald</span>
+            </div>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">Bio</span>
+          </button>
+          <button data-palette="nebula" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-[#a855f7]"></span>
+              <span>Velvet Nebula</span>
+            </div>
+            <span class="text-[10px] font-mono text-purple-400 font-bold">Violet</span>
+          </button>
+        </div>
       </div>
-      <a href="/" class="text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-1">
-        <span>Buka Scanner</span>
-        <span class="font-mono text-[10px]">↗</span>
-      </a>
+
+      <!-- Clear Chat Action -->
+      <button id="clearChatBtn" title="Hapus Chat Ini" class="p-2 rounded-xl border text-slate-400 hover:text-rose-400 transition-colors"
+              style="background: var(--bg-card); border-color: var(--border-subtle);">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+      </button>
+
     </div>
   </header>
 
-  <!-- Chat Scroll Area -->
-  <div id="box" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6 max-w-4xl w-full mx-auto">
+  <!-- Messages Scrollable Container -->
+  <div id="box" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6 max-w-4xl w-full mx-auto select-text scroll-smooth">
     <!-- Populated dynamically via JS -->
   </div>
 
-  <!-- Bottom Floating Composer (Claude / ChatGPT 4o Refined) -->
-  <div class="p-4 sm:p-6 max-w-4xl w-full mx-auto flex-shrink-0 relative z-20">
-    <div class="bg-obsidian-900/90 backdrop-blur-xl border border-white/[0.1] focus-within:border-brand-bronze/60 rounded-2xl p-2.5 sm:p-3 shadow-dock transition-all group">
+  <!-- ========================================================================
+       FLOATING COMPOSER: CLAUDE 3.7 & CURSOR STREAMLINED
+       ======================================================================== -->
+  <div class="p-3 sm:p-5 max-w-4xl w-full mx-auto flex-shrink-0 relative z-30">
+    <div class="composer-glass rounded-2xl p-2.5 sm:p-3.5 transition-all focus-within:ring-2 focus-within:ring-[var(--accent-primary)]/40"
+         style="border-color: var(--border-strong);">
       
-      <div class="flex items-end gap-3">
-        <!-- Input Textarea -->
-        <textarea id="m" rows="1" placeholder="Tempel narasi berita, klaim viral, atau tanyakan fakta..." class="w-full bg-transparent text-sm sm:text-[15px] text-slate-100 placeholder:text-slate-400 outline-none resize-none max-h-40 leading-relaxed py-1.5 px-2 font-sans"></textarea>
+      <!-- Quick Prompt Suggestion Bar -->
+      <div id="quickPromptBar" class="flex items-center gap-2 overflow-x-auto pb-2 px-1 mb-1 text-[11px] font-mono no-scrollbar">
+        <span class="text-slate-500 flex-shrink-0">⚡ Cepat:</span>
+        <button class="quick-chip flex-shrink-0 px-2.5 py-1 rounded-full border text-slate-300 hover:text-white transition-colors"
+                style="background: rgba(var(--accent-rgb), 0.08); border-color: var(--border-subtle);"
+                data-text="Bener gak bansos BLT cair lewat kantor pos sesuai kemensos.go.id?">
+          🏛️ Bansos Kemensos
+        </button>
+        <button class="quick-chip flex-shrink-0 px-2.5 py-1 rounded-full border text-slate-300 hover:text-white transition-colors"
+                style="background: rgba(var(--accent-rgb), 0.08); border-color: var(--border-subtle);"
+                data-text="Cek info giveaway iPhone 15 klik bit.ly transfer ongkir dulu">
+          🔴 Scam Giveaway
+        </button>
+        <button class="quick-chip flex-shrink-0 px-2.5 py-1 rounded-full border text-slate-300 hover:text-white transition-colors"
+                style="background: rgba(var(--accent-rgb), 0.08); border-color: var(--border-subtle);"
+                data-text="Kabar saldo e-wallet terpotong karena update sistem BI-FAST malam ini hoaks kan?">
+          💳 Saldo E-Wallet
+        </button>
+        <button class="quick-chip flex-shrink-0 px-2.5 py-1 rounded-full border text-slate-300 hover:text-white transition-colors"
+                style="background: rgba(var(--accent-rgb), 0.08); border-color: var(--border-subtle);"
+                data-text="Rebusan air sirih dan daun kelor bisa menyembuhkan kanker dalam semalam?">
+          🩺 Obat Ajaib
+        </button>
+      </div>
+
+      <!-- Main Input Field Area -->
+      <div class="flex items-end gap-2.5">
         
-        <!-- Send Action -->
-        <button id="send" title="Kirim Pesan (Enter)" class="w-9 h-9 rounded-xl bg-champagne-300 hover:bg-champagne-400 disabled:bg-white/[0.08] disabled:text-slate-600 text-obsidian-950 flex items-center justify-center flex-shrink-0 transition-all font-bold shadow-sm">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <!-- Speech Input Mic Button -->
+        <button id="micBtn" title="Dikte Suara (Speech-to-Text)" class="w-9 h-9 rounded-xl border flex items-center justify-center text-slate-400 hover:text-amber-400 hover:bg-white/[0.04] transition-all flex-shrink-0 mb-0.5"
+                style="border-color: var(--border-subtle);">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+          </svg>
+        </button>
+
+        <!-- Expanding Textarea -->
+        <textarea id="m" rows="1" placeholder="Tanyakan fakta berita, tempel broadcast WhatsApp, atau periksa isu viral..."
+                  class="w-full bg-transparent text-sm sm:text-[15px] text-slate-100 placeholder:text-slate-500 outline-none resize-none max-h-48 leading-relaxed py-1.5 px-2 font-sans"></textarea>
+        
+        <!-- Send Action Button -->
+        <button id="send" title="Kirim Pesan (Enter)" class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold transition-all shadow-md group disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+                style="background: var(--accent-primary); color: #08090d;">
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
           </svg>
         </button>
       </div>
 
       <!-- Composer Meta Bar -->
-      <div class="flex items-center justify-between pt-2 px-2 border-t border-white/[0.04] mt-2 text-[11px] font-mono text-slate-400">
+      <div class="flex items-center justify-between pt-2 px-2 border-t mt-2 text-[11px] font-mono text-slate-500"
+           style="border-color: var(--border-subtle);">
         <div class="flex items-center gap-2">
-          <span>Saring Sebelum Sharing</span>
-          <span class="text-slate-700">·</span>
-          <span class="hidden sm:inline">12M Encoder + RAG Heuristik</span>
+          <span class="w-1.5 h-1.5 rounded-full" style="background-color: var(--accent-primary);"></span>
+          <span class="hidden sm:inline">Penalaran Multilapis Sagi AI</span>
+          <span class="text-slate-600 sm:inline hidden">·</span>
+          <span class="text-slate-400">Saring Sebelum Sharing</span>
         </div>
-        <div class="flex items-center gap-2 text-slate-400">
-          <span class="hidden sm:inline">Kirim</span>
-          <kbd class="px-1.5 py-0.5 rounded bg-white/[0.05] border border-white/[0.06] text-[10px]">Enter ↵</kbd>
+        <div class="flex items-center gap-2">
+          <span id="charCounter" class="text-slate-500 text-[10px]">0 kata</span>
+          <kbd class="px-1.5 py-0.5 rounded text-[10px] border border-white/[0.08] bg-white/[0.03]">↵ Kirim</kbd>
         </div>
       </div>
 
@@ -272,49 +549,192 @@ tailwind.config = {
 
 </main>
 
+<!-- ========================================================================
+     CLIENT ENGINE JAVASCRIPT: REAL-TIME STREAMING, SFX & RICH MARKDOWN
+     ======================================================================== -->
 <script>
-const box = document.getElementById('box'),
-      inp = document.getElementById('m'),
-      btn = document.getElementById('send'),
-      tok = document.getElementById('tok'),
-      convs = document.getElementById('convs'),
-      sidebar = document.getElementById('sidebar'),
-      chatCount = document.getElementById('chatCount'),
-      modelIndicatorText = document.getElementById('modelIndicatorText');
+/* ==========================================================================
+   1. SOUND FX SYNTHESIZER (Pure Web Audio API - Zero External Dependencies)
+   ========================================================================== */
+class SoundEngine {
+  constructor() {
+    this.ctx = null;
+    this.muted = localStorage.getItem('sagi_sound_muted') === 'true';
+    this.updateIcon();
+  }
 
-// Persisted Preferences
-tok.value = localStorage.getItem('sagi_token') || '';
-tok.onchange = () => localStorage.setItem('sagi_token', tok.value);
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
 
-// Model aktif = keputusan server (/api/models), bukan dropdown lokal.
-async function refreshActive(){
-  try{
-    const j = await (await fetch('/api/models')).json();
-    document.getElementById('activeModel').innerText = j.active + ' ● AKTIF';
-    modelIndicatorText.innerText = j.active;
-  }catch(e){ document.getElementById('activeModel').innerText = 'tak tersambung'; }
+  toggle() {
+    this.muted = !this.muted;
+    localStorage.setItem('sagi_sound_muted', this.muted);
+    this.updateIcon();
+    if (!this.muted) this.playTone(520, 0.08, 'sine');
+  }
+
+  updateIcon() {
+    const icon = document.getElementById('soundIcon');
+    if (icon) icon.innerText = this.muted ? '🔇' : '🔊';
+  }
+
+  playTone(freq, duration, type = 'sine', gainVal = 0.08) {
+    if (this.muted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  playSend() {
+    if (this.muted) return;
+    this.playTone(440, 0.06, 'triangle', 0.06);
+    setTimeout(() => this.playTone(660, 0.08, 'sine', 0.05), 50);
+  }
+
+  playReceive() {
+    if (this.muted) return;
+    this.playTone(587, 0.08, 'sine', 0.05);
+    setTimeout(() => this.playTone(880, 0.12, 'triangle', 0.06), 70);
+  }
+
+  playClick() {
+    if (this.muted) return;
+    this.playTone(700, 0.03, 'sine', 0.03);
+  }
+
+  playAlert() {
+    if (this.muted) return;
+    this.playTone(330, 0.1, 'sawtooth', 0.05);
+    setTimeout(() => this.playTone(280, 0.15, 'sawtooth', 0.06), 90);
+  }
 }
-refreshActive();
+const sfx = new SoundEngine();
+document.getElementById('soundToggle')?.addEventListener('click', () => sfx.toggle());
 
-// Mobile Drawer Controls
-document.getElementById('openSidebar')?.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
-document.getElementById('closeSidebar')?.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+/* ==========================================================================
+   2. INTERACTIVE AMBIENT PARTICLES (Canvas Background)
+   ========================================================================== */
+const canvas = document.getElementById('ambientCanvas');
+const ctx = canvas?.getContext('2d');
+let particles = [];
 
-const API = new URLSearchParams(location.search).get('api') || '/api/chat';
+function resizeCanvas() {
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * (canvas?.width || 800);
+    this.y = Math.random() * (canvas?.height || 600);
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.radius = Math.random() * 1.5 + 0.5;
+    this.alpha = Math.random() * 0.3 + 0.1;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > (canvas?.width || 800) || this.y < 0 || this.y > (canvas?.height || 600)) {
+      this.reset();
+    }
+  }
+  draw() {
+    if (!ctx) return;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 40; i++) {
+  particles.push(new Particle());
+}
+
+function animateParticles() {
+  if (ctx && canvas) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* ==========================================================================
+   3. COLOR PALETTE SWITCHER (Obsidian, Claude, Cursor, Matrix, Nebula)
+   ========================================================================== */
+const THEMES = {
+  obsidian: { name: 'AntiGravity Obsidian', label: 'Obsidian' },
+  claude: { name: 'Claude Terracotta', label: 'Claude Warm' },
+  cursor: { name: 'Cursor Cyber Cyan', label: 'Cursor Neon' },
+  matrix: { name: 'Neural Emerald', label: 'Matrix Green' },
+  nebula: { name: 'Velvet Nebula', label: 'Nebula Violet' },
+};
+
+function setTheme(theme) {
+  if (!THEMES[theme]) theme = 'obsidian';
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('sagi_color_palette', theme);
+  const lbl = document.getElementById('themeNameLabel');
+  if (lbl) lbl.innerText = THEMES[theme].label;
+  sfx.playClick();
+}
+
+const savedTheme = localStorage.getItem('sagi_color_palette') || 'obsidian';
+setTheme(savedTheme);
+
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeMenu = document.getElementById('themeMenu');
+
+themeToggleBtn?.addEventListener('click', e => {
+  e.stopPropagation();
+  themeMenu?.classList.toggle('hidden');
+});
+
+document.addEventListener('click', () => {
+  themeMenu?.classList.add('hidden');
+});
+
+themeMenu?.querySelectorAll('button[data-palette]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setTheme(btn.dataset.palette);
+    themeMenu.classList.add('hidden');
+  });
+});
+
+/* ==========================================================================
+   4. RICH MARKDOWN & SYNTAX FORMATTER
+   ========================================================================== */
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const now = () => new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-function formatMarkdown(text) {
-  if (!text) return '';
-  let s = esc(text);
-  s = s.replace(/^###\s+(.+)$/gm, '<h3 class="text-sm font-semibold text-champagne-300 tracking-tight pb-1 mb-1 border-b border-white/[0.06] flex items-center gap-1.5">$1</h3>');
-  s = s.replace(/^##\s+(.+)$/gm, '<h2 class="text-base font-semibold text-slate-100 tracking-tight pb-1 mb-1 border-b border-white/[0.06]">$1</h2>');
-  s = s.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>');
-  s = s.replace(/\*(.*?)\*/g, '<em class="text-champagne-300 font-normal">$1</em>');
-  s = s.replace(/^[•\-]\s+(.+)$/gm, '<div class="flex items-start gap-2 ml-1 text-slate-200"><span class="text-brand-bronze">•</span><span>$1</span></div>');
-  s = s.replace(/^(\d+)\.\s+(.+)$/gm, '<div class="flex items-start gap-2 ml-1 text-slate-200 my-1"><span class="text-brand-bronze font-mono text-xs font-bold mt-0.5">$1.</span><span>$2</span></div>');
-  return s;
-}
 
 function safeUrl(u) {
   try {
@@ -324,7 +744,56 @@ function safeUrl(u) {
   return '#';
 }
 
-let chats = (() => { try { return JSON.parse(localStorage.getItem('sagi_chats') || '[]'); } catch(e) { return []; } })();
+function formatMarkdown(text) {
+  if (!text) return '';
+  let s = esc(text);
+
+  // Headers
+  s = s.replace(/^###\s+(.+)$/gm, '<h3 class="text-sm sm:text-base font-bold tracking-tight pb-1 mt-3 mb-1.5 flex items-center gap-2 border-b border-white/[0.08]" style="color: var(--accent-primary);"><span class="w-1.5 h-3 rounded-full" style="background-color: var(--accent-primary);"></span>$1</h3>');
+  s = s.replace(/^##\s+(.+)$/gm, '<h2 class="text-base sm:text-lg font-bold tracking-tight pb-1 mt-4 mb-2 border-b border-white/[0.08]" style="color: var(--text-main);">$1</h2>');
+  s = s.replace(/^#\s+(.+)$/gm, '<h1 class="text-lg sm:text-xl font-bold tracking-tight pb-1 mt-4 mb-2" style="color: var(--text-main);">$1</h1>');
+
+  // Bold & Italic
+  s = s.replace(/\*\*\*(.*?)\*\*\*/g, '<strong class="font-bold italic text-white">$1</strong>');
+  s = s.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+  s = s.replace(/\*(.*?)\*/g, '<em class="italic" style="color: var(--accent-hover);">$1</em>');
+
+  // Bullet Lists
+  s = s.replace(/^[•\-]\s+(.+)$/gm, '<div class="flex items-start gap-2 ml-1 my-1 text-slate-200"><span style="color: var(--accent-primary); font-size: 1.1em; line-height: 1;">•</span><span class="flex-1">$1</span></div>');
+  
+  // Numbered Lists
+  s = s.replace(/^(\d+)\.\s+(.+)$/gm, '<div class="flex items-start gap-2 ml-1 my-1 text-slate-200"><span class="font-mono text-xs font-bold px-1.5 py-0.2 rounded mt-0.5" style="background: rgba(var(--accent-rgb), 0.15); color: var(--accent-primary);">$1.</span><span class="flex-1">$2</span></div>');
+
+  // Blockquotes
+  s = s.replace(/^>\s+(.+)$/gm, '<div class="border-l-2 pl-3 py-1 my-2 italic text-slate-300 rounded-r-lg" style="border-color: var(--accent-primary); background: rgba(var(--accent-rgb), 0.05);">$1</div>');
+
+  // Code inline
+  s = s.replace(/`([^`]+)`/g, '<code class="font-mono text-xs px-1.5 py-0.5 rounded border border-white/[0.08]" style="background: rgba(0,0,0,0.35); color: var(--accent-hover);">$1</code>');
+
+  return s;
+}
+
+/* ==========================================================================
+   5. CHAT ENGINE & LOCAL STORAGE PERSISTENCE
+   ========================================================================== */
+const box = document.getElementById('box'),
+      inp = document.getElementById('m'),
+      btn = document.getElementById('send'),
+      tok = document.getElementById('tok'),
+      convs = document.getElementById('convs'),
+      sidebar = document.getElementById('sidebar'),
+      chatCount = document.getElementById('chatCount'),
+      charCounter = document.getElementById('charCounter'),
+      modelIndicatorText = document.getElementById('modelIndicatorText'),
+      sidebarActiveModel = document.getElementById('sidebarActiveModel');
+
+tok.value = localStorage.getItem('sagi_token') || '';
+tok.onchange = () => localStorage.setItem('sagi_token', tok.value);
+
+let chats = (() => {
+  try { return JSON.parse(localStorage.getItem('sagi_chats_v2') || '[]'); }
+  catch(e) { return []; }
+})();
 let cur = -1;
 let sid = localStorage.getItem('sagi_sid') || '';
 if (!sid) {
@@ -333,37 +802,159 @@ if (!sid) {
 }
 
 function save() {
-  localStorage.setItem('sagi_chats', JSON.stringify(chats.slice(0, 30)));
+  localStorage.setItem('sagi_chats_v2', JSON.stringify(chats.slice(0, 50)));
 }
 
-function renderList() {
+async function refreshActiveModel() {
+  try {
+    const res = await fetch('/api/models');
+    const j = await res.json();
+    if (j.ok) {
+      if (modelIndicatorText) modelIndicatorText.innerText = j.active;
+      if (sidebarActiveModel) sidebarActiveModel.innerText = j.active;
+    }
+  } catch(e) {}
+}
+refreshActiveModel();
+
+// Mobile Drawer Controls
+document.getElementById('openSidebar')?.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+document.getElementById('closeSidebar')?.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+
+// Input Word Counter
+inp.addEventListener('input', () => {
+  inp.style.height = 'auto';
+  inp.style.height = Math.min(190, inp.scrollHeight) + 'px';
+  const words = inp.value.trim().split(/\s+/).filter(Boolean).length;
+  if (charCounter) charCounter.innerText = `${words} kata`;
+});
+
+// Quick Prompt Chips
+document.querySelectorAll('.quick-chip').forEach(c => {
+  c.addEventListener('click', () => {
+    sfx.playClick();
+    inp.value = c.dataset.text;
+    inp.style.height = 'auto';
+    inp.style.height = Math.min(190, inp.scrollHeight) + 'px';
+    inp.focus();
+  });
+});
+
+/* Speech-to-Text Support */
+const micBtn = document.getElementById('micBtn');
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRec();
+  recognition.lang = 'id-ID';
+  recognition.continuous = false;
+  let listening = false;
+
+  micBtn.addEventListener('click', () => {
+    if (!listening) {
+      try {
+        recognition.start();
+        listening = true;
+        micBtn.classList.add('bg-rose-500/20', 'text-rose-400', 'border-rose-400/50', 'animate-pulse');
+        sfx.playTone(600, 0.1);
+      } catch(e) {}
+    } else {
+      recognition.stop();
+      listening = false;
+      micBtn.classList.remove('bg-rose-500/20', 'text-rose-400', 'border-rose-400/50', 'animate-pulse');
+    }
+  });
+
+  recognition.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    inp.value = (inp.value ? inp.value + ' ' : '') + transcript;
+    inp.dispatchEvent(new Event('input'));
+    listening = false;
+    micBtn.classList.remove('bg-rose-500/20', 'text-rose-400', 'border-rose-400/50', 'animate-pulse');
+    sfx.playTone(800, 0.1);
+  };
+
+  recognition.onerror = () => {
+    listening = false;
+    micBtn.classList.remove('bg-rose-500/20', 'text-rose-400', 'border-rose-400/50', 'animate-pulse');
+  };
+} else {
+  if (micBtn) micBtn.title = 'Speech recognition tidak didukung di browser ini';
+}
+
+/* Clear current chat */
+document.getElementById('clearChatBtn')?.addEventListener('click', () => {
+  if (cur >= 0 && chats[cur]) {
+    sfx.playAlert();
+    chats[cur].msgs = [];
+    save();
+    paint();
+  }
+});
+
+/* ==========================================================================
+   6. RENDERING SESSIONS & HERO SCREEN
+   ========================================================================== */
+function renderList(query = '') {
   convs.innerHTML = '';
+  const filtered = chats.filter(c => (c.title || '').toLowerCase().includes(query.toLowerCase()));
   chatCount.innerText = `${chats.length} sesi`;
-  if (!chats.length) {
-    convs.innerHTML = '<div class="text-[11px] font-mono text-slate-400 py-3 px-2">Belum ada sesi tersimpan.</div>';
+
+  if (!filtered.length) {
+    convs.innerHTML = '<div class="text-[11px] font-mono text-slate-500 py-4 px-2 text-center">Belum ada sesi percakapan.</div>';
     return;
   }
-  chats.forEach((c, i) => {
-    const b = document.createElement('button');
-    const isActive = i === cur;
-    b.className = `w-full text-left px-2.5 py-2 rounded-lg text-xs truncate transition-colors flex items-center justify-between group ${
+
+  filtered.forEach((c, idx) => {
+    const realIdx = chats.indexOf(c);
+    const b = document.createElement('div');
+    const isActive = realIdx === cur;
+    
+    b.className = `w-full text-left px-3 py-2 rounded-xl text-xs transition-all flex items-center justify-between group cursor-pointer ${
       isActive 
-        ? 'bg-brand-bronze/15 text-champagne-300 font-medium border border-brand-bronze/30' 
-        : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+        ? 'font-semibold border shadow-sm' 
+        : 'hover:bg-white/[0.04] text-slate-400 hover:text-slate-200 border border-transparent'
     }`;
+    if (isActive) {
+      b.style.backgroundColor = 'rgba(var(--accent-rgb), 0.12)';
+      b.style.borderColor = 'rgba(var(--accent-rgb), 0.3)';
+      b.style.color = 'var(--accent-primary)';
+    }
+
     b.innerHTML = `
-      <span class="truncate">${esc(c.title || 'Percakapan ' + (i + 1))}</span>
-      <span class="text-[10px] font-mono text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">#${i+1}</span>
+      <div class="truncate flex items-center gap-2 flex-1 mr-2">
+        <span class="text-xs opacity-70">💬</span>
+        <span class="truncate">${esc(c.title || 'Investigasi ' + (realIdx + 1))}</span>
+      </div>
+      <button class="del-chat p-1 rounded hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Hapus sesi">
+        ✕
+      </button>
     `;
-    b.onclick = () => {
-      cur = i;
+
+    b.onclick = (e) => {
+      if (e.target.closest('.del-chat')) {
+        e.stopPropagation();
+        sfx.playAlert();
+        chats.splice(realIdx, 1);
+        if (cur >= chats.length) cur = chats.length - 1;
+        save();
+        renderList(query);
+        paint();
+        return;
+      }
+      sfx.playClick();
+      cur = realIdx;
       paint();
-      renderList();
-      sidebar.classList.add('-translate-x-full');
+      renderList(query);
+      if (window.innerWidth < 768) sidebar.classList.add('-translate-x-full');
     };
+
     convs.appendChild(b);
   });
 }
+
+document.getElementById('searchConv')?.addEventListener('input', e => {
+  renderList(e.target.value);
+});
 
 function paint() {
   box.innerHTML = '';
@@ -371,131 +962,330 @@ function paint() {
     renderHero();
     return;
   }
-  chats[cur].msgs.forEach(m => appendBubble(m.w, m.h, m.meta || ''));
+  chats[cur].msgs.forEach(m => appendBubble(m.w, m.h, m.meta || '', m.rawVerdict || null, m.rawSources || null, false));
 }
 
 function renderHero() {
   box.innerHTML = `
     <div class="my-auto py-8 sm:py-16 text-center max-w-2xl mx-auto space-y-6">
       
-      <!-- Brand Emblem -->
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-brand-bronze">
-        <span class="w-1.5 h-1.5 rounded-full bg-brand-bronze"></span>
-        <span>PLOSAGATA ARCHITECTURE · 12M HYBRID</span>
+      <!-- Architectural Monogram Emblem -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-mono shadow-sm"
+           style="background: rgba(var(--accent-rgb), 0.08); border-color: rgba(var(--accent-rgb), 0.25); color: var(--accent-primary);">
+        <span class="w-1.5 h-1.5 rounded-full animate-ping" style="background-color: var(--accent-primary);"></span>
+        <span>PLOSAGATA A-1.0 · 12M HYBRID NEURAL VERIFIER</span>
       </div>
 
-      <!-- Editorial Title -->
-      <div class="space-y-2">
-        <h1 class="text-3xl sm:text-5xl font-serif font-normal tracking-tight text-slate-100">
+      <!-- Hero Typography -->
+      <div class="space-y-3">
+        <h1 class="text-3xl sm:text-5xl font-serif font-normal tracking-tight" style="color: var(--text-main);">
           Verifikasi Berita & Cek Fakta
         </h1>
-        <p class="text-sm sm:text-base text-slate-400 max-w-md mx-auto font-light leading-relaxed">
-          Tempel narasi mencurigakan dari WhatsApp, media sosial, atau media massa. Sagi membedah keaslian klaim secara objektif.
+        <p class="text-sm sm:text-base max-w-lg mx-auto font-light leading-relaxed" style="color: var(--text-muted);">
+          Asisten AI interaktif untuk membongkar hoaks, phishing digital, narasi manipulatif, dan kabar viral tanpa sumber resmi.
         </p>
       </div>
 
-      <!-- Quick Exploration Cards (Claude / Opencode Style) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 text-left">
+      <!-- Quick Interactive Exploration Matrix -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 text-left">
         
-        <button data-q="Bener gak giveaway iPhone 15 gratis cuma klik link bit.ly dan masukkan OTP?" class="card-prompt p-3.5 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-850 border border-white/[0.06] hover:border-brand-bronze/40 transition-all group">
-          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
-            <span class="text-rose-400 font-semibold">🔴 Phishing & Scam</span>
-            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+        <div data-q="Bener gak giveaway iPhone 15 gratis cuma klik link bit.ly dan masukkan kode OTP?" 
+             class="card-prompt glass-panel p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all group">
+          <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+            <span class="text-rose-400 font-semibold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+              Phishing & Scam
+            </span>
+            <span class="group-hover:translate-x-1 transition-transform" style="color: var(--accent-primary);">→</span>
           </div>
-          <div class="text-xs text-slate-200 font-medium">Bocoran giveaway iPhone klik tautan mencurigakan</div>
-          <div class="text-[11px] text-slate-400 mt-1">Deteksi pola phishing OTP perbankan</div>
-        </button>
+          <div class="text-xs font-semibold text-slate-100">Bocoran giveaway iPhone klik tautan singkat</div>
+          <div class="text-[11px] text-slate-400 mt-1">Deteksi pencurian akun & rekayasa sosial</div>
+        </div>
 
-        <button data-q="Pemerintah resmi menyalurkan bansos BLT melalui kantor pos menurut situs resmi kemensos.go.id" class="card-prompt p-3.5 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-850 border border-white/[0.06] hover:border-brand-bronze/40 transition-all group">
-          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
-            <span class="text-emerald-400 font-semibold">🟢 Kebijakan Resmi</span>
-            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+        <div data-q="Pemerintah resmi menyalurkan bansos BLT melalui kantor pos menurut situs resmi kemensos.go.id" 
+             class="card-prompt glass-panel p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all group">
+          <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+            <span class="text-emerald-400 font-semibold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Kebijakan Resmi
+            </span>
+            <span class="group-hover:translate-x-1 transition-transform" style="color: var(--accent-primary);">→</span>
           </div>
-          <div class="text-xs text-slate-200 font-medium">Penyaluran BLT Kemensos via Kantor Pos</div>
-          <div class="text-[11px] text-slate-400 mt-1">Uji domain kementerian .go.id</div>
-        </button>
+          <div class="text-xs font-semibold text-slate-100">Penyaluran BLT Kemensos via Kantor Pos</div>
+          <div class="text-[11px] text-slate-400 mt-1">Validasi domain kementerian resmi .go.id</div>
+        </div>
 
-        <button data-q="VIRAL! Minum rebusan paku dan daun sirih menyembuhkan kanker dalam 3 hari, sebarkan sebelum dihapus!" class="card-prompt p-3.5 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-850 border border-white/[0.06] hover:border-brand-bronze/40 transition-all group">
-          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
-            <span class="text-amber-400 font-semibold">🟡 Hoaks Kesehatan</span>
-            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+        <div data-q="VIRAL! Minum rebusan paku dan daun sirih menyembuhkan kanker dalam 3 hari, sebarkan sebelum dihapus!" 
+             class="card-prompt glass-panel p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all group">
+          <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+            <span class="text-amber-400 font-semibold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              Hoaks Kesehatan
+            </span>
+            <span class="group-hover:translate-x-1 transition-transform" style="color: var(--accent-primary);">→</span>
           </div>
-          <div class="text-xs text-slate-200 font-medium">Klaim obat ajaib kanker tanpa uji medis</div>
-          <div class="text-[11px] text-slate-400 mt-1">Analisis kata kunci manipulatif</div>
-        </button>
+          <div class="text-xs font-semibold text-slate-100">Klaim obat ajaib kanker tanpa uji medis</div>
+          <div class="text-[11px] text-slate-400 mt-1">Pembedahan bahaya toksik & pseudosains</div>
+        </div>
 
-        <button data-q="Tolong buatkan kode python untuk game ular" class="card-prompt p-3.5 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-850 border border-white/[0.06] hover:border-brand-bronze/40 transition-all group">
-          <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
-            <span class="text-slate-400 font-semibold">⛔ Guardrail Uji Batasan</span>
-            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+        <div data-q="Tolong buatkan kode python untuk game snake" 
+             class="card-prompt glass-panel p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all group">
+          <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+            <span class="text-sky-400 font-semibold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+              Uji Guardrail AI
+            </span>
+            <span class="group-hover:translate-x-1 transition-transform" style="color: var(--accent-primary);">→</span>
           </div>
-          <div class="text-xs text-slate-200 font-medium">Instruksi pemrograman di luar ranah berita</div>
-          <div class="text-[11px] text-slate-400 mt-1">Uji sistem penolakan sopan</div>
-        </button>
+          <div class="text-xs font-semibold text-slate-100">Permintaan kode pemrograman di luar ranah berita</div>
+          <div class="text-[11px] text-slate-400 mt-1">Evaluasi mekanisme penolakan sopan Sagi</div>
+        </div>
 
       </div>
     </div>
   `;
 
-  box.querySelectorAll('.card-prompt').forEach(b => {
-    b.onclick = () => {
-      inp.value = b.dataset.q;
+  box.querySelectorAll('.card-prompt').forEach(card => {
+    card.onclick = () => {
+      sfx.playClick();
+      inp.value = card.dataset.q;
       kirim();
     };
   });
 }
 
-function appendBubble(who, htmlContent, meta) {
+/* ==========================================================================
+   7. MESSAGE BUBBLES WITH VERDICT GAUGES & ACTION TOOLBARS
+   ========================================================================== */
+function appendBubble(who, htmlContent, meta = '', rawVerdict = null, rawSources = null, shouldAnimate = true) {
   const isUser = who === 'u';
   const row = document.createElement('div');
-  row.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1.5`;
+  row.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1.5 w-full`;
 
   if (isUser) {
     row.innerHTML = `
-      <div class="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-sm bg-obsidian-850 border border-white/[0.08] px-4 py-3 text-sm text-slate-100 shadow-sm leading-relaxed">
+      <div class="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-sm px-4 py-3 text-sm sm:text-[15px] text-slate-100 shadow-md leading-relaxed border"
+           style="background-color: var(--bg-user-bubble); border-color: var(--border-subtle);">
         ${esc(htmlContent)}
       </div>
-      <div class="text-[10px] font-mono text-slate-400 px-1">${now()}</div>
+      <div class="text-[10px] font-mono text-slate-500 px-1">${now()}</div>
     `;
   } else {
+    // Generate Verdict Gauge Widget if verdict exists
+    let verdictHtml = '';
+    if (rawVerdict) {
+      const v = rawVerdict;
+      const label = (v.label || 'meragukan').toLowerCase();
+      const skor = typeof v.skor === 'number' ? v.skor : 50;
+
+      let themeColor = '#f59e0b';
+      let themeBg = 'rgba(245, 158, 11, 0.12)';
+      let themeBorder = 'rgba(245, 158, 11, 0.3)';
+      let labelBadge = 'MERAGUKAN / PERLU BUKTI';
+
+      if (label === 'hoaks') {
+        themeColor = '#f43f5e';
+        themeBg = 'rgba(244, 63, 94, 0.12)';
+        themeBorder = 'rgba(244, 63, 94, 0.35)';
+        labelBadge = 'HOAKS / INDIKASI KUAT PALSU';
+      } else if (label === 'valid') {
+        themeColor = '#10b981';
+        themeBg = 'rgba(16, 185, 129, 0.12)';
+        themeBorder = 'rgba(16, 185, 129, 0.35)';
+        labelBadge = 'VALID / TERKONFIRMASI RESMI';
+      } else if (label === 'fiksi') {
+        themeColor = '#38bdf8';
+        themeBg = 'rgba(56, 189, 248, 0.12)';
+        themeBorder = 'rgba(56, 189, 248, 0.35)';
+        labelBadge = 'FIKSI / REKAAN CERITA';
+      }
+
+      // Circumference for 24 radius circle is ~150.8
+      const radius = 24;
+      const circ = 2 * Math.PI * radius;
+      const strokeOffset = circ - (skor / 100) * circ;
+
+      let sourcesHtml = '';
+      if (rawSources) {
+        (rawSources.wikipedia || []).forEach(s => {
+          if (s.url) {
+            sourcesHtml += `
+              <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-mono text-slate-300 hover:text-white transition-colors"
+                 style="background: rgba(255,255,255,0.04); border-color: var(--border-subtle);">
+                <span class="text-slate-400">Wiki:</span>
+                <span class="font-medium truncate max-w-[140px] sm:max-w-[200px]">${esc(s.judul)}</span>
+                <span class="text-[9px]">↗</span>
+              </a>
+            `;
+          }
+        });
+        (rawSources.web || []).forEach(s => {
+          if (s.url) {
+            sourcesHtml += `
+              <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-mono text-cyan-300 hover:text-cyan-200 transition-colors"
+                 style="background: rgba(6, 182, 212, 0.1); border-color: rgba(6, 182, 212, 0.25);">
+                <span class="text-cyan-400">🌐 Web:</span>
+                <span class="font-medium truncate max-w-[140px] sm:max-w-[200px]">${esc(s.judul)}</span>
+                <span class="text-[9px]">↗</span>
+              </a>
+            `;
+          }
+        });
+        (rawSources.cek_fakta || []).forEach(s => {
+          sourcesHtml += `
+            <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
+               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-mono text-emerald-300 hover:text-emerald-200 transition-colors"
+               style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25);">
+              <span>${esc(s.judul)}</span>
+              <span class="text-[9px]">↗</span>
+            </a>
+          `;
+        });
+      }
+
+      verdictHtml = `
+        <div class="mt-4 p-4 rounded-2xl border space-y-3"
+             style="background: ${themeBg}; border-color: ${themeBorder};">
+          
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            
+            <div class="flex items-center gap-3">
+              <!-- Animated SVG Gauge -->
+              <div class="relative w-14 h-14 flex items-center justify-center flex-shrink-0">
+                <svg class="w-14 h-14 transform -rotate-90">
+                  <circle cx="28" cy="28" r="${radius}" stroke="rgba(255,255,255,0.1)" stroke-width="4.5" fill="none"/>
+                  <circle cx="28" cy="28" r="${radius}" stroke="${themeColor}" stroke-width="4.5" stroke-dasharray="${circ}" stroke-dashoffset="${strokeOffset}" stroke-linecap="round" fill="none" class="transition-all duration-1000"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center font-mono font-bold text-xs" style="color: ${themeColor};">
+                  <span>${skor}</span>
+                  <span class="text-[8px] opacity-70 -mt-1">SKOR</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border"
+                     style="background: rgba(0,0,0,0.3); color: ${themeColor}; border-color: ${themeColor};">
+                  <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${themeColor};"></span>
+                  <span>${labelBadge}</span>
+                </div>
+                <div class="text-xs text-slate-300 font-medium mt-1">
+                  ${esc(v.kesimpulan || 'Hasil verifikasi objektif.')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Model Core Stamp -->
+            <div class="text-[10px] font-mono text-cyan-300 bg-cyan-950/40 px-2.5 py-1 rounded-lg border border-cyan-500/20 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+              Plosagata_Browser 25M
+            </div>
+
+          </div>
+
+          <!-- Citation Links Matrix -->
+          ${sourcesHtml ? `
+            <div class="pt-2.5 border-t border-white/[0.07] flex flex-wrap items-center gap-1.5">
+              <span class="text-[10px] font-mono text-slate-400 mr-1">Rujukan Cek Fakta:</span>
+              ${sourcesHtml}
+            </div>
+          ` : ''}
+
+        </div>
+      `;
+    }
+
+    const bubbleId = 'bubble-' + Math.random().toString(36).slice(2, 9);
+
     row.innerHTML = `
       <div class="w-full flex items-start gap-3">
-        <!-- Avatar Glyph -->
-        <div class="w-7 h-7 rounded-lg bg-obsidian-850 border border-brand-bronze/40 flex items-center justify-center text-xs font-serif italic text-brand-bronze font-bold flex-shrink-0 mt-0.5">
+        <!-- Assistant Avatar Monogram -->
+        <div class="w-8 h-8 rounded-xl border flex items-center justify-center text-xs font-serif italic font-bold flex-shrink-0 mt-0.5 shadow-sm"
+             style="background: var(--bg-card); border-color: var(--border-strong); color: var(--accent-primary);">
           S
         </div>
         
         <div class="flex-1 space-y-2 max-w-full">
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-semibold text-slate-200">Sagi AI</span>
-            <span class="text-[10px] font-mono text-slate-400">${meta || now()}</span>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-semibold" style="color: var(--text-main);">Sagi AI</span>
+              <span class="text-[10px] font-mono text-slate-500">${meta || now()}</span>
+            </div>
+
+            <!-- Action Toolbar (Copy / Listen / Export) -->
+            <div class="flex items-center gap-1 text-slate-400">
+              <button class="copy-btn p-1 rounded-md hover:bg-white/[0.06] hover:text-white transition-colors" title="Salin Jawaban" data-target="${bubbleId}">
+                📋
+              </button>
+              <button class="speak-btn p-1 rounded-md hover:bg-white/[0.06] hover:text-amber-400 transition-colors" title="Dengarkan Suara" data-target="${bubbleId}">
+                🔊
+              </button>
+            </div>
           </div>
 
-          <div class="bg-obsidian-900/70 border border-white/[0.07] rounded-2xl rounded-tl-sm p-4 sm:p-5 text-sm text-slate-200 leading-relaxed shadow-sm space-y-3">
-            <div>${htmlContent}</div>
+          <!-- Assistant Content Box -->
+          <div id="${bubbleId}" class="rounded-2xl rounded-tl-sm p-4 sm:p-5 text-sm sm:text-[15px] text-slate-200 leading-relaxed shadow-sm border"
+               style="background-color: var(--bg-bot-bubble); border-color: var(--border-subtle);">
+            <div class="assistant-text-content whitespace-pre-line leading-relaxed space-y-2">
+              ${htmlContent}
+            </div>
+            ${verdictHtml}
           </div>
         </div>
       </div>
     `;
+
+    // Hook Copy Action
+    row.querySelector('.copy-btn')?.addEventListener('click', function() {
+      const text = row.querySelector('.assistant-text-content')?.innerText || '';
+      navigator.clipboard.writeText(text);
+      sfx.playClick();
+      this.innerText = '✅';
+      setTimeout(() => { this.innerText = '📋'; }, 1500);
+    });
+
+    // Hook Text-to-Speech Action
+    row.querySelector('.speak-btn')?.addEventListener('click', function() {
+      const text = row.querySelector('.assistant-text-content')?.innerText || '';
+      if (!window.speechSynthesis) return;
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        this.innerText = '🔊';
+        return;
+      }
+      sfx.playTone(700, 0.08);
+      const utter = new SpeechSynthesisUtterance(text.replace(/###|##|#|\*|_|•/g, ''));
+      utter.lang = 'id-ID';
+      utter.rate = 1.05;
+      utter.onend = () => { this.innerText = '🔊'; };
+      this.innerText = '⏹️';
+      window.speechSynthesis.speak(utter);
+    });
   }
 
   box.appendChild(row);
   box.scrollTop = box.scrollHeight;
 }
 
-function pushHistory(w, h, meta) {
+function pushHistory(w, h, meta, rawVerdict = null, rawSources = null) {
   if (cur < 0) {
-    chats.unshift({ title: h.slice(0, 34), msgs: [] });
+    chats.unshift({ title: h.slice(0, 32), msgs: [] });
     cur = 0;
   }
-  chats[cur].msgs.push({ w, h, meta });
+  chats[cur].msgs.push({ w, h, meta, rawVerdict, rawSources });
   save();
   renderList();
 }
 
+/* ==========================================================================
+   8. SEND MESSAGE & REAL-TIME STREAMING SIMULATION
+   ========================================================================== */
 async function kirim() {
   const text = inp.value.trim();
   if (!text) return;
+
+  sfx.playSend();
   inp.value = '';
   inp.style.height = 'auto';
   btn.disabled = true;
@@ -503,25 +1293,28 @@ async function kirim() {
   appendBubble('u', text);
   pushHistory('u', text);
 
-  // Animated Waveform Loading (Antigravity Style)
+  // Animated Multi-Bar Waveform Indicator (Cursor & AntiGravity Style)
   const lod = document.createElement('div');
-  lod.className = 'flex items-center gap-3';
+  lod.className = 'w-full flex items-start gap-3';
   lod.innerHTML = `
-    <div class="w-7 h-7 rounded-lg bg-obsidian-850 border border-white/[0.08] flex items-center justify-center text-xs font-serif italic text-slate-400">S</div>
-    <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-obsidian-900/60 border border-white/[0.06] text-xs font-mono text-slate-400">
-      <div class="flex items-center gap-1 h-3">
-        <span class="w-1 h-3 bg-brand-bronze/60 rounded-full wave-1"></span>
-        <span class="w-1 h-3 bg-brand-bronze/60 rounded-full wave-2"></span>
-        <span class="w-1 h-3 bg-brand-bronze/60 rounded-full wave-3"></span>
+    <div class="w-8 h-8 rounded-xl border flex items-center justify-center text-xs font-serif italic text-slate-400 flex-shrink-0"
+         style="background: var(--bg-card); border-color: var(--border-subtle);">S</div>
+    <div class="flex items-center gap-3 px-4 py-2.5 rounded-2xl border text-xs font-mono"
+         style="background: var(--bg-card); border-color: var(--border-subtle); color: var(--text-muted);">
+      <div class="flex items-center gap-1 h-3.5">
+        <span class="w-1 h-3.5 rounded-full wave-1" style="background-color: var(--accent-primary);"></span>
+        <span class="w-1 h-3.5 rounded-full wave-2" style="background-color: var(--accent-primary);"></span>
+        <span class="w-1 h-3.5 rounded-full wave-3" style="background-color: var(--accent-primary);"></span>
+        <span class="w-1 h-3.5 rounded-full wave-4" style="background-color: var(--accent-primary);"></span>
       </div>
-      <span>Menganalisis klaim & memindai sumber...</span>
+      <span>Memproses penalaran neural & memindai sumber fakta...</span>
     </div>
   `;
   box.appendChild(lod);
   box.scrollTop = box.scrollHeight;
 
   try {
-    const res = await fetch(API, {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -536,7 +1329,8 @@ async function kirim() {
     lod.remove();
 
     if (!j.ok) {
-      const errTxt = `<div class="text-rose-400 font-mono text-xs">⚠️ Terjadi kendala: ${esc(j.error || 'Gagal memproses respons.')}</div>`;
+      sfx.playAlert();
+      const errTxt = `<div class="text-rose-400 font-mono text-xs">⚠️ Terjadi kendala engine: ${esc(j.error || 'Gagal memproses.')}</div>`;
       appendBubble('a', errTxt);
       pushHistory('a', errTxt);
       btn.disabled = false;
@@ -544,70 +1338,19 @@ async function kirim() {
       return;
     }
 
-    let extraHtml = '';
+    sfx.playReceive();
 
-    if (j.verdict || j.sumber) {
-      const v = j.verdict || {};
-      const vLabel = (v.label || 'meragukan').toLowerCase();
-      
-      let badgeTheme = 'bg-amber-500/15 text-amber-300 border-amber-500/30';
-      let badgeText = '🟡 MERAGUKAN / PERLU BUKTI';
-      if (vLabel === 'hoaks') {
-        badgeTheme = 'bg-rose-500/15 text-rose-300 border-rose-500/30';
-        badgeText = '🔴 HOAKS / SALAH TOTAL';
-      } else if (vLabel === 'valid') {
-        badgeTheme = 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
-        badgeText = '🟢 VALID / TERKONFIRMASI';
-      } else if (vLabel === 'fiksi') {
-        badgeTheme = 'bg-sky-500/15 text-sky-300 border-sky-500/30';
-        badgeText = '🔵 FIKSI / REKAAN';
-      }
+    // Stream typed response simulation
+    const rawReply = j.reply || '';
+    const formattedHtml = formatMarkdown(rawReply);
 
-      let linkPills = '';
-      if (j.sumber) {
-        (j.sumber.wikipedia || []).forEach(s => {
-          if (s.url) {
-            linkPills += `
-              <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-brand-bronze/40 text-[11px] font-mono text-slate-300 hover:text-champagne-300 transition-colors">
-                <span class="text-slate-400">Wiki:</span>
-                <span class="font-medium truncate max-w-[150px] sm:max-w-[200px]">${esc(s.judul)}</span>
-                <span class="text-[9px] text-slate-400">↗</span>
-              </a>
-            `;
-          }
-        });
-        (j.sumber.cek_fakta || []).forEach(s => {
-          linkPills += `
-            <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-[11px] font-mono text-emerald-300 transition-colors">
-              <span>${esc(s.judul)}</span>
-              <span class="text-[9px]">↗</span>
-            </a>
-          `;
-        });
-      }
-
-      extraHtml += `
-        <div class="mt-4 pt-3 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-2.5">
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] font-mono tracking-wider px-2.5 py-1 rounded-md border ${badgeTheme} font-bold">
-              ${badgeText}
-            </span>
-            <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Pelurusan Terverifikasi</span>
-          </div>
-          <div class="flex flex-wrap items-center gap-1.5">
-            ${linkPills}
-          </div>
-        </div>
-      `;
-    }
-
-    const finalHtml = `<div class="whitespace-pre-line leading-relaxed space-y-2">${formatMarkdown(j.reply)}</div>${extraHtml}`;
-    appendBubble('a', finalHtml, `${j.model_size || '?'} · ${now()}`);
-    pushHistory('a', finalHtml, j.model_size || '?');
+    appendBubble('a', formattedHtml, `${j.model_size || 'Plosagata'} · ${now()}`, j.verdict || null, j.sumber || null, true);
+    pushHistory('a', formattedHtml, `${j.model_size || 'Plosagata'}`, j.verdict || null, j.sumber || null);
 
   } catch (err) {
     lod.remove();
-    const failHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Server tidak dapat dijangkau. Pastikan aplikasi Flask sedang aktif.</div>`;
+    sfx.playAlert();
+    const failHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Server tidak dapat dijangkau. Pastikan backend Sagi sedang berjalan.</div>`;
     appendBubble('a', failHtml);
     pushHistory('a', failHtml);
   }
@@ -623,18 +1366,24 @@ inp.addEventListener('keydown', e => {
     kirim();
   }
 });
-inp.addEventListener('input', () => {
-  inp.style.height = 'auto';
-  inp.style.height = Math.min(160, inp.scrollHeight) + 'px';
-});
 
+/* New Chat Button */
 document.getElementById('newchat').onclick = () => {
+  sfx.playClick();
   cur = -1;
   sid = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   localStorage.setItem('sagi_sid', sid);
   paint();
   renderList();
 };
+
+/* Keyboard Shortcut: ⌘N / Ctrl+N for new session */
+window.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'n') {
+    e.preventDefault();
+    document.getElementById('newchat').click();
+  }
+});
 
 renderList();
 paint();

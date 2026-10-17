@@ -4,10 +4,25 @@ import os
 import torch
 import torch.nn.functional as F
 
-from hoaxcore import (ID2LABEL, TinyHoaxTransformer, WordTokenizer, cari_sumber,
-                       final_label, local_verdict, ringkasan_hasil)
-from plosagata import (CONFIGS, PureGPT, is_follow_up_safe, is_news_topic,
-                       normalize_slang, sagi_hello, sagi_redirect)
+from hoaxcore import (
+    ID2LABEL,
+    WordTokenizer,
+    cari_sumber,
+    local_verdict,
+    ringkasan_hasil,
+)
+from plosagata import (
+    CONFIGS,
+    PureGPT,
+    build_constitutional_refusal,
+    inspect_security,
+    is_follow_up_safe,
+    is_news_topic,
+    normalize_slang,
+    redact_pii,
+    sagi_hello,
+    sagi_redirect,
+)
 
 MAX_SESI = 500   # batas memori topik (in-memory, per proses)
 SESI_UMUR = 7200  # detik — sesi lebih tua dari ini dibuang
@@ -85,7 +100,10 @@ class SagiEngine:
         """Daftar file ckpt pasangan di folder proyek (hanya info/display)."""
         from pathlib import Path as _P
         ada = []
-        for p in list(_P(".").glob(f"pure-{size}*.pt")) + list(_P(".").glob("pure-*.pt")):
+        cands = list(_P(".").glob(f"pure-{size}*.pt")) + list(_P(".").glob("pure-*.pt"))
+        if _P("checkpoints").exists():
+            cands += list(_P("checkpoints").glob(f"pure-{size}*.pt")) + list(_P("checkpoints").glob("pure-*.pt"))
+        for p in cands:
             if ".vocab." in p.name:
                 continue
             try:
@@ -94,7 +112,7 @@ class SagiEngine:
                     ada.append(str(p))
             except Exception:
                 continue
-        return ada
+        return sorted(list(set(ada)))
 
     @staticmethod
     def _cari_ckpt_otomatis(size):
@@ -178,10 +196,38 @@ class SagiEngine:
     def reply(self, text, max_new=60, session_id=""):
         import os as _os
         pure_think = _os.getenv("SAGI_PURE_THINK", "0") == "1"
-        clean = normalize_slang(text)
+
+        # 0. AUDIT KEAMANAN KONSTITUSIONAL MULTILAPIS (Frontier AI Safety Defense)
+        # Deteksi Prompt Injection, Jailbreak DAN, Pencurian System Prompt, Senjata Siber, dan Krisis Jiwa
+        sec = inspect_security(text)
+        if sec["is_threat"] and not pure_think:
+            return {
+                "reply": sec["reply"],
+                "topic": "offtopic",  # Kompatibel penuh dengan test suite & client
+                "verdict": None,
+                "security": sec,
+            }
+
+        # Bersihkan PII jika ada sebelum pemrosesan lebih lanjut
+        text_safe = sec["sanitized_text"]
+        clean = normalize_slang(text_safe)
         topic = is_news_topic(clean)
         sess = self._sesi_get(session_id)
         topik = (sess or {}).get("topik")
+
+        def _wrap_reply(d):
+            if "reply" in d and d["reply"]:
+                redacted, _ = redact_pii(d["reply"])
+                if sec["pii_detected"] and "disensor" not in redacted.lower():
+                    redacted += (
+                        "\n\n> 🔒 *Catatan Privasi: Data sensitif (seperti NIK / Nomor Kartu) "
+                        "disensor secara otomatis oleh Plosagata Data Guard demi melindungi keamananmu.*"
+                    )
+                d["reply"] = redacted
+            if "security" not in d:
+                d["security"] = sec
+            return d
+
         if not pure_think:
             if topic == "offtopic":
                 # Merujuk topik aktif? → follow-up, JANGAN tolak.
@@ -189,9 +235,9 @@ class SagiEngine:
                 if topik and is_follow_up_safe(clean):
                     topic = "followup"
                 else:
-                    return {"reply": sagi_redirect(text), "topic": topic, "verdict": None}
+                    return _wrap_reply({"reply": sagi_redirect(text_safe), "topic": topic, "verdict": None})
             if topic == "greeting":
-                return {"reply": sagi_hello(text), "topic": topic, "verdict": None}
+                return _wrap_reply({"reply": sagi_hello(text_safe), "topic": topic, "verdict": None})
         if topik and topic == "news" and len(clean) < 80 and is_follow_up_safe(clean):
             # Pertanyaan pendek tanpa kata kunci berita ("kapan cairnya?")
             # = merujuk topik aktif, bukan berita baru.
@@ -199,13 +245,14 @@ class SagiEngine:
             if not any(k in clean.lower() for k in NEWS_KEYWORDS):
                 topic = "followup"
         if topic == "news":
-            klaim, kueri = text, text
+            klaim, kueri = text_safe, text_safe
             if sess is not None:
-                sess["topik"] = text  # berita baru = topik baru
+                sess["topik"] = text_safe  # berita baru = topik baru
         elif topic == "followup":
-            klaim, kueri = topik, topik + " " + text
+            klaim = topik if topik else text_safe
+            kueri = f"{topik} {text_safe}".strip() if topik else text_safe
         else:  # pure_think: anggap berita
-            klaim, kueri = text, text
+            klaim, kueri = text_safe, text_safe
         v = self.verdict(klaim)
         lv = local_verdict(klaim, v)
         try:
@@ -227,11 +274,11 @@ class SagiEngine:
             )
             if topic == "followup":
                 isi = "Merujuk berita tadi:\n" + isi
-            return {"reply": isi, "topic": topic,
-                    "verdict": verdict, "sumber": sumber}
+            return _wrap_reply({"reply": isi, "topic": topic,
+                                "verdict": verdict, "sumber": sumber})
         src = kueri if topic == "followup" else clean
         if self.use_pieces:
-            from hoaxcore import piece_decode, piece_encode
+            from hoaxcore import piece_encode
             ids, _ = piece_encode(src, self.tok.vocab, self.tok.max_len)
         else:
             ids, _ = self.tok.encode(src)
@@ -246,7 +293,7 @@ class SagiEngine:
         if self.use_pieces:
             from hoaxcore import piece_decode as _pd
             inv = {i: t for t, i in self.tok.vocab.items()}
-            return {"reply": _pd(out[len(real):], inv), "topic": topic,
-                    "verdict": verdict, "sumber": sumber}
-        return {"reply": self.tok.decode(out[len(real):]), "topic": topic,
-                "verdict": verdict, "sumber": sumber}
+            return _wrap_reply({"reply": _pd(out[len(real):], inv), "topic": topic,
+                                "verdict": verdict, "sumber": sumber})
+        return _wrap_reply({"reply": self.tok.decode(out[len(real):]), "topic": topic,
+                            "verdict": verdict, "sumber": sumber})

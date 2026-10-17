@@ -21,6 +21,7 @@ BAGIAN = [
     ("howitworks/Cara_kerja_sagi.md", "Pintu How-It-Works"),
     ("howitworks/cara_pindahinIQsagi.md", "Pindah IQ"),
     ("howitworks/Cara_nambah_file.md", "Nambah File"),
+    ("howitworks/Panduan_Training_12M.md", "Panduan Training 12M"),
     ("BUGS.md", "Catatan Bug"),
     ("CONTRIBUTING.md", "Kontribusi"),
 ]

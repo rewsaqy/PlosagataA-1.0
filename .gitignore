@@ -6,6 +6,7 @@ __pycache__/
 # model weights (terlalu besar untuk GitHub, simpan di Release/GDrive)
 *.pt
 *.bin
+*.tokenizer.json
 checkpoints/
 lora-hoax-chat/
 

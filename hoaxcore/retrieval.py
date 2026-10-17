@@ -128,8 +128,46 @@ def link_cek_fakta(teks: str) -> list[dict]:
     ]
 
 
+def cari_web_live(kueri: str, jumlah: int = 3, timeout: int = 4) -> list[dict]:
+    """Pencarian live web publik / real-time internet (DuckDuckGo instant answer / API)."""
+    if not kueri.strip():
+        return []
+    try:
+        url = "https://api.duckduckgo.com/?" + urllib.parse.urlencode({
+            "q": kueri,
+            "format": "json",
+            "no_html": "1",
+            "skip_disambig": "1",
+        })
+        req = urllib.request.Request(url, headers={"User-Agent": "SagiBrowserBot/2.0 (OTN-2026)"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            data = json.loads(r.read().decode("utf-8", errors="ignore"))
+
+        results = []
+        if data.get("AbstractText"):
+            results.append({
+                "judul": data.get("Heading") or kueri.title(),
+                "url": data.get("AbstractURL") or f"https://duckduckgo.com/?q={urllib.parse.quote(kueri)}",
+                "cuplikan": data.get("AbstractText")[:240],
+                "sumber": data.get("AbstractSource") or "Live Web",
+            })
+        for item in data.get("RelatedTopics", []):
+            if isinstance(item, dict) and item.get("Text") and item.get("FirstURL"):
+                results.append({
+                    "judul": item.get("Text").split(" - ")[0][:60],
+                    "url": item.get("FirstURL"),
+                    "cuplikan": item.get("Text")[:240],
+                    "sumber": "Web Search",
+                })
+            if len(results) >= jumlah:
+                break
+        return results[:jumlah]
+    except Exception:
+        return []
+
+
 def cari_sumber(teks: str) -> dict:
-    """Return {'kueri', 'wikipedia': [...], 'cek_fakta': [...]}."""
+    """Return {'kueri', 'wikipedia': [...], 'web': [...], 'cek_fakta': [...]}."""
     from plosagata.slang import normalize_slang
     clean_teks = normalize_slang(teks)
     kueri = kata_kunci(clean_teks)
@@ -156,6 +194,18 @@ def cari_sumber(teks: str) -> dict:
                     wiki = cari_wikipedia(" ".join(toks[:n]))
                     if wiki:
                         break
-    return {"kueri": kueri,
-            "wikipedia": wiki,
-            "cek_fakta": link_cek_fakta(teks)}
+
+    # Live Web Search
+    web_res = []
+    if kueri:
+        try:
+            web_res = cari_web_live(kueri, jumlah=2)
+        except Exception:
+            web_res = []
+
+    return {
+        "kueri": kueri,
+        "wikipedia": wiki,
+        "web": web_res,
+        "cek_fakta": link_cek_fakta(teks),
+    }

@@ -31,8 +31,8 @@ os.chdir(ROOT)
 import torch
 from torch.utils.data import DataLoader, Dataset
 
-from plosagata import CONFIGS, PureGPT, count_params, normalize_slang
 from hoaxcore import WordTokenizer
+from plosagata import CONFIGS, PureGPT, count_params, normalize_slang
 
 
 class ChatLMDataset(Dataset):
@@ -155,7 +155,6 @@ def main():
         ds = ChatLMDataset(rows, tok, cfg.max_len)
     if len(ds) == 0:
         raise SystemExit("Dataset kosong — korpus terlalu kecil / semua dokumen < 16 token.")
-    import random as _random
     if a.val_split > 0 and len(ds) > 10:
         n_val = max(1, int(len(ds) * a.val_split))
         n_train = len(ds) - n_val
@@ -235,6 +234,9 @@ def main():
                 # pasangan vocab best: jangan pisahkan .pt dari .vocab.pt
                 import shutil as _shutil
                 _shutil.copy(vocab_path, best_out + ".vocab.pt")
+                tok_json = (a.out or f"pure-{a.size}") + ".tokenizer.json"
+                if Path(tok_json).exists():
+                    _shutil.copy(tok_json, best_out.replace(".pt", ".tokenizer.json"))
                 improved = " -> best disimpan"
             else:
                 improved = ""

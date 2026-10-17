@@ -23,15 +23,15 @@ DUMP = "https://dumps.wikimedia.org/{lang}wiki/latest/{lang}wiki-latest-pages-ar
 
 
 def bersihkan(wiki: str) -> str:
-    wiki = re.sub(r"<ref[^/]*?/>{{0,1}}|<ref.*?</ref>", "", wiki, flags=re.S)
+    wiki = re.sub(r"<ref[^>]*?/>|<ref.*?</ref>", "", wiki, flags=re.DOTALL)
     wiki = re.sub(r"\{\{[^{}]*\}\}", "", wiki)
-    wiki = re.sub(r"\{\|.*?\|\}", "", wiki, flags=re.S)
+    wiki = re.sub(r"\{\|.*?\|\}", "", wiki, flags=re.DOTALL)
     wiki = re.sub(r"\[\[File:[^\]]*\]\]", "", wiki)
     wiki = re.sub(r"\[\[Berkas:[^\]]*\]\]", "", wiki)
     wiki = re.sub(r"\[\[([^|\]]+)\|([^\]]+)\]\]", r"\2", wiki)
     wiki = re.sub(r"\[\[([^\]]+)\]\]", r"\1", wiki)
     wiki = re.sub(r"'''+|''", "", wiki)
-    wiki = re.sub(r"^==+([^=]+)==+$", r"\1.", wiki, flags=re.M)
+    wiki = re.sub(r"^==+([^=]+)==+$", r"\1.", wiki, flags=re.MULTILINE)
     wiki = re.sub(r"<[^>]+>", "", wiki)
     wiki = re.sub(r"https?://\S+", "", wiki)
     wiki = re.sub(r"[ \t]+", " ", wiki)
@@ -72,7 +72,7 @@ def main():
     else:
         print(f"dump lengkap ({lokal/1e9:.2f}GB), langsung parse.")
 
-    pola = re.compile(rb"<text[^>]*>(.*?)</text>", re.S)
+    pola = re.compile(rb"<text[^>]*>(.*?)</text>", re.DOTALL)
     buf, n_artikel, n_tulis, ditulis = b"", 0, 0, punya
     with bz2.open(dump, "rb") as f, open(a.out, "a", encoding="utf-8") as o:
         while True:

@@ -17,8 +17,8 @@ def smoke():
     assert tokenize_id("Gaskeun ngab, SPILL Giveaway!") != []
     from hoaxcore.retrieval import cari_sumber
     r = cari_sumber("Bener gak BLT cair bulan ini?")
-    assert set(r.keys()) == {"kueri", "wikipedia", "cek_fakta"}
-    assert isinstance(r["wikipedia"], list) and isinstance(r["cek_fakta"], list)
+    assert set(r.keys()) == {"kueri", "wikipedia", "web", "cek_fakta"}
+    assert isinstance(r["wikipedia"], list) and isinstance(r["web"], list) and isinstance(r["cek_fakta"], list)
     assert len(r["cek_fakta"]) == 2, "link cekfakta harus tetap 2"
     print("rag-smoke OK")
     print("retrieval-shape OK:", r["kueri"][:40])
