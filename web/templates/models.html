@@ -119,7 +119,7 @@ async function muat(){
         headers:{'Content-Type':'application/json'}, body: JSON.stringify({model:b.dataset.m})});
       const j2 = await r.json();
       msg.innerText = j2.ok
-        ? `✅ Aktif: ${j2.active} (${fmtParam(j2.params)}). Dimatikan: ${j2.dimatikan.join(', ')||'tidak ada'}. Nyala dalam ${j2.nyala_detik||'?'} dtk.`
+        ? `✅ Aktif: ${j2.active} (${fmtParam(j2.params)}). Dimatikan: ${j2.dimatikan.join(', ')||'tidak ada'}. Nyala dalam ${j2.nyala_detik||'?'} dtk.${j2.catatan ? ' ⚠️ ' + j2.catatan : ''}`
         : ('❌ Gagal: ' + (j2.error || 'unknown'));
     } catch(e) {
       msg.innerText = '❌ Server tidak merespons.';

@@ -74,29 +74,78 @@ def unload_engine(name):
     return True
 
 
+# Alias ukuran: config kembar yang memang berbagi file bobot yang sama.
+_ALIAS_UKURAN = {"Plosagata_Flash": "Plosagata_12M"}
+
+
+def _ckpt_untuk(size):
+    """Pilih file bobot (.pt) utk `size` saat pengguna MEMILIH model.
+
+    Urutan: env SAGI_CKPT (hanya bila valid & cocok ukurannya) > kandidat
+    `pure-*.pt` yang diverifikasi isinya lewat detect_size() (prefer -best.pt).
+    Return "" bila belum ada bobot. B-12 dijaga: resolusi hanya saat pilih
+    eksplisit + tiap kandidat divalidasi ISI checkpoint, bukan tebakan nama.
+    """
+    from pathlib import Path as _P
+    try:
+        from plosagata import detect_size
+    except Exception:
+        return ""
+
+    def _cocok(p):
+        try:
+            det = detect_size(str(p))
+        except Exception:
+            det = None
+        if det is None:
+            return False
+        return det == size or det == _ALIAS_UKURAN.get(size)
+
+    env = (os.getenv("SAGI_CKPT", "") or "").strip()
+    if env and _P(env).exists() and _cocok(env):
+        return env
+    kandidat = []
+    for pola in (f"pure-{size}*.pt", "pure-*.pt"):
+        for root in (".", "checkpoints"):
+            kandidat += [p for p in _P(root).glob(pola) if ".vocab." not in p.name]
+    kandidat = sorted({str(p) for p in kandidat if _cocok(p)})
+    best = [c for c in kandidat if "-best" in c]
+    return (best or kandidat)[0] if (best or kandidat) else ""
+
+
 def select_model(name):
     """Ganti model AKTIF: matikan semua engine lain, nyalakan yg baru (sesi fresh).
 
-    Nyalakan = preload bobot + smoke test 1 forward, lalu LAPOR.
-    Bukan placeholder: kalau gagal load, bilang gagal (tidak pura-pura nyala).
+    Bobot dipilih PER-MODEL lewat `_ckpt_untuk()` — tiap pilihan benar-benar
+    memuat file .pt milik ukurannya sendiri (bukan selalu SAGI_CKPT yg sama).
+    Bila bobot belum ada: mode template (trained=False), dilaporkan JUJUR —
+    bukan pura-pura nyala. Bila ada: preload bobot + smoke test 1 forward.
     """
     import time as _t
     if name not in CONFIGS:
         return {"ok": False, "error": f"Model tak dikenal: {name}"}
     dimatikan = [k for k in list(_engines) if k != name and unload_engine(k)]
+    _engines.pop(name, None)  # bangun ulang: ckpt bisa baru selesai dilatih
     ACTIVE["model"] = name
     t0 = _t.time()
+    ck = _ckpt_untuk(name)
     try:
-        eng = get_engine(name)  # bangun (tokenizer + 12M shared)
-        eng._get_model()  # preload bobot chat (berat!) — gagal = OOM/disk
-        import torch as _th
-        with _th.no_grad():
-            _th.manual_seed(0)
-            if hasattr(eng, "model") and eng.model is not None:
-                eng.model.generate(
-                    _th.tensor([[eng.tok.cls_id]]).to(eng.device),
-                    max_new=3, temperature=0.7, top_k=20,
-                    ignore_ids=eng.ign)
+        try:
+            from web.chatbot import SagiEngine
+        except ImportError:
+            from chatbot import SagiEngine
+        eng = SagiEngine(size=name, ckpt=ck)
+        _engines[name] = eng
+        if eng.trained:
+            eng._get_model()  # preload bobot chat (berat!) — gagal = OOM/disk
+            import torch as _th
+            with _th.no_grad():
+                _th.manual_seed(0)
+                if hasattr(eng, "model") and eng.model is not None:
+                    eng.model.generate(
+                        _th.tensor([[eng.tok.cls_id]]).to(eng.device),
+                        max_new=3, temperature=0.7, top_k=20,
+                        ignore_ids=eng.ign)
         dt = _t.time() - t0
     except Exception as e:
         unload_engine(name)
@@ -104,10 +153,16 @@ def select_model(name):
         return {"ok": False,
                 "error": f"Gagal menyalakan {name}: {str(e)[:200]}. Kembali ke Go."}
     from plosagata import PARAMS
-    return {"ok": True, "active": name, "dimatikan": dimatikan,
-            "trained": eng.trained,
-            "ckpt": getattr(eng, "ckpt", "") or "-",
-            "params": PARAMS.get(name, 0), "nyala_detik": round(dt, 1)}
+    r = {"ok": True, "active": name, "dimatikan": dimatikan,
+         "trained": eng.trained,
+         "ckpt": getattr(eng, "ckpt", "") or "-",
+         "params": PARAMS.get(getattr(eng, "size", name), 0),
+         "nyala_detik": round(dt, 1)}
+    if not eng.trained:
+        r["catatan"] = ("Belum ada file bobot (.pt) utk model ini — mode template "
+                        "(ringkasan heuristik), bukan model saraf. Jalankan "
+                        "training dulu atau pilih model yg bobotnya tersedia.")
+    return r
 
 
 def warmup():
@@ -232,13 +287,14 @@ def cmd_chat(text, session_id=""):
         if not r.get("ok"):
             return {"ok": True, "topic": "command",
                     "reply": f"Gagal: {r.get('error')}. Cek /models."}
-        extra = " (TERLATIH ✅)" if r.get("trained") else " (bobot acak ⚠️)"
+        extra = " (TERLATIH ✅)" if r.get("trained") else " (mode template — belum ada bobot ⚠️)"
+        cat = f" Catatan: {r['catatan']}" if r.get("catatan") else ""
         return {"ok": True, "topic": "command", "model_size": r["active"],
                 "reply": (f"{r['active']} NYALA dalam {r.get('nyala_detik')} dtk "
                           f"({r['params']/1e6:.1f} jt param){extra}. "
                           f"ckpt: {r.get('ckpt')}. "
                           f"Engine lama dimatikan: {', '.join(r['dimatikan']) or 'tidak ada'}. "
-                          "Sesi chat dimulai fresh.")}
+                          "Sesi chat dimulai fresh." + cat)}
     if cmd == "/status":
         topik = ""
         try:

@@ -124,6 +124,8 @@ class SagiEngine:
                     from plosagata import detect_size
                     pas = detect_size(self.ckpt)
                     if pas and pas != self.size:
+                        print(f"[sagi] peringatan: ckpt {self.ckpt} berukuran {pas}; "
+                              f"permintaan '{self.size}' menyesuaikan ke {pas}.")
                         self.cfg = CONFIGS[pas]
                         self.size = pas
                         # utama: vocab pasangan ckpt; fallback: seeds
