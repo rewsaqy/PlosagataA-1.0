@@ -50,6 +50,14 @@ KASUS_APK = [
     ("Bansos tunai Kemensos Rp 600.000 sudah cair hari ini! Unduh aplikasi BANSOS-CAIR-2026.APK ini untuk mencairkan saldo ke dompet digital Anda sekarang.",
      "Aplikasi pencairan bansos Kemensos berformat .apk",
      "Itu adalah HOAKS BERBAHAYA BERKEDOK BANSOS! Kementerian Sosial tidak pernah merilis aplikasi bansos lewat file kiriman WhatsApp personal. Seluruh pengecekan penerima bansos hanya dilakukan melalui portal resmi cekbansos.kemensos.go.id. Menginstal file APK ini berisiko membuat ponsel Anda disusupi virus perbankan."),
+
+    ("Selamat! Nomor Anda terpilih sebagai pemenang undian bank nasional berhadiah Rp 250 juta. Unduh aplikasi Pemenang_Undian.apk untuk klaim hadiah sebelum hangus malam ini.",
+     "Undian bank minta instal file .apk",
+     "Itu 100% HOAKS PENIPUAN UNDIAN BERHADIAH berkedok bank. Bank resmi tidak pernah mengumumkan pemenang undian lewat pesan pribadi WhatsApp, apalagi meminta nasabah menginstal file .apk. File tersebut adalah malware yang meminta izin membaca SMS guna mencuri kode OTP Anda. Hapus dan blokir kontaknya!"),
+
+    ("Lowongan kerja online gaji 15 juta per bulan, cukup instal aplikasi Kerja_Freelance.apk lalu isi data rekening untuk penyaluran gaji.",
+     "Lowongan kerja minta instal .apk dan data rekening",
+     "WASPADA! Itu adalah MODUS PENIPUAN LOWONGAN KERJA PALSU berbentuk sniffing APK. Perekrut resmi tidak akan meminta Anda menginstal aplikasi mentah di luar Play Store atau App Store, dan tidak meminta data rekening pada awal proses. Data yang Anda isikan justru dipakai pelaku untuk membobol rekening Anda."),
 ]
 
 # Kategori 2: Phishing Tautan, Bansos & Giveaway Fiktif
@@ -73,6 +81,18 @@ KASUS_PHISHING = [
     ("Pendaftaran bantuan modal UMKM non-tunai 15 juta dari kementerian dibuka hari ini, klik tautan https://bantuan-umkm.web.app dan upload foto KTP serta selfie memegang buku tabungan.",
      "Bantuan modal UMKM minta foto KTP dan buku tabungan di link gratisan",
      "WASPADA! Itu adalah HOAKS PENCURIAN IDENTITAS (IDENTITY THEFT). Kementerian Koperasi dan UKM tidak pernah membuka pendaftaran bantuan menggunakan domain gratisan seperti web.app atau blogspot. Foto KTP dan selfie rekening Anda yang dikirim ke tautan tersebut berisiko disalahgunakan untuk pinjaman online (pinjol) ilegal."),
+
+    ("Kartu ATM Anda diblokir karena belum memperbarui data KYC. Aktifkan kembali melalui tautan http://aktivasi-kartu-anda.xyz dengan memasukkan nomor kartu, masa berlaku, dan kode CVV.",
+     "Kartu ATM diblokir minta update data via link",
+     "Itu adalah HOAKS PHISHING KLASIK PERBANKAN. Bank tidak pernah mengirim tautan tidak resmi untuk pembaruan data, apalagi meminta nomor kartu penuh, CVV, atau PIN. Data tersebut hanya dipakai pelaku untuk menguras dana Anda. Selalu hubungi hanya call center resmi bank Anda."),
+
+    ("Surat edaran resmi: pemerintah membagikan motor listrik gratis bagi pemilik e-KTP. Ambil nomor antrean di http://motor-listrik-gratis.net dengan biaya administrasi Rp 150.000.",
+     "Motor listrik gratis minta biaya administrasi",
+     "Informasi ini adalah HOAKS PROGRAM BANTUAN FIKTIF. Program pemerintah resmi tidak pernah meminta biaya administrasi di muka kepada penerima manfaat. Skema hadiah besar tetapi diminta transfer kecil lebih dulu adalah ciri khas penipuan. Cek program resmi hanya di situs kementerian berakhiran .go.id."),
+
+    ("Lowongan kerja kapal pesiar ke luar negeri, gaji 30 juta, tanpa pengalaman. Transfer biaya agensi Rp 2,5 juta ke rekening pribadi berikut untuk mengunci kuota.",
+     "Lowongan kapal pesiar minta transfer biaya agensi",
+     "WASPADA! Itu adalah MODUS PENIPUAN PENGIRIMAN PEKERJA MIGRAN ILEGAL. Perekrut resmi wajib terdaftar di Kementerian Pelindungan Pekerja Migran dan biaya penempatan mengikuti aturan resmi, bukan transfer ke rekening pribadi untuk mengunci kuota. Laporkan ke kanal pengaduan resmi pemerintah."),
 ]
 
 # Kategori 3: AI Deepfake & Rekayasa Digital
@@ -88,6 +108,14 @@ KASUS_DEEPFAKE = [
     ("Beredar rekaman telepon Menteri Keuangan menyatakan Indonesia resmi bangkrut dan uang tabungan di bank akan disita negara per akhir bulan ini.",
      "Rekaman suara Menkeu klaim Indonesia bangkrut",
      "Informasi tersebut 100% HOAKS MANIPULASI SUARA. Rekaman audio tersebut dibuat menggunakan teknologi kloning suara AI untuk memicu kepanikan moneter. Bank Indonesia dan OJK menegaskan kondisi perbankan nasional stabil dan dana nasabah dijamin aman oleh Lembaga Penjamin Simpanan (LPS)."),
+
+    ("Beredar video seorang menteri menawarkan dana hibah UMKM melalui aplikasi pendaftaran yang katanya bekerja sama dengan platform investasi ternama.",
+     "Video menteri tawarkan dana hibah lewat aplikasi",
+     "Video tersebut adalah HOAKS DEEPFAKE AI. Pejabat negara tidak pernah mempromosikan aplikasi investasi maupun menyalurkan hibah lewat pesan berantai. Ciri video AI: gerak bibir tidak sinkron, suara terdengar datar, dan potongan editing kasar. Verifikasi hanya melalui website resmi kementerian terkait."),
+
+    ("Rekaman suara atasan meminta staf keuangan segera mentransfer dana perusahaan ke rekening vendor baru tanpa prosedur verifikasi, dengan nada sangat mendesak.",
+     "Atasan minta transfer mendesak via rekaman suara",
+     "Itu adalah MODUS FRAUD KLONING SUARA AI (deepfake audio). Pelaku meniru suara atasan untuk menekan korban agar buru-buru transfer. Selalu verifikasi lewat video call atau telepon balik ke nomor resmi. Untuk transfer, perusahaan wajib memakai prosedur persetujuan ganda."),
 ]
 
 # Kategori 4: Hoaks Medis & Pseudosains
@@ -107,6 +135,14 @@ KASUS_MEDIS = [
     ("Vaksin polio dan campak sengaja disuntikkan untuk memasukkan microchip pengendali populasi dan merusak kecerdasan anak Indonesia.",
      "Vaksin mengandung microchip pengendali pikiran",
      "Itu adalah HOAKS TEORI KONSPIRASI tanpa dasar sains. Vaksin mengandung antigen virus yang dilemahkan atau dimatikan untuk membentuk antibodi kekebalan tubuh, bukan microchip elektronik. Seluruh vaksin telah melalui uji klinis ketat dan pengawasan keamanan oleh Badan POM serta WHO."),
+
+    ("Minum air dingin setelah makan langsung menyimpan lemak dan memicu kanker usus, kata pakar, sebaiknya hanya minum air hangat.",
+     "Air dingin setelah makan bikin kanker usus",
+     "Itu HOAKS MEDIS DAUR ULANG. Suhu air minum tidak mengubah cara tubuh mencerna lemak maupun memicu kanker usus. Yang penting adalah kebersihan air dan pola makan gizi seimbang. Klaim 'kata pakar' tanpa nama dan tanpa rujukan jurnal ilmiah adalah ciri khas hoaks kesehatan."),
+
+    ("Pesan berantai: kanker bisa dideteksi sendiri cukup dengan tes air liur pagi di rumah, akurasinya 99 persen tanpa perlu ke dokter.",
+     "Deteksi kanker lewat air liur akurat 99 persen",
+     "Klaim itu MENYESATKAN. Skrining kanker memerlukan pemeriksaan medis terstandar seperti laboratorium, pencitraan, dan biopsi sesuai rekomendasi dokter. Tes mandiri tanpa validasi klinis berisiko membuat penderita terlambat mendapat penanganan. Selalu konsultasi ke fasilitas kesehatan resmi."),
 ]
 
 # Kategori 5: Bencana & Histeria Megathrust
@@ -118,6 +154,14 @@ KASUS_BENCANA = [
     ("Awan berbentuk gelombang aneh di langit Yogyakarta pagi ini, pakar mengonfirmasi pertanda pasti gempa bumi dahsyat dalam waktu kurang dari 24 jam.",
      "Awan aneh tanda pasti gempa bumi 24 jam",
      "Klaim tersebut adalah HOAKS MITOS PSEUDOSAINS. Bentuk awan dipengaruhi oleh dinamika atmosfer, kelembapan, suhu, dan kecepatan angin, bukan dipicu oleh pergeseran lempeng tektonik di kedalaman bumi. BMKG menyatakan tidak ada hubungan ilmiah antara formasi awan dengan kepastian waktu terjadinya gempa."),
+
+    ("Pesan berantai katanya dari info BMKG: akan ada gempa susulan lebih besar malam ini, seluruh warga diminta tidur di luar rumah.",
+     "Gempa susulan lebih besar malam ini",
+     "Itu 100% HOAKS yang MEMICU KEPANIKAN. Gempa tidak dapat diprediksi waktu dan kekuatannya. BMKG tidak pernah menyebarkan peringatan lewat pesan berantai pribadi, melainkan melalui kanal resmi InfoBMKG, media sosial bercentang biru, dan sirine peringatan dini. Ikuti hanya informasi dari kanal resmi."),
+
+    ("Beredar foto bendungan jebol dan kota besar terendam banjir, warga diminta mengungsi ke tempat tinggi sekarang juga.",
+     "Foto bendungan jebol kota terendam",
+     "Foto tersebut HOAKS REKAAN BERBASIS AI. Tidak ada peristiwa bendungan jebol seperti pada klaim. Ciri manipulasi terlihat dari warna air yang tidak natural dan bayangan bangunan yang tidak konsisten. Status resmi bendungan dan peringatan cuaca hanya dirilis lewat kanal BPBD serta BMKG setempat."),
 ]
 
 # Kategori 6: Berita Valid & Faktual (Keseimbangan Ground Truth)
@@ -141,6 +185,18 @@ KASUS_VALID = [
     ("Veddriq Leonardo berhasil mempersembahkan medali emas pertama bagi Indonesia di ajang Olimpiade Paris 2024 nomor panjat tebing speed putra.",
      "Medali emas Veddriq Leonardo Olimpiade",
      "Informasi tersebut ASLI dan MENJADI SEJARAH OLAHRAGA NASIONAL. Kemenangan Veddriq tercatat resmi di situs Olimpiade Internasional dan Komite Olimpiade Indonesia."),
+
+    ("Kementerian Kesehatan secara rutin mengingatkan masyarakat melengkapi imunisasi dasar anak di posyandu dan puskesmas terdekat secara gratis.",
+     "Imunisasi dasar lengkap gratis di posyandu",
+     "Informasi tersebut VALID dan RESMI. Imunisasi dasar lengkap adalah program pemerintah yang diselenggarakan gratis di posyandu dan puskesmas. Jadwal serta panduannya dapat dicek di situs resmi kemkes.go.id."),
+
+    ("OJK mengingatkan bahwa bank maupun penyedia jasa keuangan berizin tidak pernah meminta kode OTP, PIN, atau password melalui telepon ataupun pesan.",
+     "OJK: bank tidak pernah minta kode OTP",
+     "Pernyataan tersebut VALID dan sesuai dengan edukasi resmi OJK untuk pencegahan penipuan keuangan. Bank dan fintech berizin memang tidak pernah meminta kode OTP, PIN, atau password. Waspadai siapa pun yang mengaku dari bank lalu meminta kode-kode tersebut."),
+
+    ("BMKG mengimbau warga pesisir memantau kondisi cuaca, gempa, dan potensi tsunami melalui kanal resmi InfoBMKG.",
+     "Imbauan pantau InfoBMKG untuk warga pesisir",
+     "Imbauan tersebut VALID dan RESMI. InfoBMKG adalah kanal resmi BMKG dalam bentuk aplikasi, situs, dan media sosial untuk informasi gempabumi, cuaca, dan peringatan dini. Masyarakat diimbau tidak menyebarkan informasi yang belum terverifikasi."),
 ]
 
 
