@@ -3,7 +3,7 @@
 Tinggal di paket plosagata (karya sendiri) agar jalur murni juga terlindungi.
 """
 import hashlib as _hl
-import re as _re2
+import re as _re
 
 # Kata kunci topik berita — di luar ini = off-topic
 NEWS_KEYWORDS = [
@@ -44,8 +44,8 @@ NEWS_KEYWORDS = [
 ]
 GREETING_ONLY = ["halo", "halo halo", "hallo", "helo", "hai", "hi", "hello",
                  "hey", "hei", "pagi", "siang", "sore", "malam",
-                 "assalamu", "assalamualaikum", "tes", "permisi", "permisi",
-                 "bang", "kak", "bro", "sis", "kawan", "kawan", "mas",
+                 "assalamu", "assalamualaikum", "tes", "permisi",
+                 "bang", "kak", "bro", "sis", "kawan", "mas",
                  "mbak", "mba", "pak", "bu", "loh", "p", "oy", "woy",
                  "haha", "hehe", "hihi"]
 
@@ -96,8 +96,6 @@ PERINTAH_LANJUT = [
     "jelaskan", "jelasin", "jabar", "kasih", "berikan", "tunjukkan",
     "tunjukin", "lanjutkan", "lanjut", "detail", "sumbernya", "buktinya",
 ]
-
-import re as _re
 
 _RUJUK_PAT = _re.compile(r"\b(" + "|".join(map(_re.escape, RUJUKAN)) + r")\b")
 _LANJUT_PAT = _re.compile(r"\b(" + "|".join(map(_re.escape, PERINTAH_LANJUT)) + r")")
@@ -286,21 +284,27 @@ def ada_kata_berita(teks: str) -> bool:
     t = teks.lower()
     if any(p in t for p in NEWS_PHRASE):
         return True
-    return any(stem_id(w) in NEWS_SINGLE for w in _re2.findall(r"[a-z]+", t))
+    return any(stem_id(w) in NEWS_SINGLE for w in _re.findall(r"[a-z]+", t))
 
 
 def ada_kata_offtopic(teks: str) -> bool:
     t = teks.lower()
     if any(p in t for p in OFFTOPIC_PHRASE):
         return True
-    return any(stem_id(w) in OFFTOPIC_SINGLE for w in _re2.findall(r"[a-z]+", t))
+    return any(stem_id(w) in OFFTOPIC_SINGLE for w in _re.findall(r"[a-z]+", t))
+
+
+_WAKE_PAT = _re.compile(r"\b" + _re.escape(WAKE_WORD) + r"\b")
 
 
 def strip_wake(text: str) -> tuple[bool, str]:
-    """Deteksi panggilan 'Sagi'. Return (disebut, sisa_pesan)."""
+    """Deteksi panggilan 'Sagi' (kata utuh — 'sagittarius' bukan panggilan).
+
+    Return (disebut, sisa_pesan).
+    """
     t = text.lower().strip()
-    if WAKE_WORD in t:
-        rest = " ".join(t.replace(WAKE_WORD, " ").strip(" ,.!?").split())
+    if _WAKE_PAT.search(t):
+        rest = " ".join(_WAKE_PAT.sub(" ", t).strip(" ,.!?").split())
         return True, rest
     return False, t
 

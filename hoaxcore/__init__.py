@@ -1,7 +1,7 @@
 """HoaxCore — klasifier hoaks 12M + util (tokenizer, fact-check, OCR)."""
 from .dataset import ID2LABEL, LABEL2ID, HoaxDataset, load_csv
 from .factcheck import (deteksi_fiksi, final_label, format_creator_script,
-                         heuristic_signals, llm_crosscheck, local_verdict,
+                         heuristic_signals, local_verdict,
                          ringkasan_hasil, susun_jawaban_cerdas)
 from .shared import get_classifier, predict_proba
 from .model import TinyHoaxTransformer, count_params
@@ -16,7 +16,7 @@ __all__ = [
     "WordTokenizer", "basic_clean", "piece_decode", "piece_encode",
     "tokenize_words",
     "HoaxDataset", "load_csv", "LABEL2ID", "ID2LABEL",
-    "local_verdict", "heuristic_signals", "llm_crosscheck",
+    "local_verdict", "heuristic_signals",
     "format_creator_script",
     "get_classifier", "predict_proba", "ringkasan_hasil",
     "susun_jawaban_cerdas",

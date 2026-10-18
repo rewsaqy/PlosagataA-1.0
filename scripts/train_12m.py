@@ -17,7 +17,6 @@ import argparse
 import json
 import math
 import os
-import shutil
 import sys
 import time
 from pathlib import Path
@@ -27,7 +26,6 @@ sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
@@ -49,8 +47,15 @@ class ChatLMDataset(Dataset):
         msgs = self.rows[i].get("messages", [])
         text = normalize_slang("\n".join(f"{m['role']}: {m['content']}" for m in msgs))
         ids, _ = self.tok.encode(text)
-        ids = ids[:self.max_len]
         pad = self.tok.pad_id
+
+        # Potong trailing pad: komputasi dinamis sesuai panjang aktual teks
+        # (sama seperti train_browser.py — tanpa ini tiap sample diproses 256 tok).
+        real_len = len(ids)
+        while real_len > 0 and ids[real_len - 1] == pad:
+            real_len -= 1
+        ids = ids[:max(real_len, 3)]
+        ids = ids[:self.max_len]
 
         # Target token padding bernilai -100 agar diabaikan dalam cross-entropy
         x = torch.tensor(ids[:-1], dtype=torch.long)
@@ -292,26 +297,12 @@ def main():
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 torch.save(model.state_dict(), best_path)
-                # Salin juga ke root directory agar mudah diakses
-                try:
-                    shutil.copy(best_path, f"{args.name}-best.pt")
-                    shutil.copy(vocab_path, f"{args.name}-best.pt.vocab.pt")
-                    shutil.copy(vocab_path, f"{args.name}.vocab.pt")
-                    if tok_json_path.exists():
-                        shutil.copy(tok_json_path, f"{args.name}-best.tokenizer.json")
-                        shutil.copy(tok_json_path, f"{args.name}.tokenizer.json")
-                except Exception:
-                    pass
                 status_msg += " 🌟 BEST"
         status_msg += f" | {tok_speed:,.0f} tok/s | LR: {current_lr:.2e}"
         print(status_msg)
 
     # Simpan checkpoint akhir
     torch.save(model.state_dict(), latest_path)
-    try:
-        shutil.copy(latest_path, f"{args.name}.pt")
-    except Exception:
-        pass
 
     total_time = time.time() - t_start
     print("-" * 65)

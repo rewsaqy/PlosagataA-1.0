@@ -19,7 +19,6 @@ import torch
 
 from hoaxcore import (
     WordTokenizer,
-    cari_sumber,
     local_verdict,
     piece_decode,
     piece_encode,
@@ -191,19 +190,13 @@ def main():
             except Exception:
                 pass
             lv = local_verdict(klaim, v)
-            try:
-                sumber = cari_sumber(kueri)
-            except Exception:
-                sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
             isi = ringkasan_hasil(
                 label=lv["label_final"],
                 skor=lv["skor_hoaks"],
                 kesimpulan=lv["kesimpulan"],
-                sumber=sumber,
                 fiksi=lv["sinyal"].get("fiksi_hits"),
                 teks=klaim,
                 sinyal=lv["sinyal"],
-                saran=lv["saran"],
             )
             return ("Merujuk berita tadi:\n" + isi) if rujuk else isi
         # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode

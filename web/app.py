@@ -13,7 +13,6 @@ import torch
 from flask import Flask, jsonify, render_template, request
 
 from hoaxcore import (
-    ID2LABEL,
     final_label,
     format_creator_script,
     local_verdict,
@@ -137,22 +136,13 @@ def get_model():
 
 
 def model_predict(text):
-    model, tok = get_model()
-    if model is None:
-        return {"label": "meragukan", "probs": [0.33, 0.33, 0.34], "mode": "heuristic-only"}
-    import torch.nn.functional as F
+    """Prediksi 12M lewat instance tunggal (hoaxcore.shared). Gagal -> heuristic."""
     try:
-        from plosagata.slang import normalize_slang
-        text = normalize_slang(text)
+        from hoaxcore import predict_proba
+        label, probs = predict_proba(text, str(CKPT), DEVICE)
+        return {"label": label, "probs": probs, "mode": "model-12M"}
     except Exception:
-        pass
-    ids, mask = tok.encode(text)
-    ids_t = torch.tensor([ids]).to(DEVICE)
-    mask_t = torch.tensor([mask]).to(DEVICE)
-    with torch.no_grad():
-        probs = F.softmax(model(ids_t, mask_t), dim=-1)[0].tolist()
-    pred = max(range(3), key=lambda i: probs[i])
-    return {"label": ID2LABEL[pred], "probs": probs, "mode": "model-12M"}
+        return {"label": "meragukan", "probs": [0.33, 0.33, 0.34], "mode": "heuristic-only"}
 
 
 @app.after_request

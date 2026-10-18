@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="id" class="dark" data-theme="obsidian">
+<html lang="id" class="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sagi Neural — Next-Gen AI News & Fact Verification</title>
+<title>Sagi — Sistem Verifikasi Berita & Cek Fakta Plosagata</title>
 
 <!-- Fonts: Plus Jakarta Sans, JetBrains Mono, Instrument Serif -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <!-- Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -18,9 +18,24 @@ tailwind.config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         serif: ['"Instrument Serif"', 'Georgia', 'serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+      },
+      colors: {
+        surface: {
+          app: '#0c0d12',
+          sidebar: '#11131a',
+          card: '#161822',
+          cardHover: '#1c1f2b',
+          composer: '#141620',
+          bubbleUser: '#1a1d29',
+        },
+        brand: {
+          amber: '#d97706',
+          amberHover: '#f59e0b',
+          amberMuted: 'rgba(217, 119, 6, 0.15)',
+        }
       }
     }
   }
@@ -28,520 +43,243 @@ tailwind.config = {
 </script>
 
 <style>
-/* ==========================================================================
-   DYNAMIC CIAMIK COLOR PALETTES (Claude, AntiGravity, Cursor, Matrix, Nebula)
-   ========================================================================== */
 :root {
-  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  
-  /* DEFAULT: Obsidian Bronze (AntiGravity) */
-  --bg-app: #08090d;
-  --bg-sidebar: #0e1017;
-  --bg-card: rgba(18, 21, 31, 0.75);
-  --bg-card-hover: rgba(26, 30, 44, 0.85);
-  --bg-user-bubble: #171b28;
-  --bg-bot-bubble: rgba(14, 17, 26, 0.85);
-  --bg-composer: rgba(16, 19, 29, 0.92);
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(212, 168, 106, 0.35);
-  --accent-primary: #d4a86a;
-  --accent-hover: #e3c59a;
-  --accent-rgb: 212, 168, 106;
-  --accent-glow: rgba(212, 168, 106, 0.25);
-  --text-main: #f1f5f9;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
-  --dot-color: rgba(255, 255, 255, 0.05);
-}
-
-[data-theme="claude"] {
-  /* Claude 3.7 Warm Terracotta & Ivory Slate */
-  --bg-app: #12100f;
-  --bg-sidebar: #191614;
-  --bg-card: rgba(30, 26, 23, 0.8);
-  --bg-card-hover: rgba(42, 36, 32, 0.9);
-  --bg-user-bubble: #28221e;
-  --bg-bot-bubble: rgba(26, 22, 20, 0.9);
-  --bg-composer: rgba(32, 27, 24, 0.95);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(222, 122, 94, 0.4);
-  --accent-primary: #da7756;
-  --accent-hover: #e88d67;
-  --accent-rgb: 218, 119, 86;
-  --accent-glow: rgba(218, 119, 86, 0.28);
-  --text-main: #faf5f0;
-  --text-muted: #b8aba0;
-  --text-subtle: #7d7268;
-  --dot-color: rgba(218, 119, 86, 0.06);
-}
-
-[data-theme="cursor"] {
-  /* Cursor Dark Neon Cyber */
-  --bg-app: #07080b;
-  --bg-sidebar: #0d0f15;
-  --bg-card: rgba(16, 19, 28, 0.8);
-  --bg-card-hover: rgba(24, 29, 42, 0.9);
-  --bg-user-bubble: #161b2b;
-  --bg-bot-bubble: rgba(13, 16, 24, 0.9);
-  --bg-composer: rgba(14, 18, 27, 0.95);
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(0, 242, 254, 0.45);
-  --accent-primary: #00f2fe;
-  --accent-hover: #4facfe;
-  --accent-rgb: 0, 242, 254;
-  --accent-glow: rgba(0, 242, 254, 0.3);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
-  --dot-color: rgba(0, 242, 254, 0.05);
-}
-
-[data-theme="matrix"] {
-  /* Bio-Tech Neural Emerald */
-  --bg-app: #060c09;
-  --bg-sidebar: #0b1410;
-  --bg-card: rgba(14, 26, 20, 0.75);
-  --bg-card-hover: rgba(20, 38, 29, 0.85);
-  --bg-user-bubble: #12241b;
-  --bg-bot-bubble: rgba(11, 20, 16, 0.9);
-  --bg-composer: rgba(13, 24, 18, 0.95);
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(16, 185, 129, 0.4);
-  --accent-primary: #10b981;
-  --accent-hover: #34d399;
-  --accent-rgb: 16, 185, 129;
-  --accent-glow: rgba(16, 185, 129, 0.28);
-  --text-main: #ecfdf5;
-  --text-muted: #a7f3d0;
-  --text-subtle: #059669;
-  --dot-color: rgba(16, 185, 129, 0.06);
-}
-
-[data-theme="nebula"] {
-  /* Nebula Velvet & Royal Amethyst */
-  --bg-app: #090812;
-  --bg-sidebar: #100f1f;
-  --bg-card: rgba(22, 20, 42, 0.8);
-  --bg-card-hover: rgba(33, 30, 62, 0.9);
-  --bg-user-bubble: #201b3b;
-  --bg-bot-bubble: rgba(17, 15, 33, 0.9);
-  --bg-composer: rgba(19, 17, 36, 0.95);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(168, 85, 247, 0.45);
-  --accent-primary: #a855f7;
-  --accent-hover: #c084fc;
-  --accent-rgb: 168, 85, 247;
-  --accent-glow: rgba(168, 85, 247, 0.3);
-  --text-main: #faf5ff;
-  --text-muted: #d8b4fe;
-  --text-subtle: #7e22ce;
-  --dot-color: rgba(168, 85, 247, 0.06);
+  color-scheme: dark;
 }
 
 /* Custom Scrollbars */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-subtle);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--accent-rgb), 0.3);
+  background: rgba(255, 255, 255, 0.16);
 }
 
-/* Grid Pattern Background */
-.bg-grid-tech {
-  background-image: 
-    linear-gradient(to right, var(--dot-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--dot-color) 1px, transparent 1px);
-  background-size: 32px 32px;
+/* Base resets & typography */
+body {
+  background-color: #0c0d12;
+  color: #f3f4f6;
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Animations */
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.35; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.04); }
+/* Hairline borders */
+.border-hairline {
+  border-color: rgba(255, 255, 255, 0.08);
 }
-.animate-glow-pulse { animation: glowPulse 6s ease-in-out infinite; }
-
-@keyframes floatOrb {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(30px, -20px); }
+.border-hairline-strong {
+  border-color: rgba(255, 255, 255, 0.15);
 }
-.animate-float-orb { animation: floatOrb 12s ease-in-out infinite; }
 
-@keyframes waveBar {
-  0%, 100% { transform: scaleY(0.25); }
-  50% { transform: scaleY(1); }
-}
-.wave-1 { animation: waveBar 0.9s ease-in-out infinite; }
-.wave-2 { animation: waveBar 0.9s ease-in-out infinite 0.18s; }
-.wave-3 { animation: waveBar 0.9s ease-in-out infinite 0.36s; }
-.wave-4 { animation: waveBar 0.9s ease-in-out infinite 0.54s; }
-
-/* Typing cursor blink */
-@keyframes cursorBlink {
+/* Clean typing cursor animation */
+@keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
-.typing-cursor {
+.cursor-blink {
   display: inline-block;
-  width: 6px;
-  height: 15px;
-  background-color: var(--accent-primary);
-  margin-left: 3px;
+  width: 2px;
+  height: 1.1em;
+  background-color: #d97706;
+  margin-left: 2px;
   vertical-align: middle;
-  animation: cursorBlink 0.8s infinite;
-  border-radius: 1px;
+  animation: blink 0.8s infinite;
 }
 
-/* Glassmorphism helpers */
-.glass-panel {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-subtle);
+/* Minimal Pulse indicator */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
 }
-.glass-panel:hover {
-  border-color: var(--border-strong);
-}
-
-.composer-glass {
-  background: var(--bg-composer);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.7), 0 0 30px -10px var(--accent-glow);
-}
-
-/* Smooth transitions */
-body, aside, main, header, div, button, textarea {
-  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              color 0.2s ease,
-              box-shadow 0.25s ease;
+.pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
 }
 </style>
 </head>
 
-<body class="h-screen w-screen flex overflow-hidden font-sans select-none antialiased text-slate-100" style="background-color: var(--bg-app);">
-
-<!-- Canvas Interactive Ambient Particle Layer -->
-<canvas id="ambientCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
-
-<!-- Top Ambient Radial Glows -->
-<div class="fixed top-[-100px] left-1/2 -translate-x-1/2 w-[900px] h-[450px] rounded-full pointer-events-none animate-glow-pulse blur-[140px] z-0"
-     style="background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);"></div>
+<body class="h-screen w-screen flex overflow-hidden select-none">
 
 <!-- ========================================================================
-     SIDEBAR: ANTIGRAVITY / CURSOR INSPIRED WORKSPACE MANAGER
+     1. SIDEBAR: NAVIGATION & SESSION MANAGEMENT
      ======================================================================== -->
-<aside id="sidebar" class="w-80 border-r flex flex-col z-40 fixed md:relative h-full transition-all duration-300 -translate-x-full md:translate-x-0 select-text"
-       style="background-color: var(--bg-sidebar); border-color: var(--border-subtle);">
+<aside id="sidebar" 
+       class="w-72 bg-surface-sidebar border-r border-hairline flex flex-col z-40 fixed md:relative h-full transition-transform duration-200 -translate-x-full md:translate-x-0 select-text">
   
-  <!-- Sidebar Header: Brand Monogram & Live Version -->
-  <div class="p-4 border-b flex items-center justify-between" style="border-color: var(--border-subtle);">
-    <a href="/chat" class="flex items-center gap-3 group">
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center font-serif text-lg font-bold shadow-md transition-all group-hover:scale-105"
-           style="background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.25), rgba(var(--accent-rgb), 0.05)); border: 1px solid var(--border-strong); color: var(--accent-primary);">
-        <span>S</span>
+  <!-- Sidebar Header: Brand & Status -->
+  <div class="h-14 px-4 border-b border-hairline flex items-center justify-between flex-shrink-0">
+    <a href="/chat" class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-lg bg-surface-card border border-hairline flex items-center justify-center font-serif text-amber-500 font-bold text-sm">
+        S
       </div>
       <div>
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-sm tracking-tight" style="color: var(--text-main);">Sagi Neural</span>
-          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider"
-                style="background: rgba(var(--accent-rgb), 0.15); color: var(--accent-primary); border: 1px solid rgba(var(--accent-rgb), 0.3);">
-            v2.0
-          </span>
+        <div class="flex items-center gap-1.5">
+          <span class="font-bold text-xs tracking-tight text-white">Sagi</span>
+          <span class="text-[10px] font-mono px-1 rounded bg-white/[0.06] text-amber-500 border border-white/[0.08]">25M</span>
         </div>
-        <p class="text-[11px] font-mono flex items-center gap-1.5" style="color: var(--text-subtle);">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-          HYBRID REASONING ENGINE
-        </p>
+        <div class="text-[10px] font-mono text-slate-500 leading-none mt-0.5">Plosagata Hybrid AI</div>
       </div>
     </a>
-    <button id="closeSidebar" class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.05]">
-      ✕
+    <button id="closeSidebar" class="md:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04]">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
     </button>
   </div>
 
-  <!-- New Session Action -->
+  <!-- Primary Action: New Session -->
   <div class="p-3">
-    <button id="newchat" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all group shadow-sm hover:scale-[1.01]"
-            style="background: rgba(var(--accent-rgb), 0.12); color: var(--accent-primary); border: 1px solid rgba(var(--accent-rgb), 0.25);">
-      <div class="flex items-center gap-2.5">
-        <svg class="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+    <button id="newchat" class="w-full h-9 flex items-center justify-between px-3 rounded-lg border border-hairline bg-surface-card hover:bg-surface-cardHover hover:border-hairline-strong text-slate-200 text-xs font-medium transition-colors group">
+      <div class="flex items-center gap-2">
+        <svg class="w-3.5 h-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
-        <span>Mulai Sesi Baru</span>
+        <span>Sesi Baru</span>
       </div>
-      <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded opacity-70 group-hover:opacity-100"
-           style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle);">⌘N</kbd>
+      <kbd class="text-[10px] font-mono text-slate-500 px-1.5 py-0.5 rounded bg-black/30 border border-hairline">⌘N</kbd>
     </button>
   </div>
 
-  <!-- Search Session Input -->
-  <div class="px-3 pb-1">
-    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs"
-         style="background: rgba(0,0,0,0.25); border-color: var(--border-subtle);">
-      <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <!-- Search Filter -->
+  <div class="px-3 pb-2">
+    <div class="flex items-center gap-2 px-2.5 h-8 rounded-lg bg-black/20 border border-hairline text-xs focus-within:border-amber-500/50 transition-colors">
+      <svg class="w-3 h-3 text-slate-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
       </svg>
-      <input id="searchConv" type="text" placeholder="Cari sesi percakapan..." class="w-full bg-transparent text-xs outline-none text-slate-200 placeholder:text-slate-500">
+      <input id="searchConv" type="text" placeholder="Cari percakapan..." 
+             class="w-full bg-transparent text-xs text-slate-200 placeholder:text-slate-600 outline-none font-sans">
     </div>
   </div>
 
-  <!-- Conversations List -->
-  <div class="flex-1 flex flex-col min-h-0 px-2 py-2">
+  <!-- Conversations History List -->
+  <div class="flex-1 flex flex-col min-h-0 px-2 py-1">
     <div class="flex items-center justify-between px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500">
       <span>Riwayat Cek Fakta</span>
-      <span id="chatCount" class="font-mono text-[10px] text-slate-400">0 sesi</span>
+      <span id="chatCount" class="font-mono text-[10px] text-slate-600">0</span>
     </div>
-    <div id="convs" class="flex-1 overflow-y-auto space-y-1 pr-1 mt-1">
+    <div id="convs" class="flex-1 overflow-y-auto space-y-0.5 pr-1 mt-1">
       <!-- Populated dynamically via JS -->
     </div>
   </div>
 
-  <!-- Sidebar Bottom Panel: Metrics & Shortcuts -->
-  <div class="p-3 border-t space-y-3" style="border-color: var(--border-subtle); background: rgba(0,0,0,0.2);">
-    
-    <!-- Active Neural Core Card -->
-    <div class="p-2.5 rounded-xl border flex flex-col gap-1.5"
-         style="background: var(--bg-card); border-color: var(--border-subtle);">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-1.5 text-[11px] font-mono" style="color: var(--text-muted);">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Core Aktif</span>
-        </div>
-        <a href="/models" class="text-[10px] font-mono hover:underline" style="color: var(--accent-primary);">Ganti Core →</a>
+  <!-- Sidebar Footer: Core Status & Secondary Links -->
+  <div class="p-3 border-t border-hairline space-y-2 bg-black/10">
+    <!-- Active Core Quick Pill -->
+    <div class="px-2.5 py-2 rounded-lg bg-surface-card border border-hairline flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot"></span>
+        <span id="sidebarActiveModel" class="font-mono text-xs font-semibold text-slate-200">Plosagata_Browser</span>
       </div>
-      <div class="flex items-center justify-between">
-        <div id="sidebarActiveModel" class="font-bold text-xs font-mono" style="color: var(--text-main);">
-          Plosagata_Go
-        </div>
-        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.04] text-slate-400 border border-white/[0.06]">
-          12M + RAG
-        </span>
-      </div>
+      <button id="openModelModalBtn" class="text-[10px] font-mono text-amber-500 hover:text-amber-400">Ganti</button>
     </div>
 
-    <!-- Quick Navigation Hub -->
-    <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-      <a href="/" class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg border hover:bg-white/[0.04] text-slate-300 transition-colors"
-         style="border-color: var(--border-subtle);">
-        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <!-- Navigation Hub Links -->
+    <div class="grid grid-cols-2 gap-1.5 text-xs font-mono">
+      <a href="/" class="flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-hairline hover:bg-surface-card text-slate-400 hover:text-slate-200 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
-        <span>Scanner/OCR</span>
+        <span>Scanner OCR</span>
       </a>
-      <a href="/models" class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg border hover:bg-white/[0.04] text-slate-300 transition-colors"
-         style="border-color: var(--border-subtle);">
-        <svg class="w-3.5 h-3.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <a href="/models" class="flex items-center justify-center gap-1.5 py-1.5 rounded-lg border border-hairline hover:bg-surface-card text-slate-400 hover:text-slate-200 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
         </svg>
         <span>Model Lab</span>
       </a>
     </div>
 
-    <!-- Token Collapsible Drawer -->
-    <details class="group text-xs font-mono">
-      <summary class="cursor-pointer text-slate-400 hover:text-slate-200 flex items-center justify-between py-1">
-        <span class="flex items-center gap-1.5">
-          <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
-          </svg>
-          <span>Auth Token (Remote)</span>
-        </span>
-        <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="mt-2">
-        <input id="tok" type="password" placeholder="X-Sagi-Token..." 
-               class="w-full bg-black/40 text-xs font-mono text-slate-200 placeholder:text-slate-500 border rounded-lg px-2.5 py-1.5 outline-none focus:border-amber-400"
-               style="border-color: var(--border-subtle);">
-      </div>
+    <!-- Hidden Remote Auth Token Setting -->
+    <details class="text-[11px] font-mono text-slate-500">
+      <summary class="cursor-pointer hover:text-slate-300 py-0.5">Token Auth (Opsional)</summary>
+      <input id="tok" type="password" placeholder="X-Sagi-Token..." 
+             class="mt-1.5 w-full bg-black/40 text-[11px] font-mono text-slate-300 border border-hairline rounded px-2 py-1 outline-none focus:border-amber-500/50">
     </details>
-
   </div>
 </aside>
 
+<!-- Mobile Overlay Backdrop -->
+<div id="sidebarBackdrop" class="fixed inset-0 bg-black/60 z-30 hidden md:hidden"></div>
+
 <!-- ========================================================================
-     MAIN WORKSPACE: CLAUDE 3.7 & CURSOR INSPIRED CHAT INTERFACE
+     2. MAIN WORKSPACE: CONVERSATION COLUMN & COMPOSER
      ======================================================================== -->
-<main class="flex-1 flex flex-col h-full relative overflow-hidden bg-grid-tech z-10" style="background-color: var(--bg-app);">
+<main class="flex-1 flex flex-col h-full relative overflow-hidden bg-surface-app z-10">
   
-  <!-- Navigation Bar -->
-  <header class="h-16 border-b px-4 sm:px-8 flex items-center justify-between flex-shrink-0 z-30 backdrop-blur-xl"
-          style="background-color: rgba(var(--accent-rgb), 0.02); border-color: var(--border-subtle);">
+  <!-- Top Slim Header -->
+  <header class="h-14 border-b border-hairline px-4 sm:px-6 flex items-center justify-between flex-shrink-0 z-20 bg-surface-app/80 backdrop-blur-md">
     
-    <!-- Left: Sidebar Toggle & Model Pill -->
+    <!-- Left: Mobile Toggle & Model Badge -->
     <div class="flex items-center gap-3">
-      <button id="openSidebar" class="md:hidden p-2 rounded-xl border text-slate-300 hover:text-white"
-              style="background: var(--bg-card); border-color: var(--border-subtle);">
+      <button id="openSidebar" class="md:hidden p-1.5 rounded-lg border border-hairline text-slate-300 hover:text-white">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
 
-      <!-- Active Core Pill Indicator -->
-      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-mono shadow-sm"
-           style="background: var(--bg-card); border-color: var(--border-subtle);">
-        <span class="w-2 h-2 rounded-full" style="background-color: var(--accent-primary);"></span>
-        <span id="modelIndicatorText" class="font-bold" style="color: var(--text-main);">Plosagata_Go</span>
+      <!-- Model Indicator & Context Badge -->
+      <button id="headerModelBadge" class="flex items-center gap-2 px-2.5 py-1 rounded-full border border-hairline hover:border-hairline-strong bg-surface-card text-xs font-mono transition-colors">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot"></span>
+        <span id="modelIndicatorText" class="font-medium text-slate-200">Plosagata_Browser</span>
         <span class="text-slate-600">/</span>
-        <span class="text-[11px] text-slate-400 hidden sm:inline">12M Verifier Active</span>
-      </div>
+        <span class="text-[11px] text-slate-400 font-sans hidden sm:inline">25.3M Core + RAG Live</span>
+      </button>
     </div>
 
-    <!-- Right: Theme Switcher & Audio Sound FX & Direct Links -->
-    <div class="flex items-center gap-2.5">
-      
-      <!-- Sound FX Toggle Button -->
-      <button id="soundToggle" title="Toggle Sound FX Audio" class="p-2 rounded-xl border text-slate-300 hover:text-white transition-all flex items-center gap-1.5 text-xs font-mono"
-              style="background: var(--bg-card); border-color: var(--border-subtle);">
-        <span id="soundIcon">🔊</span>
-        <span class="hidden lg:inline text-[11px] text-slate-400">Audio FX</span>
-      </button>
-
-      <!-- Palette Switcher Dropdown -->
-      <div class="relative" id="themeDropdownContainer">
-        <button id="themeToggleBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-mono text-slate-200 transition-all shadow-sm hover:border-amber-400/50"
-                style="background: var(--bg-card); border-color: var(--border-subtle);">
-          <span class="w-3 h-3 rounded-full border border-white/20" style="background-color: var(--accent-primary);"></span>
-          <span id="themeNameLabel" class="font-medium hidden sm:inline">Obsidian</span>
-          <span class="text-[10px] text-slate-400">▼</span>
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div id="themeMenu" class="hidden absolute right-0 mt-2 w-52 rounded-2xl border p-2 shadow-2xl z-50 backdrop-blur-2xl"
-             style="background: var(--bg-sidebar); border-color: var(--border-strong);">
-          <div class="text-[10px] font-mono uppercase px-2 py-1 text-slate-400 font-semibold border-b border-white/[0.06] mb-1">
-            Pilih Color Palette
-          </div>
-          <button data-palette="obsidian" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#d4a86a]"></span>
-              <span>AntiGravity Obsidian</span>
-            </div>
-            <span class="text-[10px] font-mono text-amber-400 font-bold">Gold</span>
-          </button>
-          <button data-palette="claude" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#da7756]"></span>
-              <span>Claude Terracotta</span>
-            </div>
-            <span class="text-[10px] font-mono text-rose-400 font-bold">Warm</span>
-          </button>
-          <button data-palette="cursor" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#00f2fe]"></span>
-              <span>Cursor Cyber Cyan</span>
-            </div>
-            <span class="text-[10px] font-mono text-cyan-400 font-bold">Neon</span>
-          </button>
-          <button data-palette="matrix" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#10b981]"></span>
-              <span>Neural Emerald</span>
-            </div>
-            <span class="text-[10px] font-mono text-emerald-400 font-bold">Bio</span>
-          </button>
-          <button data-palette="nebula" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium hover:bg-white/[0.06] text-slate-200">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-[#a855f7]"></span>
-              <span>Velvet Nebula</span>
-            </div>
-            <span class="text-[10px] font-mono text-purple-400 font-bold">Violet</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Clear Chat Action -->
-      <button id="clearChatBtn" title="Hapus Chat Ini" class="p-2 rounded-xl border text-slate-400 hover:text-rose-400 transition-colors"
-              style="background: var(--bg-card); border-color: var(--border-subtle);">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+    <!-- Right: Clear Chat & Quick Actions -->
+    <div class="flex items-center gap-2">
+      <button id="clearChatBtn" title="Kosongkan Percakapan Ini" class="p-1.5 rounded-lg border border-hairline text-slate-400 hover:text-rose-400 hover:border-rose-400/30 bg-surface-card transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
         </svg>
       </button>
-
     </div>
   </header>
 
-  <!-- Messages Scrollable Container -->
-  <div id="box" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6 max-w-4xl w-full mx-auto select-text scroll-smooth">
+  <!-- Messages Stream Area -->
+  <div id="box" class="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 max-w-3xl w-full mx-auto select-text scroll-smooth">
     <!-- Populated dynamically via JS -->
   </div>
 
-  <!-- ========================================================================
-       FLOATING COMPOSER: CLAUDE 3.7 & CURSOR STREAMLINED
-       ======================================================================== -->
-  <div class="p-3 sm:p-5 max-w-4xl w-full mx-auto flex-shrink-0 relative z-30">
-    <div class="composer-glass rounded-2xl p-2.5 sm:p-3.5 transition-all focus-within:ring-2 focus-within:ring-[var(--accent-primary)]/40"
-         style="border-color: var(--border-strong);">
+  <!-- Bottom Fixed Composer -->
+  <div class="w-full border-t border-hairline bg-surface-app/90 backdrop-blur-md px-4 sm:px-6 py-3 flex-shrink-0 z-20">
+    <div class="max-w-3xl w-full mx-auto">
       
-      <!-- Quick Prompt Suggestion Bar -->
-      <div id="quickPromptBar" class="flex items-center gap-2 overflow-x-auto pb-2 px-1 mb-1 text-[11px] font-mono no-scrollbar">
-        <span class="text-slate-500 flex-shrink-0">⚡ Cepat:</span>
-        <button class="quick-chip flex-shrink-0 px-2.5 py-1 rounded-full border text-slate-300 hover:text-white transition-colors"
-                style="background: rgba(var(--accent-rgb), 0.08); border-color: var(--border-subtle);"
-                data-text="Bener gak bansos BLT cair lewat kantor pos sesuai kemensos.go.id?">
-          🏛️ Bansos Kemensos
-        </button>
-        <button class="quick-chip flex-shrink-0 px-2.5 py-1 rounded-full border text-slate-300 hover:text-white transition-colors"
-                style="background: rgba(var(--accent-rgb), 0.08); border-color: var(--border-subtle);"
-                data-text="Cek info giveaway iPhone 15 klik bit.ly transfer ongkir dulu">
-          🔴 Scam Giveaway
-        </button>
-        <button class="quick-chip flex-shrink-0 px-2.5 py-1 rounded-full border text-slate-300 hover:text-white transition-colors"
-                style="background: rgba(var(--accent-rgb), 0.08); border-color: var(--border-subtle);"
-                data-text="Kabar saldo e-wallet terpotong karena update sistem BI-FAST malam ini hoaks kan?">
-          💳 Saldo E-Wallet
-        </button>
-        <button class="quick-chip flex-shrink-0 px-2.5 py-1 rounded-full border text-slate-300 hover:text-white transition-colors"
-                style="background: rgba(var(--accent-rgb), 0.08); border-color: var(--border-subtle);"
-                data-text="Rebusan air sirih dan daun kelor bisa menyembuhkan kanker dalam semalam?">
-          🩺 Obat Ajaib
-        </button>
+      <!-- Composer Main Box -->
+      <div class="rounded-xl border border-hairline bg-surface-composer focus-within:border-hairline-strong transition-all shadow-sm">
+        
+        <div class="p-2.5 sm:p-3">
+          <textarea id="m" rows="1" 
+                    placeholder="Tanyakan fakta berita, tempel broadcast WhatsApp, atau periksa isu viral..."
+                    class="w-full bg-transparent text-sm text-slate-100 placeholder:text-slate-500 outline-none resize-none max-h-48 leading-relaxed font-sans"></textarea>
+        </div>
+
+        <!-- Composer Bottom Toolbar -->
+        <div class="h-9 px-2.5 border-t border-hairline flex items-center justify-between text-xs font-mono text-slate-500">
+          <div class="flex items-center gap-2 text-[11px]">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            <span class="hidden sm:inline">Guardrail Multilapis Aktif</span>
+            <span class="text-slate-600 hidden sm:inline">·</span>
+            <span class="text-slate-400 hidden sm:inline">0% Halusinasi</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span id="charCounter" class="text-[10px] text-slate-500 hidden sm:inline">0 kata</span>
+            <button id="send" title="Kirim Pesan (Enter)" 
+                    class="h-6 px-2.5 rounded bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs flex items-center gap-1 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+              <span>Kirim</span>
+              <span class="text-[10px]">↵</span>
+            </button>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Main Input Field Area -->
-      <div class="flex items-end gap-2.5">
-        
-        <!-- Speech Input Mic Button -->
-        <button id="micBtn" title="Dikte Suara (Speech-to-Text)" class="w-9 h-9 rounded-xl border flex items-center justify-center text-slate-400 hover:text-amber-400 hover:bg-white/[0.04] transition-all flex-shrink-0 mb-0.5"
-                style="border-color: var(--border-subtle);">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-          </svg>
-        </button>
-
-        <!-- Expanding Textarea -->
-        <textarea id="m" rows="1" placeholder="Tanyakan fakta berita, tempel broadcast WhatsApp, atau periksa isu viral..."
-                  class="w-full bg-transparent text-sm sm:text-[15px] text-slate-100 placeholder:text-slate-500 outline-none resize-none max-h-48 leading-relaxed py-1.5 px-2 font-sans"></textarea>
-        
-        <!-- Send Action Button -->
-        <button id="send" title="Kirim Pesan (Enter)" class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold transition-all shadow-md group disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-                style="background: var(--accent-primary); color: #08090d;">
-          <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Composer Meta Bar -->
-      <div class="flex items-center justify-between pt-2 px-2 border-t mt-2 text-[11px] font-mono text-slate-500"
-           style="border-color: var(--border-subtle);">
-        <div class="flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full" style="background-color: var(--accent-primary);"></span>
-          <span class="hidden sm:inline">Penalaran Multilapis Sagi AI</span>
-          <span class="text-slate-600 sm:inline hidden">·</span>
-          <span class="text-slate-400">Saring Sebelum Sharing</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span id="charCounter" class="text-slate-500 text-[10px]">0 kata</span>
-          <kbd class="px-1.5 py-0.5 rounded text-[10px] border border-white/[0.08] bg-white/[0.03]">↵ Kirim</kbd>
-        </div>
+      <div class="text-[10px] font-mono text-center text-slate-600 mt-2">
+        Sagi v2.0 · Arsitektur Causal Transformer Plosagata 25.3M · OTN 2026
       </div>
 
     </div>
@@ -550,231 +288,90 @@ body, aside, main, header, div, button, textarea {
 </main>
 
 <!-- ========================================================================
-     CLIENT ENGINE JAVASCRIPT: REAL-TIME STREAMING, SFX & RICH MARKDOWN
+     3. MODEL SELECTOR MODAL
+     ======================================================================== -->
+<div id="modelModal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+  <div class="bg-surface-card border border-hairline rounded-xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+    <div class="flex items-center justify-between border-b border-hairline pb-3">
+      <div>
+        <h3 class="font-bold text-sm text-white">Pilih Arsitektur Plosagata</h3>
+        <p class="text-xs text-slate-400 mt-0.5">Beralih antara model generatif yang tersedia</p>
+      </div>
+      <button id="closeModelModalBtn" class="text-slate-400 hover:text-white p-1">✕</button>
+    </div>
+
+    <div id="modelsListContainer" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+      <!-- Populated dynamically via JS -->
+    </div>
+
+    <div class="pt-2 border-t border-hairline flex items-center justify-between text-xs text-slate-400">
+      <span>Butuh latih model baru?</span>
+      <a href="/models" class="text-amber-500 hover:underline font-mono">Buka Lab →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================
+     4. JAVASCRIPT: ENGINE & UI LOGIC
      ======================================================================== -->
 <script>
-/* ==========================================================================
-   1. SOUND FX SYNTHESIZER (Pure Web Audio API - Zero External Dependencies)
-   ========================================================================== */
-class SoundEngine {
-  constructor() {
-    this.ctx = null;
-    this.muted = localStorage.getItem('sagi_sound_muted') === 'true';
-    this.updateIcon();
-  }
-
-  init() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) this.ctx = new AudioCtx();
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-  }
-
-  toggle() {
-    this.muted = !this.muted;
-    localStorage.setItem('sagi_sound_muted', this.muted);
-    this.updateIcon();
-    if (!this.muted) this.playTone(520, 0.08, 'sine');
-  }
-
-  updateIcon() {
-    const icon = document.getElementById('soundIcon');
-    if (icon) icon.innerText = this.muted ? '🔇' : '🔊';
-  }
-
-  playTone(freq, duration, type = 'sine', gainVal = 0.08) {
-    if (this.muted) return;
-    try {
-      this.init();
-      if (!this.ctx) return;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-      gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + duration);
-    } catch(e) {}
-  }
-
-  playSend() {
-    if (this.muted) return;
-    this.playTone(440, 0.06, 'triangle', 0.06);
-    setTimeout(() => this.playTone(660, 0.08, 'sine', 0.05), 50);
-  }
-
-  playReceive() {
-    if (this.muted) return;
-    this.playTone(587, 0.08, 'sine', 0.05);
-    setTimeout(() => this.playTone(880, 0.12, 'triangle', 0.06), 70);
-  }
-
-  playClick() {
-    if (this.muted) return;
-    this.playTone(700, 0.03, 'sine', 0.03);
-  }
-
-  playAlert() {
-    if (this.muted) return;
-    this.playTone(330, 0.1, 'sawtooth', 0.05);
-    setTimeout(() => this.playTone(280, 0.15, 'sawtooth', 0.06), 90);
-  }
-}
-const sfx = new SoundEngine();
-document.getElementById('soundToggle')?.addEventListener('click', () => sfx.toggle());
-
-/* ==========================================================================
-   2. INTERACTIVE AMBIENT PARTICLES (Canvas Background)
-   ========================================================================== */
-const canvas = document.getElementById('ambientCanvas');
-const ctx = canvas?.getContext('2d');
-let particles = [];
-
-function resizeCanvas() {
-  if (!canvas) return;
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-class Particle {
-  constructor() {
-    this.reset();
-  }
-  reset() {
-    this.x = Math.random() * (canvas?.width || 800);
-    this.y = Math.random() * (canvas?.height || 600);
-    this.vx = (Math.random() - 0.5) * 0.4;
-    this.vy = (Math.random() - 0.5) * 0.4;
-    this.radius = Math.random() * 1.5 + 0.5;
-    this.alpha = Math.random() * 0.3 + 0.1;
-  }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    if (this.x < 0 || this.x > (canvas?.width || 800) || this.y < 0 || this.y > (canvas?.height || 600)) {
-      this.reset();
-    }
-  }
-  draw() {
-    if (!ctx) return;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-    ctx.fill();
-  }
+/* Safe string escaping */
+function esc(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
-for (let i = 0; i < 40; i++) {
-  particles.push(new Particle());
-}
-
-function animateParticles() {
-  if (ctx && canvas) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
-  }
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
-
-/* ==========================================================================
-   3. COLOR PALETTE SWITCHER (Obsidian, Claude, Cursor, Matrix, Nebula)
-   ========================================================================== */
-const THEMES = {
-  obsidian: { name: 'AntiGravity Obsidian', label: 'Obsidian' },
-  claude: { name: 'Claude Terracotta', label: 'Claude Warm' },
-  cursor: { name: 'Cursor Cyber Cyan', label: 'Cursor Neon' },
-  matrix: { name: 'Neural Emerald', label: 'Matrix Green' },
-  nebula: { name: 'Velvet Nebula', label: 'Nebula Violet' },
-};
-
-function setTheme(theme) {
-  if (!THEMES[theme]) theme = 'obsidian';
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('sagi_color_palette', theme);
-  const lbl = document.getElementById('themeNameLabel');
-  if (lbl) lbl.innerText = THEMES[theme].label;
-  sfx.playClick();
-}
-
-const savedTheme = localStorage.getItem('sagi_color_palette') || 'obsidian';
-setTheme(savedTheme);
-
-const themeToggleBtn = document.getElementById('themeToggleBtn');
-const themeMenu = document.getElementById('themeMenu');
-
-themeToggleBtn?.addEventListener('click', e => {
-  e.stopPropagation();
-  themeMenu?.classList.toggle('hidden');
-});
-
-document.addEventListener('click', () => {
-  themeMenu?.classList.add('hidden');
-});
-
-themeMenu?.querySelectorAll('button[data-palette]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    setTheme(btn.dataset.palette);
-    themeMenu.classList.add('hidden');
-  });
-});
-
-/* ==========================================================================
-   4. RICH MARKDOWN & SYNTAX FORMATTER
-   ========================================================================== */
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const now = () => new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
+/* Whitelist URL aman (anti-XSS: hanya http/https yang dirender) */
 function safeUrl(u) {
   try {
-    const p = new URL(u, location.origin);
-    if (p.protocol === 'http:' || p.protocol === 'https:') return p.href;
-  } catch(e) {}
-  return '#';
+    const x = new URL(u, location.origin);
+    return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : '';
+  } catch (e) { return ''; }
 }
 
+/* Time string */
+function now() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+}
+
+/* Markdown parsing with visual restraint */
 function formatMarkdown(text) {
   if (!text) return '';
   let s = esc(text);
 
   // Headers
-  s = s.replace(/^###\s+(.+)$/gm, '<h3 class="text-sm sm:text-base font-bold tracking-tight pb-1 mt-3 mb-1.5 flex items-center gap-2 border-b border-white/[0.08]" style="color: var(--accent-primary);"><span class="w-1.5 h-3 rounded-full" style="background-color: var(--accent-primary);"></span>$1</h3>');
-  s = s.replace(/^##\s+(.+)$/gm, '<h2 class="text-base sm:text-lg font-bold tracking-tight pb-1 mt-4 mb-2 border-b border-white/[0.08]" style="color: var(--text-main);">$1</h2>');
-  s = s.replace(/^#\s+(.+)$/gm, '<h1 class="text-lg sm:text-xl font-bold tracking-tight pb-1 mt-4 mb-2" style="color: var(--text-main);">$1</h1>');
+  s = s.replace(/^###\s+(.+)$/gm, '<h3 class="text-sm font-bold text-white tracking-tight pt-3 pb-1 flex items-center gap-2"><span class="w-1 h-3 rounded bg-amber-500"></span>$1</h3>');
+  s = s.replace(/^##\s+(.+)$/gm, '<h2 class="text-base font-bold text-white tracking-tight pt-3 pb-1 border-b border-hairline">$1</h2>');
+  s = s.replace(/^#\s+(.+)$/gm, '<h1 class="text-lg font-bold text-white tracking-tight pt-2 pb-1">$1</h1>');
 
   // Bold & Italic
-  s = s.replace(/\*\*\*(.*?)\*\*\*/g, '<strong class="font-bold italic text-white">$1</strong>');
+  s = s.replace(/\*\*\*(.*?)\*\*\*/g, '<strong class="font-bold text-white">$1</strong>');
   s = s.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
-  s = s.replace(/\*(.*?)\*/g, '<em class="italic" style="color: var(--accent-hover);">$1</em>');
+  s = s.replace(/\*(.*?)\*/g, '<em class="italic text-slate-300">$1</em>');
 
   // Bullet Lists
-  s = s.replace(/^[•\-]\s+(.+)$/gm, '<div class="flex items-start gap-2 ml-1 my-1 text-slate-200"><span style="color: var(--accent-primary); font-size: 1.1em; line-height: 1;">•</span><span class="flex-1">$1</span></div>');
+  s = s.replace(/^[•\-]\s+(.+)$/gm, '<div class="flex items-start gap-2 ml-1 my-1 text-slate-200"><span class="text-amber-500 text-sm leading-none mt-1">•</span><span class="flex-1 leading-relaxed">$1</span></div>');
   
   // Numbered Lists
-  s = s.replace(/^(\d+)\.\s+(.+)$/gm, '<div class="flex items-start gap-2 ml-1 my-1 text-slate-200"><span class="font-mono text-xs font-bold px-1.5 py-0.2 rounded mt-0.5" style="background: rgba(var(--accent-rgb), 0.15); color: var(--accent-primary);">$1.</span><span class="flex-1">$2</span></div>');
+  s = s.replace(/^(\d+)\.\s+(.+)$/gm, '<div class="flex items-start gap-2 ml-1 my-1 text-slate-200"><span class="font-mono text-xs text-amber-500 font-semibold mt-0.5">$1.</span><span class="flex-1 leading-relaxed">$2</span></div>');
 
   // Blockquotes
-  s = s.replace(/^>\s+(.+)$/gm, '<div class="border-l-2 pl-3 py-1 my-2 italic text-slate-300 rounded-r-lg" style="border-color: var(--accent-primary); background: rgba(var(--accent-rgb), 0.05);">$1</div>');
+  s = s.replace(/^>\s+(.+)$/gm, '<div class="border-l-2 border-amber-500/60 pl-3 py-1 my-2 text-xs italic text-slate-300 bg-white/[0.02] rounded-r">$1</div>');
 
   // Code inline
-  s = s.replace(/`([^`]+)`/g, '<code class="font-mono text-xs px-1.5 py-0.5 rounded border border-white/[0.08]" style="background: rgba(0,0,0,0.35); color: var(--accent-hover);">$1</code>');
+  s = s.replace(/`([^`]+)`/g, '<code class="font-mono text-xs px-1.5 py-0.5 rounded bg-black/40 text-amber-400 border border-hairline">$1</code>');
 
   return s;
 }
 
 /* ==========================================================================
-   5. CHAT ENGINE & LOCAL STORAGE PERSISTENCE
+   STATE & PERSISTENCE
    ========================================================================== */
 const box = document.getElementById('box'),
       inp = document.getElementById('m'),
@@ -782,10 +379,18 @@ const box = document.getElementById('box'),
       tok = document.getElementById('tok'),
       convs = document.getElementById('convs'),
       sidebar = document.getElementById('sidebar'),
+      sidebarBackdrop = document.getElementById('sidebarBackdrop'),
+      openSidebar = document.getElementById('openSidebar'),
+      closeSidebar = document.getElementById('closeSidebar'),
       chatCount = document.getElementById('chatCount'),
       charCounter = document.getElementById('charCounter'),
       modelIndicatorText = document.getElementById('modelIndicatorText'),
-      sidebarActiveModel = document.getElementById('sidebarActiveModel');
+      sidebarActiveModel = document.getElementById('sidebarActiveModel'),
+      modelModal = document.getElementById('modelModal'),
+      openModelModalBtn = document.getElementById('openModelModalBtn'),
+      closeModelModalBtn = document.getElementById('closeModelModalBtn'),
+      headerModelBadge = document.getElementById('headerModelBadge'),
+      modelsListContainer = document.getElementById('modelsListContainer');
 
 tok.value = localStorage.getItem('sagi_token') || '';
 tok.onchange = () => localStorage.setItem('sagi_token', tok.value);
@@ -805,316 +410,200 @@ function save() {
   localStorage.setItem('sagi_chats_v2', JSON.stringify(chats.slice(0, 50)));
 }
 
-async function refreshActiveModel() {
-  try {
-    const res = await fetch('/api/models');
-    const j = await res.json();
-    if (j.ok) {
-      if (modelIndicatorText) modelIndicatorText.innerText = j.active;
-      if (sidebarActiveModel) sidebarActiveModel.innerText = j.active;
-    }
-  } catch(e) {}
-}
-refreshActiveModel();
-
-// Mobile Drawer Controls
-document.getElementById('openSidebar')?.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
-document.getElementById('closeSidebar')?.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
-
-// Input Word Counter
-inp.addEventListener('input', () => {
-  inp.style.height = 'auto';
-  inp.style.height = Math.min(190, inp.scrollHeight) + 'px';
-  const words = inp.value.trim().split(/\s+/).filter(Boolean).length;
-  if (charCounter) charCounter.innerText = `${words} kata`;
-});
-
-// Quick Prompt Chips
-document.querySelectorAll('.quick-chip').forEach(c => {
-  c.addEventListener('click', () => {
-    sfx.playClick();
-    inp.value = c.dataset.text;
-    inp.style.height = 'auto';
-    inp.style.height = Math.min(190, inp.scrollHeight) + 'px';
-    inp.focus();
-  });
-});
-
-/* Speech-to-Text Support */
-const micBtn = document.getElementById('micBtn');
-if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRec();
-  recognition.lang = 'id-ID';
-  recognition.continuous = false;
-  let listening = false;
-
-  micBtn.addEventListener('click', () => {
-    if (!listening) {
-      try {
-        recognition.start();
-        listening = true;
-        micBtn.classList.add('bg-rose-500/20', 'text-rose-400', 'border-rose-400/50', 'animate-pulse');
-        sfx.playTone(600, 0.1);
-      } catch(e) {}
-    } else {
-      recognition.stop();
-      listening = false;
-      micBtn.classList.remove('bg-rose-500/20', 'text-rose-400', 'border-rose-400/50', 'animate-pulse');
-    }
-  });
-
-  recognition.onresult = e => {
-    const transcript = e.results[0][0].transcript;
-    inp.value = (inp.value ? inp.value + ' ' : '') + transcript;
-    inp.dispatchEvent(new Event('input'));
-    listening = false;
-    micBtn.classList.remove('bg-rose-500/20', 'text-rose-400', 'border-rose-400/50', 'animate-pulse');
-    sfx.playTone(800, 0.1);
-  };
-
-  recognition.onerror = () => {
-    listening = false;
-    micBtn.classList.remove('bg-rose-500/20', 'text-rose-400', 'border-rose-400/50', 'animate-pulse');
-  };
-} else {
-  if (micBtn) micBtn.title = 'Speech recognition tidak didukung di browser ini';
-}
-
-/* Clear current chat */
-document.getElementById('clearChatBtn')?.addEventListener('click', () => {
-  if (cur >= 0 && chats[cur]) {
-    sfx.playAlert();
-    chats[cur].msgs = [];
-    save();
-    paint();
+/* ==========================================================================
+   MOBILE SIDEBAR TOGGLE
+   ========================================================================== */
+function toggleMobileSidebar(show) {
+  if (show) {
+    sidebar.classList.remove('-translate-x-full');
+    sidebarBackdrop.classList.remove('hidden');
+  } else {
+    sidebar.classList.add('-translate-x-full');
+    sidebarBackdrop.classList.add('hidden');
   }
-});
+}
+openSidebar.onclick = () => toggleMobileSidebar(true);
+closeSidebar.onclick = () => toggleMobileSidebar(false);
+sidebarBackdrop.onclick = () => toggleMobileSidebar(false);
 
 /* ==========================================================================
-   6. RENDERING SESSIONS & HERO SCREEN
+   SIDEBAR CONVERSATION LIST
    ========================================================================== */
 function renderList(query = '') {
   convs.innerHTML = '';
-  const filtered = chats.filter(c => (c.title || '').toLowerCase().includes(query.toLowerCase()));
-  chatCount.innerText = `${chats.length} sesi`;
+  chatCount.innerText = chats.length + ' sesi';
+
+  const q = query.toLowerCase().trim();
+  const filtered = chats
+    .map((c, idx) => ({ ...c, originalIdx: idx }))
+    .filter(c => !q || (c.title || '').toLowerCase().includes(q));
 
   if (!filtered.length) {
-    convs.innerHTML = '<div class="text-[11px] font-mono text-slate-500 py-4 px-2 text-center">Belum ada sesi percakapan.</div>';
+    convs.innerHTML = `<div class="px-2 py-3 text-xs text-slate-600 text-center font-mono">Belum ada sesi</div>`;
     return;
   }
 
-  filtered.forEach((c, idx) => {
-    const realIdx = chats.indexOf(c);
-    const b = document.createElement('div');
-    const isActive = realIdx === cur;
-    
-    b.className = `w-full text-left px-3 py-2 rounded-xl text-xs transition-all flex items-center justify-between group cursor-pointer ${
+  filtered.forEach(c => {
+    const d = document.createElement('div');
+    const isActive = c.originalIdx === cur;
+    d.className = `group flex items-center justify-between px-2.5 py-2 rounded-lg cursor-pointer text-xs transition-colors ${
       isActive 
-        ? 'font-semibold border shadow-sm' 
-        : 'hover:bg-white/[0.04] text-slate-400 hover:text-slate-200 border border-transparent'
+        ? 'bg-surface-card border border-hairline-strong text-white' 
+        : 'text-slate-400 hover:text-slate-200 hover:bg-surface-card/60'
     }`;
-    if (isActive) {
-      b.style.backgroundColor = 'rgba(var(--accent-rgb), 0.12)';
-      b.style.borderColor = 'rgba(var(--accent-rgb), 0.3)';
-      b.style.color = 'var(--accent-primary)';
-    }
 
-    b.innerHTML = `
-      <div class="truncate flex items-center gap-2 flex-1 mr-2">
-        <span class="text-xs opacity-70">💬</span>
-        <span class="truncate">${esc(c.title || 'Investigasi ' + (realIdx + 1))}</span>
+    d.innerHTML = `
+      <div class="flex items-center gap-2 truncate flex-1 min-w-0">
+        <svg class="w-3.5 h-3.5 flex-shrink-0 ${isActive ? 'text-amber-500' : 'text-slate-500'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        <span class="truncate">${esc(c.title || 'Percakapan baru')}</span>
       </div>
-      <button class="del-chat p-1 rounded hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity" title="Hapus sesi">
-        ✕
+      <button class="del-btn opacity-0 group-hover:opacity-100 p-1 text-slate-500 hover:text-rose-400 rounded transition-opacity" title="Hapus">
+        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
       </button>
     `;
 
-    b.onclick = (e) => {
-      if (e.target.closest('.del-chat')) {
+    d.onclick = (e) => {
+      if (e.target.closest('.del-btn')) {
         e.stopPropagation();
-        sfx.playAlert();
-        chats.splice(realIdx, 1);
-        if (cur >= chats.length) cur = chats.length - 1;
+        chats.splice(c.originalIdx, 1);
+        if (cur === c.originalIdx) cur = -1;
+        else if (cur > c.originalIdx) cur--;
         save();
         renderList(query);
         paint();
         return;
       }
-      sfx.playClick();
-      cur = realIdx;
-      paint();
+      cur = c.originalIdx;
+      sid = c.id;
+      localStorage.setItem('sagi_sid', sid);
       renderList(query);
-      if (window.innerWidth < 768) sidebar.classList.add('-translate-x-full');
+      paint();
+      toggleMobileSidebar(false);
     };
 
-    convs.appendChild(b);
+    convs.appendChild(d);
   });
 }
 
-document.getElementById('searchConv')?.addEventListener('input', e => {
+document.getElementById('searchConv').oninput = (e) => {
   renderList(e.target.value);
-});
+};
 
+/* ==========================================================================
+   CONVERSATION PAINTING & EMPTY STATE
+   ========================================================================== */
 function paint() {
   box.innerHTML = '';
   if (cur < 0 || !chats[cur] || !chats[cur].msgs.length) {
-    renderHero();
+    renderEmptyState();
     return;
   }
   chats[cur].msgs.forEach(m => appendBubble(m.w, m.h, m.meta || '', m.rawVerdict || null, m.rawSources || null, false));
+  box.scrollTop = box.scrollHeight;
 }
 
-function renderHero() {
+function renderEmptyState() {
   box.innerHTML = `
-    <div class="my-auto py-8 sm:py-16 text-center max-w-2xl mx-auto space-y-6">
+    <div class="my-auto py-12 text-center max-w-lg mx-auto space-y-6">
       
-      <!-- Architectural Monogram Emblem -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-mono shadow-sm"
-           style="background: rgba(var(--accent-rgb), 0.08); border-color: rgba(var(--accent-rgb), 0.25); color: var(--accent-primary);">
-        <span class="w-1.5 h-1.5 rounded-full animate-ping" style="background-color: var(--accent-primary);"></span>
-        <span>PLOSAGATA A-1.0 · 12M HYBRID NEURAL VERIFIER</span>
-      </div>
-
-      <!-- Hero Typography -->
-      <div class="space-y-3">
-        <h1 class="text-3xl sm:text-5xl font-serif font-normal tracking-tight" style="color: var(--text-main);">
+      <div class="space-y-2">
+        <h1 class="text-2xl sm:text-3xl font-serif text-white tracking-tight">
           Verifikasi Berita & Cek Fakta
         </h1>
-        <p class="text-sm sm:text-base max-w-lg mx-auto font-light leading-relaxed" style="color: var(--text-muted);">
-          Asisten AI interaktif untuk membongkar hoaks, phishing digital, narasi manipulatif, dan kabar viral tanpa sumber resmi.
+        <p class="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed">
+          Asisten AI murni Plosagata untuk menguji keabsahan kabar viral, modus penipuan APK, dan disinformasi digital di Indonesia.
         </p>
       </div>
 
-      <!-- Quick Interactive Exploration Matrix -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 text-left">
-        
-        <div data-q="Bener gak giveaway iPhone 15 gratis cuma klik link bit.ly dan masukkan kode OTP?" 
-             class="card-prompt glass-panel p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all group">
-          <div class="flex items-center justify-between text-xs font-mono mb-1.5">
-            <span class="text-rose-400 font-semibold flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-rose-400"></span>
-              Phishing & Scam
-            </span>
-            <span class="group-hover:translate-x-1 transition-transform" style="color: var(--accent-primary);">→</span>
-          </div>
-          <div class="text-xs font-semibold text-slate-100">Bocoran giveaway iPhone klik tautan singkat</div>
-          <div class="text-[11px] text-slate-400 mt-1">Deteksi pencurian akun & rekayasa sosial</div>
-        </div>
+      <!-- Discreet Starter Prompts -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left pt-2">
+        <button class="starter-card p-3 rounded-lg border border-hairline bg-surface-card hover:border-hairline-strong transition-colors text-xs space-y-1"
+                data-prompt="Apakah benar modus penipuan lewat file SuratTilang.apk bisa menguras saldo rekening?">
+          <div class="font-medium text-slate-200">Modus Sniffing APK</div>
+          <div class="text-[11px] text-slate-500">Pencurian OTP lewat surat tilang/kurir</div>
+        </button>
 
-        <div data-q="Pemerintah resmi menyalurkan bansos BLT melalui kantor pos menurut situs resmi kemensos.go.id" 
-             class="card-prompt glass-panel p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all group">
-          <div class="flex items-center justify-between text-xs font-mono mb-1.5">
-            <span class="text-emerald-400 font-semibold flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              Kebijakan Resmi
-            </span>
-            <span class="group-hover:translate-x-1 transition-transform" style="color: var(--accent-primary);">→</span>
-          </div>
-          <div class="text-xs font-semibold text-slate-100">Penyaluran BLT Kemensos via Kantor Pos</div>
-          <div class="text-[11px] text-slate-400 mt-1">Validasi domain kementerian resmi .go.id</div>
-        </div>
+        <button class="starter-card p-3 rounded-lg border border-hairline bg-surface-card hover:border-hairline-strong transition-colors text-xs space-y-1"
+                data-prompt="Benarkah pemerintah membagikan bansos BLT 100GB kuota lewat tautan bit.ly ini?">
+          <div class="font-medium text-slate-200">Phishing Bansos</div>
+          <div class="text-[11px] text-slate-500">Validasi tautan dan domain resmi</div>
+        </button>
 
-        <div data-q="VIRAL! Minum rebusan paku dan daun sirih menyembuhkan kanker dalam 3 hari, sebarkan sebelum dihapus!" 
-             class="card-prompt glass-panel p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all group">
-          <div class="flex items-center justify-between text-xs font-mono mb-1.5">
-            <span class="text-amber-400 font-semibold flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-              Hoaks Kesehatan
-            </span>
-            <span class="group-hover:translate-x-1 transition-transform" style="color: var(--accent-primary);">→</span>
-          </div>
-          <div class="text-xs font-semibold text-slate-100">Klaim obat ajaib kanker tanpa uji medis</div>
-          <div class="text-[11px] text-slate-400 mt-1">Pembedahan bahaya toksik & pseudosains</div>
-        </div>
+        <button class="starter-card p-3 rounded-lg border border-hairline bg-surface-card hover:border-hairline-strong transition-colors text-xs space-y-1"
+                data-prompt="Bener gak ada kabar BMKG prediksi gempa megathrust besok malam jam 23.00?">
+          <div class="font-medium text-slate-200">Isu Megathrust</div>
+          <div class="text-[11px] text-slate-500">Kroscek peringatan kebencanaan BMKG</div>
+        </button>
 
-        <div data-q="Tolong buatkan kode python untuk game snake" 
-             class="card-prompt glass-panel p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all group">
-          <div class="flex items-center justify-between text-xs font-mono mb-1.5">
-            <span class="text-sky-400 font-semibold flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-              Uji Guardrail AI
-            </span>
-            <span class="group-hover:translate-x-1 transition-transform" style="color: var(--accent-primary);">→</span>
-          </div>
-          <div class="text-xs font-semibold text-slate-100">Permintaan kode pemrograman di luar ranah berita</div>
-          <div class="text-[11px] text-slate-400 mt-1">Evaluasi mekanisme penolakan sopan Sagi</div>
-        </div>
-
+        <button class="starter-card p-3 rounded-lg border border-hairline bg-surface-card hover:border-hairline-strong transition-colors text-xs space-y-1"
+                data-prompt="Ketikkan /models untuk melihat model AI yang tersedia di server">
+          <div class="font-medium text-slate-200">Perintah Sistem</div>
+          <div class="text-[11px] text-slate-500">Ketik /help atau /models</div>
+        </button>
       </div>
+
     </div>
   `;
 
-  box.querySelectorAll('.card-prompt').forEach(card => {
-    card.onclick = () => {
-      sfx.playClick();
-      inp.value = card.dataset.q;
-      kirim();
+  box.querySelectorAll('.starter-card').forEach(btn => {
+    btn.onclick = () => {
+      inp.value = btn.getAttribute('data-prompt');
+      inp.focus();
+      autoGrow();
     };
   });
 }
 
 /* ==========================================================================
-   7. MESSAGE BUBBLES WITH VERDICT GAUGES & ACTION TOOLBARS
+   MESSAGE BUBBLE RENDERING (Restrained, Editorial, Clean)
    ========================================================================== */
 function appendBubble(who, htmlContent, meta = '', rawVerdict = null, rawSources = null, shouldAnimate = true) {
   const isUser = who === 'u';
   const row = document.createElement('div');
-  row.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1.5 w-full`;
+  row.className = `w-full flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1`;
 
   if (isUser) {
     row.innerHTML = `
-      <div class="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-sm px-4 py-3 text-sm sm:text-[15px] text-slate-100 shadow-md leading-relaxed border"
-           style="background-color: var(--bg-user-bubble); border-color: var(--border-subtle);">
+      <div class="max-w-[85%] sm:max-w-[75%] rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-slate-100 bg-surface-bubbleUser border border-hairline leading-relaxed">
         ${esc(htmlContent)}
       </div>
-      <div class="text-[10px] font-mono text-slate-500 px-1">${now()}</div>
+      <div class="text-[10px] font-mono text-slate-600 px-1">${now()}</div>
     `;
   } else {
-    // Generate Verdict Gauge Widget if verdict exists
+    // Generate Verdict Summary Card if verdict exists
     let verdictHtml = '';
     if (rawVerdict) {
       const v = rawVerdict;
       const label = (v.label || 'meragukan').toLowerCase();
       const skor = typeof v.skor === 'number' ? v.skor : 50;
 
-      let themeColor = '#f59e0b';
-      let themeBg = 'rgba(245, 158, 11, 0.12)';
-      let themeBorder = 'rgba(245, 158, 11, 0.3)';
-      let labelBadge = 'MERAGUKAN / PERLU BUKTI';
-
+      let badgeColor = 'text-amber-400 bg-amber-400/10 border-amber-400/30';
+      let labelText = 'MERAGUKAN';
       if (label === 'hoaks') {
-        themeColor = '#f43f5e';
-        themeBg = 'rgba(244, 63, 94, 0.12)';
-        themeBorder = 'rgba(244, 63, 94, 0.35)';
-        labelBadge = 'HOAKS / INDIKASI KUAT PALSU';
+        badgeColor = 'text-rose-400 bg-rose-400/10 border-rose-400/30';
+        labelText = 'HOAKS';
       } else if (label === 'valid') {
-        themeColor = '#10b981';
-        themeBg = 'rgba(16, 185, 129, 0.12)';
-        themeBorder = 'rgba(16, 185, 129, 0.35)';
-        labelBadge = 'VALID / TERKONFIRMASI RESMI';
+        badgeColor = 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30';
+        labelText = 'VALID';
       } else if (label === 'fiksi') {
-        themeColor = '#38bdf8';
-        themeBg = 'rgba(56, 189, 248, 0.12)';
-        themeBorder = 'rgba(56, 189, 248, 0.35)';
-        labelBadge = 'FIKSI / REKAAN CERITA';
+        badgeColor = 'text-sky-400 bg-sky-400/10 border-sky-400/30';
+        labelText = 'FIKSI';
       }
 
-      // Circumference for 24 radius circle is ~150.8
-      const radius = 24;
-      const circ = 2 * Math.PI * radius;
-      const strokeOffset = circ - (skor / 100) * circ;
-
+      // Compact Source Pills
       let sourcesHtml = '';
       if (rawSources) {
         (rawSources.wikipedia || []).forEach(s => {
           if (s.url) {
             sourcesHtml += `
               <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
-                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-mono text-slate-300 hover:text-white transition-colors"
-                 style="background: rgba(255,255,255,0.04); border-color: var(--border-subtle);">
-                <span class="text-slate-400">Wiki:</span>
-                <span class="font-medium truncate max-w-[140px] sm:max-w-[200px]">${esc(s.judul)}</span>
+                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-slate-300">
+                <span class="text-slate-500">Wiki:</span>
+                <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
                 <span class="text-[9px]">↗</span>
               </a>
             `;
@@ -1124,144 +613,51 @@ function appendBubble(who, htmlContent, meta = '', rawVerdict = null, rawSources
           if (s.url) {
             sourcesHtml += `
               <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
-                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-mono text-cyan-300 hover:text-cyan-200 transition-colors"
-                 style="background: rgba(6, 182, 212, 0.1); border-color: rgba(6, 182, 212, 0.25);">
-                <span class="text-cyan-400">🌐 Web:</span>
-                <span class="font-medium truncate max-w-[140px] sm:max-w-[200px]">${esc(s.judul)}</span>
+                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-cyan-300">
+                <span class="text-cyan-500">Web:</span>
+                <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
                 <span class="text-[9px]">↗</span>
               </a>
             `;
           }
         });
         (rawSources.cek_fakta || []).forEach(s => {
-          sourcesHtml += `
-            <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
-               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-mono text-emerald-300 hover:text-emerald-200 transition-colors"
-               style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25);">
-              <span>${esc(s.judul)}</span>
-              <span class="text-[9px]">↗</span>
-            </a>
-          `;
+          if (s.url) {
+            sourcesHtml += `
+              <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-emerald-300">
+                <span class="text-emerald-500">CekFakta:</span>
+                <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
+                <span class="text-[9px]">↗</span>
+              </a>
+            `;
+          }
         });
       }
 
       verdictHtml = `
-        <div class="mt-4 p-4 rounded-2xl border space-y-3"
-             style="background: ${themeBg}; border-color: ${themeBorder};">
-          
-          <div class="flex items-center justify-between flex-wrap gap-3">
-            
-            <div class="flex items-center gap-3">
-              <!-- Animated SVG Gauge -->
-              <div class="relative w-14 h-14 flex items-center justify-center flex-shrink-0">
-                <svg class="w-14 h-14 transform -rotate-90">
-                  <circle cx="28" cy="28" r="${radius}" stroke="rgba(255,255,255,0.1)" stroke-width="4.5" fill="none"/>
-                  <circle cx="28" cy="28" r="${radius}" stroke="${themeColor}" stroke-width="4.5" stroke-dasharray="${circ}" stroke-dashoffset="${strokeOffset}" stroke-linecap="round" fill="none" class="transition-all duration-1000"/>
-                </svg>
-                <div class="absolute inset-0 flex flex-col items-center justify-center font-mono font-bold text-xs" style="color: ${themeColor};">
-                  <span>${skor}</span>
-                  <span class="text-[8px] opacity-70 -mt-1">SKOR</span>
-                </div>
-              </div>
-
-              <div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border"
-                     style="background: rgba(0,0,0,0.3); color: ${themeColor}; border-color: ${themeColor};">
-                  <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${themeColor};"></span>
-                  <span>${labelBadge}</span>
-                </div>
-                <div class="text-xs text-slate-300 font-medium mt-1">
-                  ${esc(v.kesimpulan || 'Hasil verifikasi objektif.')}
-                </div>
-              </div>
+        <div class="mb-3 px-3.5 py-2.5 rounded-lg border border-hairline bg-surface-card space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded border text-[10px] font-bold tracking-wide ${badgeColor}">
+                ${labelText}
+              </span>
+              <span class="text-slate-400 text-[11px]">Skor Hoaks: <strong class="text-white">${skor}%</strong></span>
             </div>
-
-            <!-- Model Core Stamp -->
-            <div class="text-[10px] font-mono text-cyan-300 bg-cyan-950/40 px-2.5 py-1 rounded-lg border border-cyan-500/20 flex items-center gap-1.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-              Plosagata_Browser 25M
-            </div>
-
+            <span class="text-[10px] text-slate-500 font-mono">Model 12M + RAG</span>
           </div>
-
-          <!-- Citation Links Matrix -->
-          ${sourcesHtml ? `
-            <div class="pt-2.5 border-t border-white/[0.07] flex flex-wrap items-center gap-1.5">
-              <span class="text-[10px] font-mono text-slate-400 mr-1">Rujukan Cek Fakta:</span>
-              ${sourcesHtml}
-            </div>
-          ` : ''}
-
+          ${sourcesHtml ? `<div class="flex flex-wrap gap-1.5 pt-1 border-t border-hairline">${sourcesHtml}</div>` : ''}
         </div>
       `;
     }
 
-    const bubbleId = 'bubble-' + Math.random().toString(36).slice(2, 9);
-
     row.innerHTML = `
-      <div class="w-full flex items-start gap-3">
-        <!-- Assistant Avatar Monogram -->
-        <div class="w-8 h-8 rounded-xl border flex items-center justify-center text-xs font-serif italic font-bold flex-shrink-0 mt-0.5 shadow-sm"
-             style="background: var(--bg-card); border-color: var(--border-strong); color: var(--accent-primary);">
-          S
-        </div>
-        
-        <div class="flex-1 space-y-2 max-w-full">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold" style="color: var(--text-main);">Sagi AI</span>
-              <span class="text-[10px] font-mono text-slate-500">${meta || now()}</span>
-            </div>
-
-            <!-- Action Toolbar (Copy / Listen / Export) -->
-            <div class="flex items-center gap-1 text-slate-400">
-              <button class="copy-btn p-1 rounded-md hover:bg-white/[0.06] hover:text-white transition-colors" title="Salin Jawaban" data-target="${bubbleId}">
-                📋
-              </button>
-              <button class="speak-btn p-1 rounded-md hover:bg-white/[0.06] hover:text-amber-400 transition-colors" title="Dengarkan Suara" data-target="${bubbleId}">
-                🔊
-              </button>
-            </div>
-          </div>
-
-          <!-- Assistant Content Box -->
-          <div id="${bubbleId}" class="rounded-2xl rounded-tl-sm p-4 sm:p-5 text-sm sm:text-[15px] text-slate-200 leading-relaxed shadow-sm border"
-               style="background-color: var(--bg-bot-bubble); border-color: var(--border-subtle);">
-            <div class="assistant-text-content whitespace-pre-line leading-relaxed space-y-2">
-              ${htmlContent}
-            </div>
-            ${verdictHtml}
-          </div>
-        </div>
+      <div class="w-full text-xs sm:text-sm text-slate-200 leading-relaxed space-y-2 font-sans">
+        ${verdictHtml}
+        <div class="response-content">${htmlContent}</div>
       </div>
+      <div class="text-[10px] font-mono text-slate-600 px-1 mt-1">${meta || now()}</div>
     `;
-
-    // Hook Copy Action
-    row.querySelector('.copy-btn')?.addEventListener('click', function() {
-      const text = row.querySelector('.assistant-text-content')?.innerText || '';
-      navigator.clipboard.writeText(text);
-      sfx.playClick();
-      this.innerText = '✅';
-      setTimeout(() => { this.innerText = '📋'; }, 1500);
-    });
-
-    // Hook Text-to-Speech Action
-    row.querySelector('.speak-btn')?.addEventListener('click', function() {
-      const text = row.querySelector('.assistant-text-content')?.innerText || '';
-      if (!window.speechSynthesis) return;
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-        this.innerText = '🔊';
-        return;
-      }
-      sfx.playTone(700, 0.08);
-      const utter = new SpeechSynthesisUtterance(text.replace(/###|##|#|\*|_|•/g, ''));
-      utter.lang = 'id-ID';
-      utter.rate = 1.05;
-      utter.onend = () => { this.innerText = '🔊'; };
-      this.innerText = '⏹️';
-      window.speechSynthesis.speak(utter);
-    });
   }
 
   box.appendChild(row);
@@ -1270,8 +666,13 @@ function appendBubble(who, htmlContent, meta = '', rawVerdict = null, rawSources
 
 function pushHistory(w, h, meta, rawVerdict = null, rawSources = null) {
   if (cur < 0) {
-    chats.unshift({ title: h.slice(0, 32), msgs: [] });
     cur = 0;
+    chats.unshift({
+      id: sid,
+      title: (w === 'u' ? h.slice(0, 32) : 'Cek Fakta'),
+      ts: Date.now(),
+      msgs: []
+    });
   }
   chats[cur].msgs.push({ w, h, meta, rawVerdict, rawSources });
   save();
@@ -1279,13 +680,21 @@ function pushHistory(w, h, meta, rawVerdict = null, rawSources = null) {
 }
 
 /* ==========================================================================
-   8. SEND MESSAGE & REAL-TIME STREAMING SIMULATION
+   INPUT AUTOGROW & SEND ACTION
    ========================================================================== */
+function autoGrow() {
+  inp.style.height = 'auto';
+  inp.style.height = Math.min(inp.scrollHeight, 180) + 'px';
+  btn.disabled = !inp.value.trim();
+  const words = (inp.value.trim().match(/\S+/g) || []).length;
+  charCounter.innerText = `${words} kata`;
+}
+inp.addEventListener('input', autoGrow);
+
 async function kirim() {
   const text = inp.value.trim();
   if (!text) return;
 
-  sfx.playSend();
   inp.value = '';
   inp.style.height = 'auto';
   btn.disabled = true;
@@ -1293,22 +702,12 @@ async function kirim() {
   appendBubble('u', text);
   pushHistory('u', text);
 
-  // Animated Multi-Bar Waveform Indicator (Cursor & AntiGravity Style)
+  // Loading indicator
   const lod = document.createElement('div');
-  lod.className = 'w-full flex items-start gap-3';
+  lod.className = 'w-full flex items-center gap-2 text-xs font-mono text-slate-500 py-1';
   lod.innerHTML = `
-    <div class="w-8 h-8 rounded-xl border flex items-center justify-center text-xs font-serif italic text-slate-400 flex-shrink-0"
-         style="background: var(--bg-card); border-color: var(--border-subtle);">S</div>
-    <div class="flex items-center gap-3 px-4 py-2.5 rounded-2xl border text-xs font-mono"
-         style="background: var(--bg-card); border-color: var(--border-subtle); color: var(--text-muted);">
-      <div class="flex items-center gap-1 h-3.5">
-        <span class="w-1 h-3.5 rounded-full wave-1" style="background-color: var(--accent-primary);"></span>
-        <span class="w-1 h-3.5 rounded-full wave-2" style="background-color: var(--accent-primary);"></span>
-        <span class="w-1 h-3.5 rounded-full wave-3" style="background-color: var(--accent-primary);"></span>
-        <span class="w-1 h-3.5 rounded-full wave-4" style="background-color: var(--accent-primary);"></span>
-      </div>
-      <span>Memproses penalaran neural & memindai sumber fakta...</span>
-    </div>
+    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 pulse-dot"></span>
+    <span>Menganalisis penalaran neural & sumber data...</span>
   `;
   box.appendChild(lod);
   box.scrollTop = box.scrollHeight;
@@ -1320,37 +719,35 @@ async function kirim() {
         'Content-Type': 'application/json',
         'X-Sagi-Token': tok.value
       },
-      body: JSON.stringify({
-        message: text,
-        session: sid
-      })
+      body: JSON.stringify({ message: text, session: sid })
     });
     const j = await res.json();
     lod.remove();
 
     if (!j.ok) {
-      sfx.playAlert();
-      const errTxt = `<div class="text-rose-400 font-mono text-xs">⚠️ Terjadi kendala engine: ${esc(j.error || 'Gagal memproses.')}</div>`;
-      appendBubble('a', errTxt);
-      pushHistory('a', errTxt);
+      const errHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Kendala: ${esc(j.error || 'Gagal memproses.')}</div>`;
+      appendBubble('a', errHtml);
+      pushHistory('a', errHtml);
       btn.disabled = false;
       inp.focus();
       return;
     }
 
-    sfx.playReceive();
-
-    // Stream typed response simulation
     const rawReply = j.reply || '';
     const formattedHtml = formatMarkdown(rawReply);
+    const metaTag = `${j.model_size || 'Plosagata'} · ${now()}`;
 
-    appendBubble('a', formattedHtml, `${j.model_size || 'Plosagata'} · ${now()}`, j.verdict || null, j.sumber || null, true);
-    pushHistory('a', formattedHtml, `${j.model_size || 'Plosagata'}`, j.verdict || null, j.sumber || null);
+    appendBubble('a', formattedHtml, metaTag, j.verdict || null, j.sumber || null, true);
+    pushHistory('a', formattedHtml, metaTag, j.verdict || null, j.sumber || null);
+
+    if (j.model_size) {
+      modelIndicatorText.innerText = j.model_size;
+      sidebarActiveModel.innerText = j.model_size;
+    }
 
   } catch (err) {
     lod.remove();
-    sfx.playAlert();
-    const failHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Server tidak dapat dijangkau. Pastikan backend Sagi sedang berjalan.</div>`;
+    const failHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Server tidak dapat dijangkau. Pastikan server lokal Sagi berjalan.</div>`;
     appendBubble('a', failHtml);
     pushHistory('a', failHtml);
   }
@@ -1367,17 +764,27 @@ inp.addEventListener('keydown', e => {
   }
 });
 
-/* New Chat Button */
+/* ==========================================================================
+   NEW CHAT & SHORTCUTS
+   ========================================================================== */
 document.getElementById('newchat').onclick = () => {
-  sfx.playClick();
   cur = -1;
   sid = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   localStorage.setItem('sagi_sid', sid);
   paint();
   renderList();
+  toggleMobileSidebar(false);
+  inp.focus();
 };
 
-/* Keyboard Shortcut: ⌘N / Ctrl+N for new session */
+document.getElementById('clearChatBtn').onclick = () => {
+  if (cur >= 0 && chats[cur]) {
+    chats[cur].msgs = [];
+    save();
+    paint();
+  }
+};
+
 window.addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'n') {
     e.preventDefault();
@@ -1385,8 +792,59 @@ window.addEventListener('keydown', e => {
   }
 });
 
+/* ==========================================================================
+   MODEL SWITCHER MODAL
+   ========================================================================== */
+async function fetchModels() {
+  try {
+    const res = await fetch('/api/models');
+    const data = await res.json();
+    if (!data.ok) return;
+
+    modelsListContainer.innerHTML = '';
+    (data.models || []).forEach(m => {
+      const isAct = m.name === data.active;
+      const el = document.createElement('div');
+      el.className = `p-3 rounded-lg border cursor-pointer transition-colors ${
+        isAct ? 'border-amber-500 bg-amber-500/10' : 'border-hairline bg-surface-card hover:bg-surface-cardHover'
+      }`;
+      el.innerHTML = `
+        <div class="flex items-center justify-between text-xs">
+          <div class="font-bold text-white font-mono">${esc(m.name)}</div>
+          <span class="text-[10px] font-mono text-slate-400">${(m.params / 1e6).toFixed(1)}M Param</span>
+        </div>
+        <div class="text-[11px] text-slate-400 mt-1">${esc(m.desc || '')}</div>
+        <div class="flex items-center justify-between mt-2 text-[10px] font-mono text-slate-500 border-t border-hairline pt-1.5">
+          <span>${m.trained ? '✅ Terlatih' : '⚠️ Menunggu Training'}</span>
+          ${isAct ? '<span class="text-amber-500 font-bold">AKTIF</span>' : '<span class="text-slate-400">Pilih →</span>'}
+        </div>
+      `;
+      el.onclick = async () => {
+        modelModal.classList.add('hidden');
+        inp.value = `/model ${m.name}`;
+        kirim();
+      };
+      modelsListContainer.appendChild(el);
+    });
+  } catch (e) {}
+}
+
+openModelModalBtn.onclick = () => {
+  modelModal.classList.remove('hidden');
+  fetchModels();
+};
+headerModelBadge.onclick = () => {
+  modelModal.classList.remove('hidden');
+  fetchModels();
+};
+closeModelModalBtn.onclick = () => {
+  modelModal.classList.add('hidden');
+};
+
+/* Initial render */
 renderList();
 paint();
+autoGrow();
 </script>
 </body>
 </html>

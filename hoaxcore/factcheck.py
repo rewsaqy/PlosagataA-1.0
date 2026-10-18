@@ -1,12 +1,9 @@
-"""Fact-check silang ke LLM / search API.
+"""Fact-check lokal: heuristic murni, tanpa API key, 100% offline.
 
-Default: heuristic lokal (tanpa API key) supaya demo lomba tetap jalan.
-Kalau ada OPENAI_API_KEY / GEMINI_API_KEY, tinggal aktifkan fungsi di bawah.
-Untuk lomba: jelaskan ini sebagai modul RAG — model 12M kasih skor cepat,
-LLM kasih verifikasi + sumber.
+Model 12M kasih skor cepat; heuristic di sini yang menentukan kesimpulan
+akhir lewat satu pintu final_label(). Tidak ada panggilan API luar.
 """
 import hashlib as _hl
-import os
 import re
 
 HOAX_KEYWORDS = [
@@ -14,7 +11,7 @@ HOAX_KEYWORDS = [
     "info bocoran", "katanya", "konon", "tanpa sumber",
     "klik link ini", "ambil hadiah", "giveaway", "transfer dulu",
     "chip", "microchip", "vaksin menyebabkan", "bumbu dapur menyembuhkan kanker",
-    "viral", "menyebar", "sebarkan", "tanpa izin", "tanpa menyebutkan",
+    "viral", "menyebar", "tanpa izin", "tanpa menyebutkan",
     "tidak menyebutkan", "tanpa nama", "tanpa bukti", "matikan",
     "wajib sebarkan", "jangan diam saja", "sebelum terlambat",
     "terbukti", "100% ampuh", "dijamin", "garansi",
@@ -412,10 +409,8 @@ def susun_jawaban_cerdas(
     label: str = "meragukan",
     skor: int = 50,
     kesimpulan: str = "",
-    sumber: dict | None = None,
     fiksi: list | None = None,
     sinyal: dict | None = None,
-    saran: list | None = None,
 ) -> str:
     """Susun jawaban pelurusan fakta yang cerdas, kontekstual, manusiawi, dan natural seperti AI berfikir."""
     t_clean = (teks or "").lower()
@@ -624,11 +619,9 @@ def ringkasan_hasil(
     label: str,
     skor: int,
     kesimpulan: str,
-    sumber: dict | None = None,
     fiksi: list | None = None,
     teks: str = "",
     sinyal: dict | None = None,
-    saran: list | None = None,
 ) -> str:
     """Balasan ekstraktif/sintesis cerdas saat model generatif belum aktif."""
     return susun_jawaban_cerdas(
@@ -636,19 +629,9 @@ def ringkasan_hasil(
         label=label,
         skor=skor,
         kesimpulan=kesimpulan,
-        sumber=sumber,
         fiksi=fiksi,
         sinyal=sinyal,
-        saran=saran,
     )
-
-
-def llm_crosscheck(text: str, api: str = "auto") -> dict:
-    """Template integrasi LLM. Isi dengan API call kalau sudah punya key."""
-    key = os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")
-    if not key:
-        return {"ok": False, "msg": "Tidak ada API key. Pakai local_verdict untuk demo."}
-    return {"ok": False, "msg": "Belum diimplementasikan — contoh template di factcheck.py"}
 
 
 def format_creator_script(text: str, verdict: dict, sumber: dict | None = None) -> dict:

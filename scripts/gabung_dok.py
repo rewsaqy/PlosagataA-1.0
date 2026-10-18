@@ -28,7 +28,7 @@ BAGIAN = [
 
 
 def main():
-    out = [f"# ULTIMATE PlosagataA-1.0 — Satu Kesatuan Dokumentasi\n",
+    out = ["# ULTIMATE PlosagataA-1.0 — Satu Kesatuan Dokumentasi\n",
            f"> Digenerate otomatis {date.today()} oleh `scripts/gabung_dok.py`. "
            "JANGAN edit file ini — edit file sumbernya, lalu generate ulang.\n",
            "## Daftar Isi\n"]

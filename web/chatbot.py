@@ -14,7 +14,6 @@ from hoaxcore import (
 from plosagata import (
     CONFIGS,
     PureGPT,
-    build_constitutional_refusal,
     inspect_security,
     is_follow_up_safe,
     is_news_topic,
@@ -113,11 +112,6 @@ class SagiEngine:
             except Exception:
                 continue
         return sorted(list(set(ada)))
-
-    @staticmethod
-    def _cari_ckpt_otomatis(size):
-        """DIPENSIUNKAN, jangan pakai (lihat BUGS.md). Disimpan agar API lama tak pecah."""
-        return ""
 
     def _get_model(self):
         if self.model is None:
@@ -258,7 +252,7 @@ class SagiEngine:
         try:
             sumber = cari_sumber(kueri)
         except Exception:
-            sumber = {"kueri": "", "wikipedia": [], "cek_fakta": []}
+            sumber = {"kueri": "", "wikipedia": [], "web": [], "cek_fakta": []}
         verdict = {**v, "label": lv["label_final"],
                    "skor": lv["skor_hoaks"], "kesimpulan": lv["kesimpulan"]}
         if not self.trained and not pure_think:
@@ -266,11 +260,9 @@ class SagiEngine:
                 label=verdict["label"],
                 skor=lv["skor_hoaks"],
                 kesimpulan=lv["kesimpulan"],
-                sumber=sumber,
                 fiksi=lv["sinyal"].get("fiksi_hits"),
                 teks=klaim,
                 sinyal=lv["sinyal"],
-                saran=lv["saran"],
             )
             if topic == "followup":
                 isi = "Merujuk berita tadi:\n" + isi

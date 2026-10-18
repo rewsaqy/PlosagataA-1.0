@@ -16,7 +16,6 @@ import argparse
 import json
 import math
 import os
-import shutil
 import sys
 import time
 from pathlib import Path
@@ -26,7 +25,6 @@ sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
@@ -48,8 +46,14 @@ class ChatLMDataset(Dataset):
         msgs = self.rows[i].get("messages", [])
         text = normalize_slang("\n".join(f"{m['role']}: {m['content']}" for m in msgs))
         ids, _ = self.tok.encode(text)
-        ids = ids[:self.max_len]
         pad = self.tok.pad_id
+
+        # Potong trailing pad agar komputasi dinamis sesuai panjang aktual teks (20x lebih cepat!)
+        real_len = len(ids)
+        while real_len > 0 and ids[real_len - 1] == pad:
+            real_len -= 1
+        ids = ids[:max(real_len, 3)]
+        ids = ids[:self.max_len]
 
         # Target token padding bernilai -100 agar diabaikan dalam cross-entropy
         x = torch.tensor(ids[:-1], dtype=torch.long)
@@ -128,15 +132,28 @@ def main():
     parser.add_argument("--resume", default="", help="Path checkpoint untuk melanjutkan latihan")
     parser.add_argument("--device", default="auto", choices=["auto", "cpu", "cuda"], help="Perangkat komputasi")
     parser.add_argument("--fp16", action="store_true", help="Aktifkan mixed precision FP16 (khusus CUDA)")
+    parser.add_argument("--fast", action="store_true", help="Mode kilat (subset 1.500 sampel, selesai dalam ~3-4 menit di CPU)")
+    parser.add_argument("--max-samples", type=int, default=0, help="Batasi jumlah sampel dataset (0 = semua)")
+    parser.add_argument("--log-interval", type=int, default=15, help="Interval cetak progres langkah (default: 15)")
     parser.add_argument("--smoke-test", action="store_true", default=True, help="Jalankan smoke test setelah training")
     args = parser.parse_args()
 
-    # Setup device
+    # Setup device & threading
     if args.device == "auto":
         device = "cuda" if torch.cuda.is_available() else "cpu"
     else:
         device = args.device
     use_fp16 = args.fp16 and device == "cuda"
+
+    if device == "cpu":
+        cores = os.cpu_count() or 16
+        torch.set_num_threads(cores)
+
+    if args.fast:
+        if args.max_samples == 0:
+            args.max_samples = 1500
+        if args.batch == 8:
+            args.batch = 16
 
     print("=" * 70)
     print("🌐 PLOSAGATA_BROWSER (25M CORE) — PELATIHAN MANDIRI HYBRID AI")
@@ -162,7 +179,10 @@ def main():
             line = line.strip()
             if line:
                 rows.append(json.loads(line))
-    print(f"Jumlah Contoh Chat  : {len(rows):,} sampel")
+                if args.max_samples > 0 and len(rows) >= args.max_samples:
+                    break
+    mode_str = f" ({args.max_samples:,} sampel mode kilat)" if args.max_samples > 0 else " (Dataset Penuh)"
+    print(f"Jumlah Contoh Chat  : {len(rows):,} sampel{mode_str}")
 
     # Siapkan Tokenizer BPE / Subword
     texts = [normalize_slang("\n".join(f"{m['role']}: {m['content']}" for m in r.get("messages", []))) for r in rows]
@@ -261,8 +281,17 @@ def main():
                 optimizer.step()
 
             scheduler.step()
-            total_train_loss += loss.item()
+            loss_val = loss.item()
+            total_train_loss += loss_val
             tokens_seen += (y != -100).sum().item()
+
+            if step % args.log_interval == 0 or step == len(tr_loader):
+                elapsed = time.time() - t_epoch_start
+                rate = step / max(elapsed, 1e-4)
+                eta_s = (len(tr_loader) - step) / rate
+                eta_str = f"{int(eta_s // 60)}m {int(eta_s % 60):02d}s"
+                pct = (step / len(tr_loader)) * 100
+                print(f"  [Epoch {epoch}/{args.epochs} | Step {step:4d}/{len(tr_loader):4d} ({pct:5.1f}%) | Loss: {loss_val:.4f} | ETA: {eta_str}]", flush=True)
 
         avg_train_loss = total_train_loss / len(tr_loader)
 
@@ -291,25 +320,12 @@ def main():
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 torch.save(model.state_dict(), best_path)
-                try:
-                    shutil.copy(best_path, f"{args.name}-best.pt")
-                    shutil.copy(vocab_path, f"{args.name}-best.pt.vocab.pt")
-                    shutil.copy(vocab_path, f"{args.name}.vocab.pt")
-                    if tok_json_path.exists():
-                        shutil.copy(tok_json_path, f"{args.name}-best.tokenizer.json")
-                        shutil.copy(tok_json_path, f"{args.name}.tokenizer.json")
-                except Exception:
-                    pass
                 status_msg += " 🌟 BEST"
         status_msg += f" | {tok_speed:,.0f} tok/s | LR: {current_lr:.2e}"
         print(status_msg)
 
     # Simpan checkpoint akhir
     torch.save(model.state_dict(), latest_path)
-    try:
-        shutil.copy(latest_path, f"{args.name}.pt")
-    except Exception:
-        pass
 
     total_time = time.time() - t_start
     print("-" * 70)
