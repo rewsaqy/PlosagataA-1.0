@@ -32,7 +32,12 @@ def blok_sitasi(verdict: dict | None, sumber: dict | None, maks: int = 3) -> str
     label = (verdict or {}).get("label") or ""
     if label:
         skor = (verdict or {}).get("skor")
-        ekor = f" · skor {int(skor)}/100" if isinstance(skor, (int, float)) else ""
+        if (verdict or {}).get("lantai"):
+            # Skor "lantai" (mis. 40 saat belum ada bukti) BUKAN hasil ukur —
+            # jangan tampilkan angka palsu, tulis keadaannya apa adanya.
+            ekor = " · belum terkonfirmasi (bukti belum cukup)"
+        else:
+            ekor = f" · skor {int(skor)}/100" if isinstance(skor, (int, float)) else ""
         baris.append(f"🔎 Verdict: {label.upper()}{ekor}")
     nama = [s["judul"] for s in kumpulkan_sumber(sumber, maks=maks)]
     if nama:

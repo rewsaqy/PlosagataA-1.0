@@ -368,12 +368,14 @@ def local_verdict(text: str, model_result: dict) -> dict:
         or (ctx.get("is_tanya") and sig.get("no_source"))
     )
 
+    lantai = False  # skor dinaikkan ke lantai kehati-hatian (bukan hasil ukur)
     if fiksi:
         kesimpulan = ("FIKSI/SIMULASI — konten menyatakan dirinya rekaan, "
                       "bukan laporan kejadian nyata.")
     elif skor >= 60:
         kesimpulan = "Berpotensi HOAKS — terindikasi kuat manipulasi informasi atau penipuan digital."
     elif skor >= 35 or is_unverified:
+        lantai = skor < 40
         skor = max(skor, 40)
         kesimpulan = "BELUM TERKONFIRMASI — masih bersifat rumor atau kabar burung; belum ada pernyataan resmi."
     elif sig.get("no_source") and (has_alarm or m_label != "valid" or ctx.get("is_bencana")):
@@ -413,6 +415,7 @@ def local_verdict(text: str, model_result: dict) -> dict:
     return {
         "skor_hoaks": skor,
         "label_final": final_label(model_result.get("label"), skor, fiksi=bool(fiksi), is_unverified=is_unverified),
+        "lantai": lantai,
         "kesimpulan": kesimpulan,
         "sinyal": sig,
         "saran": saran,

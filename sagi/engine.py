@@ -396,7 +396,8 @@ class SagiEngine:
         except Exception:
             sumber = {"kueri": "", "wikipedia": [], "web": [], "cek_fakta": []}
         verdict = {**v, "label": lv["label_final"],
-                   "skor": lv["skor_hoaks"], "kesimpulan": lv["kesimpulan"]}
+                   "skor": lv["skor_hoaks"], "kesimpulan": lv["kesimpulan"],
+                   "lantai": bool(lv.get("lantai"))}
 
         # Jalur template: belum ada bobot (dan bukan pure_think).
         if not self.trained and not pure_think:

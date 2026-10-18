@@ -566,6 +566,7 @@ function buildVerdictHtml(rawVerdict, rawSources) {
   const v = rawVerdict;
   const label = (v.label || 'meragukan').toLowerCase();
   const skor = typeof v.skor === 'number' ? v.skor : 50;
+  const lantai = v.lantai === true;  // skor "lantai" = belum terukur, jangan tampil angka
 
   let badgeColor = 'text-amber-400 bg-amber-400/10 border-amber-400/30';
   let labelText = 'MERAGUKAN';
@@ -628,7 +629,9 @@ function buildVerdictHtml(rawVerdict, rawSources) {
           <span class="px-2 py-0.5 rounded border text-[10px] font-bold tracking-wide ${badgeColor}">
             ${labelText}
           </span>
-          <span class="text-slate-400 text-[11px]">Skor Hoaks: <strong class="text-white">${skor}%</strong></span>
+          ${lantai
+            ? `<span class="text-slate-400 text-[11px]">Skor Hoaks: <strong class="text-white">—</strong> <span class="text-slate-500">(bukti belum cukup)</span></span>`
+            : `<span class="text-slate-400 text-[11px]">Skor Hoaks: <strong class="text-white">${skor}%</strong></span>`}
         </div>
         <span class="text-[10px] text-slate-500 font-mono">Model 12M + RAG</span>
       </div>

@@ -99,6 +99,21 @@ def bagian1_logika():
         "HOAKS" in blok and "87/100" in blok and "TBH" in blok)
     cek("blok kosong bila tak ada info", blok_sitasi(None, None) == "")
 
+    blok_lantai = blok_sitasi({"label": "meragukan", "skor": 40, "lantai": True}, None)
+    cek("blok lantai tanpa angka (bukan hasil ukur)",
+        "40/100" not in blok_lantai and "belum terkonfirmasi" in blok_lantai, repr(blok_lantai))
+
+    from hoaxcore.factcheck import local_verdict
+    MR = {"label": "meragukan", "probs": [0.3, 0.3, 0.4]}
+    lv_q = local_verdict(normalize_slang("emang bisa? kasih tau caranya"), MR)
+    cek("pertanyaan tanpa bukti ditandai lantai",
+        lv_q["skor_hoaks"] == 40 and lv_q["lantai"] is True,
+        f"skor={lv_q['skor_hoaks']} lantai={lv_q['lantai']}")
+    lv_t = local_verdict(normalize_slang("BREAKING: gempa megathrust besok pukul 5 pagi"), MR)
+    cek("sinyal hoaks kuat tetap tampil angka asli (bukan lantai)",
+        lv_t["skor_hoaks"] >= 60 and lv_t["lantai"] is False,
+        f"skor={lv_t['skor_hoaks']} lantai={lv_t['lantai']}")
+
 
 def bagian2_mesin(ckpt, size):
     print("\n== Bagian 2: mesin penuh (uji dengan ckpt) ==")
