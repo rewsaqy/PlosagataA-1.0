@@ -1,4 +1,4 @@
-# scripts/ — Indeks (25 file, flat)
+# scripts/ — Indeks (26 file, flat)
 
 Semua script dijalankan **dari root repo** (bukan dari dalam `scripts/`):
 
@@ -33,6 +33,7 @@ Contoh:
 | Script | Yang diuji |
 |---|---|
 | `eval_verdict.py` | Confusion matrix + precision/recall klasifier 12M + 6 probe anekdot |
+| `eval_sistem.py` | Akurasi END-TO-END (model + heuristik → `label_final` yang dipakai app) + pergeseran label |
 | `eval_fiksi.py` | Deteksi artikel fiksi/rekaan + filter relevansi sumber |
 | `eval_topik.py` | Topic guard multi-turn (berita vs follow-up vs off-topic) |
 | `eval_security.py` | Audit guardrail keamanan 7 vektor (injection, PII, senjata, dll) |

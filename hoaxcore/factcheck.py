@@ -11,13 +11,13 @@ HOAX_KEYWORDS = [
     "info bocoran", "katanya", "konon", "tanpa sumber",
     "klik link ini", "ambil hadiah", "giveaway", "transfer dulu",
     "chip", "microchip", "vaksin menyebabkan", "bumbu dapur menyembuhkan kanker",
-    "viral", "menyebar", "tanpa izin", "tanpa menyebutkan",
+    "menyebar", "tanpa izin", "tanpa menyebutkan", "kabarnya", "diam-diam",
     "tidak menyebutkan", "tanpa nama", "tanpa bukti", "matikan",
     "wajib sebarkan", "jangan diam saja", "sebelum terlambat",
     "terbukti", "100% ampuh", "dijamin", "garansi",
     "obat herbal", "resep dokter terkenal", "rahasia",
     "pemerintah menutupi", "media tidak memberitakan", "disembunyikan",
-    "forward ke", "kirim ke", "share ke",
+    "forward ke", "kirim ke", "share ke", "share link",
     "dapat uang", "dapat saldo", "dapat pulsa",
     "daftar sekarang", "terbatas", "buruan",
     "menurut profesor", "menurut pakar", "menurut ahli",
@@ -42,7 +42,7 @@ KRIMINAL = [
     "bunuh", "membunuh", "pembunuhan", "ledak", "meledakkan", "bom",
     "culik", "menculik", "penculikan", "rampok", "merampok", "perkosa",
     "memperkosa", "tikam", "menusuk", "tembak", "menembak", "racun",
-    "meracuni", "santet", "teluh", "bunuh diri",
+    "meracuni", "santet", "teluh", "bunuh diri", "narkoba", "kabur",
 ]
 
 # Penanda konten yang MENDEKLARASIKAN dirinya fiksi/simulasi.
@@ -62,11 +62,29 @@ FIKSI_LEMAH = [
 def deteksi_fiksi(text: str) -> list[str]:
     """Kembalikan penanda fiksi yg ditemukan (kosong = bukan deklarasi fiksi)."""
     t = (text or "").lower()
-    kuat = [k for k in FIKSI_KUAT if k in t]
-    lemah = [k for k in FIKSI_LEMAH if k in t]
+
+    def _ada(kata: str) -> bool:
+        # Batas kata: "direka" TIDAK boleh cocok di dalam "direkam".
+        return re.search(rf"\b{re.escape(kata)}\b", t) is not None
+
+    kuat = [k for k in FIKSI_KUAT if _ada(k)]
+    lemah = [k for k in FIKSI_LEMAH if _ada(k)]
     if kuat or len(set(lemah)) >= 2:
         return kuat + lemah
     return []
+
+
+def _kata_ada(t: str, kata: str) -> bool:
+    """Cocok hanya sebagai kata utuh.
+
+    Menghindari salah-cocok substring untuk kata pendek: "awas" di "kawasan",
+    "isu" di "Sinisuka", "wa" di "awal", "direka" di "direkam".
+    """
+    return re.search(rf"(?<!\w){re.escape(kata)}(?!\w)", t) is not None
+
+
+# Kata pendek di HOAX_KEYWORDS yg rawan salah-cocok substring.
+_KW_BATAS_KATA = {"awas", "chip"}
 
 
 def analisis_konteks_pesan(text: str) -> dict:
@@ -81,10 +99,11 @@ def analisis_konteks_pesan(text: str) -> dict:
     # 1. Deteksi niat bertanya / verifikasi rumor
     is_tanya = (
         "?" in text
+        or _kata_ada(t, "isu")
         or any(k in t for k in [
             "apakah benar", "apakah", "apa benar", "bener gak", "beneran gak",
             "bener kah", "benarkah", "betulkah", "apa betul", "katanya",
-            "denger kabar", "isu", "gosip", "ada kabar", "ada info",
+            "denger kabar", "gosip", "ada kabar", "ada info",
             "ada yang tau", "ada yg tau", "beneran nih", "seriusan",
             "tolong cek", "tolong klarifikasi", "bisa tolong cek"
         ])
@@ -157,14 +176,23 @@ def heuristic_signals(text: str) -> dict:
         pass
 
     ctx = analisis_konteks_pesan(text)
-    hits = [k for k in HOAX_KEYWORDS if k in t]
+    hits = [
+        k for k in HOAX_KEYWORDS
+        if (_kata_ada(t, k) if k in _KW_BATAS_KATA else k in t)
+    ]
     caps_ratio = sum(1 for c in text if c.isupper()) / max(len(text), 1)
     excl = text.count("!") + text.count("?")
     many_caps = caps_ratio > 0.3 and len(text) > 30
-    no_source = not any(s in t for s in [
+    sumber_frasa = [
         "kompas", "detik", "tempo", "antaranews", "cnn", "bbc", "situs resmi", ".go.id",
-        "polresta", "polres", "polda", "humas polri", "tmc", "bmkg", "bnpb", "kemenkes"
-    ])
+        "polresta", "polres", "polda", "humas polri", "tmc", "bmkg", "bnpb", "kemenkes",
+        "pengadilan", "badan pom", "bpom",
+    ]
+    sumber_kata = ["bps", "bpbd", "pln", "antara", "kemkes"]
+    no_source = not (
+        any(s in t for s in sumber_frasa)
+        or any(_kata_ada(t, s) for s in sumber_kata)
+    )
     short_pat = r'(?:\b|https?://)(?:bit\.ly|tinyurl(?:\.com)?|s\.id)(?:/\S*)?'
     phone_pat = r'(?:(?:\+?62\s?|0)8[0-9\s\-\.]{7,14}[0-9])'
     short_urls = re.findall(short_pat, t)
@@ -199,20 +227,35 @@ def heuristic_signals(text: str) -> dict:
     # Hoaks bantuan / bansos / blt / giveaway via tautan atau nomor WA
     hoaks_bansos = (
         any(k in t for k in ["bansos", "blt", "pkh", "subsidi", "bantuan tunai", "giveaway", "saldo gratis", "dana kaget", "kuota gratis", "undian"])
-        and (any(k in t for k in ["link", "tautan", "wa", "whatsapp", "klik", "daftar", "cairkan", "bit.ly", "s.id", "form", "isi data", "otp"]) or short_url or has_phone)
+        and (any(_kata_ada(t, k) for k in ["link", "tautan", "wa", "whatsapp", "klik", "daftar", "cairkan", "bit.ly", "s.id", "form", "isi data", "otp"]) or short_url or has_phone)
     )
 
     # Hoaks obat ajaib / kesembuhan instan
     hoaks_obat = (
-        any(k in t for k in ["sembuh total", "obat ajaib", "kanker stadium 4", "ramuan ajaib", "tanpa operasi", "100% sembuh"])
-        and any(k in t for k in ["minum", "resep", "daun", "rebusan", "bawang", "jeruk", "garam", "tanpa dokter"])
+        any(k in t for k in ["sembuh total", "obat ajaib", "kanker stadium 4", "ramuan ajaib", "tanpa operasi", "100% sembuh", "jangan dibawa ke rumah sakit", "tanpa rumah sakit", "tanpa kemoterapi"])
+        and any(k in t for k in ["minum", "resep", "daun", "rebusan", "bawang", "jeruk", "garam", "tanpa dokter", "tusuk ujung jari", "jarum jahit", "ujung jari"])
     )
 
     # Hoaks ramalan bencana alam
     hoaks_gempa = (
-        any(k in t for k in ["gempa besar", "gempa dahsyat", "tsunami besar", "megathrust", "gunung meletus"])
-        and any(k in t for k in ["besok", "nanti malam", "malam ini", "lusa", "pukul", "jam", "diprediksi terjadi"])
+        any(k in t for k in ["gempa besar", "gempa dahsyat", "tsunami besar", "megathrust", "gunung meletus", "tenggelam"])
+        and any(k in t for k in ["besok", "nanti malam", "malam ini", "lusa", "pukul", "jam", "diprediksi terjadi", "hari ke depan"])
         and not any(s in t for s in ["bmkg", "bnpb", "pvmbg"])
+    )
+
+    # Lowongan kerja palsu: undangan interview + wajib bayar/pesan akomodasi
+    hoaks_loker = (
+        any(k in t for k in ["panggilan interview", "undangan interview", "interview kerja", "wawancara kerja", "panggilan kerja", "lowongan kerja", "rekrutmen"])
+        and any(k in t for k in ["wajib memesan", "biaya akomodasi", "biaya administrasi", "biaya transport", "tiket penerbangan", "biro perjalanan", "uang jaminan", "transfer ke rekening", "diganti tunai"])
+        and not any(s in t for s in ["disnaker", "kemnaker", ".go.id", "jobstreet", "glints", "linkedin", "kalibrr"])
+    )
+
+    # Video/foto bencana-perang di negara konflik tanpa sumber = pola daur ulang
+    hoaks_video_konflik = (
+        any(c in t for c in ["israel", "palestina", "gaza", "ukraina", "rusia", "iran", "lebanon"])
+        and any(v in t for v in ["video", "foto", "rekaman", "gambar"])
+        and any(b in t for b in ["terendam", "banjir", "hancur", "dihancurkan", "meledak", "terbakar", "reruntuhan"])
+        and not any(s in t for s in ["kompas", "detik", "tempo", "antaranews", "cnn", "bbc", ".go.id", "reuters", "afp"])
     )
 
     # Deteksi kejadian/rumor yang belum terverifikasi (jangan pernah langsung disebut VALID!)
@@ -234,6 +277,8 @@ def heuristic_signals(text: str) -> dict:
         "hoaks_bansos": hoaks_bansos,
         "hoaks_obat": hoaks_obat,
         "hoaks_gempa": hoaks_gempa,
+        "hoaks_loker": hoaks_loker,
+        "hoaks_video_konflik": hoaks_video_konflik,
         "many_caps": many_caps,
         "excess_punct": excl > 5,
         "no_source": no_source,
@@ -280,6 +325,8 @@ def local_verdict(text: str, model_result: dict) -> dict:
         or sig.get("hoaks_bansos")
         or sig.get("hoaks_obat")
         or sig.get("hoaks_gempa")
+        or sig.get("hoaks_loker")
+        or sig.get("hoaks_video_konflik")
     )
 
     skor = 0
@@ -292,6 +339,8 @@ def local_verdict(text: str, model_result: dict) -> dict:
     skor += 65 if sig.get("hoaks_bansos") else 0   # phishing bansos / giveaway
     skor += 60 if sig.get("hoaks_obat") else 0     # hoaks obat ajaib tanpa medis
     skor += 60 if sig.get("hoaks_gempa") else 0    # hoaks prediksi tanggal/jam gempa
+    skor += 60 if sig.get("hoaks_loker") else 0    # lowongan kerja palsu minta biaya
+    skor += 60 if sig.get("hoaks_video_konflik") else 0  # video konflik daur ulang
     skor += 15 if sig["many_caps"] else 0
     skor += 10 if sig["excess_punct"] else 0
     skor += 15 if sig.get("shortened_url") or sig.get("short_urls") else 0
@@ -327,7 +376,10 @@ def local_verdict(text: str, model_result: dict) -> dict:
     elif skor >= 35 or is_unverified:
         skor = max(skor, 40)
         kesimpulan = "BELUM TERKONFIRMASI — masih bersifat rumor atau kabar burung; belum ada pernyataan resmi."
-    elif sig.get("no_source"):
+    elif sig.get("no_source") and (has_alarm or m_label != "valid" or ctx.get("is_bencana")):
+        # Tanpa sumber: tetap konservatif bila ada sinyal keraguan (alarm,
+        # model tidak yakin valid, atau klaim bencana). Fakta umum yang
+        # dinilai valid model TIDAK dipaksa "meragukan" hanya karena tak ada nama sumber.
         skor = max(skor, 35)
         kesimpulan = "MERAGUKAN — belum terverifikasi, ketiadaan sumber resmi yang memvalidasi klaim ini."
     else:
@@ -338,6 +390,10 @@ def local_verdict(text: str, model_result: dict) -> dict:
         saran.append("Pola fitnah: tokoh publik dituduh kejahatan berat tanpa proses hukum maupun media kredibel. Cek ke kejaksaan/pengadilan resmi.")
     if sig.get("has_apk"):
         saran.append("BAHAYA MALWARE: Terdeteksi file .APK / unduhan aplikasi! Waspadai modus sniffing SMS perbankan atau penyusupan virus ke HP Anda.")
+    if sig.get("hoaks_loker"):
+        saran.append("Modus lowongan kerja palsu: rekrutmen resmi TIDAK memungut biaya akomodasi, tiket, atau administrasi. Jangan transfer uang ke pelaku.")
+    if sig.get("hoaks_video_konflik"):
+        saran.append("Konten visual dari wilayah konflik rawan didaur ulang dari peristiwa lain. Cek ulang ke media kredibel sebelum memercayainya.")
     if fiksi:
         saran.append(f"Terdeteksi deklarasi fiksi/simulasi ({', '.join(fiksi[:3])}). "
                      "Jangan disebar sebagai berita faktual; fiksi berlabel jelas bukan hoaks.")

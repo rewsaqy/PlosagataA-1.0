@@ -37,6 +37,9 @@
 | B-28 | Alias typo `Plosata_Rowser` (duplikat 25M di CONFIGS/PARAMS/DISPLAY + `gpt_pure.py`) | Dihapus semua; `Plosagata_Browser` satu-satunya nama 25M | `/api/models` = 6 model (dulu 7); `grep Rowser` = 0 |
 | B-29 | REGRESI: `safeUrl()` (fix B-21) hilang saat refactor `chat.html` 18 Okt → href sumber dirender mentah | Dipasang ulang + dipakai di 3 render link sumber (Wiki/Web/CekFakta) | `grep safeUrl` = 4 (1 definisi + 3 pakai) |
 | B-30 | Kode & param mati: stub `llm_crosscheck`, `_cari_ckpt_otomatis`, param `sumber`/`saran` tak terpakai, impor mubazir (`math`/`nn`/`re` ganda) | Dihapus semua; impor & alias dirapikan | `ruff check --select F,E9`: All checks passed |
+| B-31 | Heuristik `no_source` memaksa semua teks tanpa nama media → skor ≥35 "MERAGUKAN": fakta umum & berita valid ikut diragukan (akurasi SISTEM end-to-end cuma 39,8% padahal modelnya 95,7%) | Bump hanya bila ada sinyal keraguan (alarm / model ≠ valid / klaim bencana); daftar instansi sumber ditambah (BPS, BPBD, PLN, Antara, Pengadilan, BPOM) | `eval_sistem.py` baru: 39,8% → 91,4%; valid P .979 R .979 |
+| B-32 | Salah-cocok substring: "direka" di "direkam" (telepon direkam dianggap fiksi), "awas" di "kawasan", "isu" di "Sinisuka", "wa" di "awal/lewat" (bansos palsu +65) | Helper `_kata_ada()` batas kata, dipakai di deteksi fiksi, hits keyword, `is_tanya`, `no_source`, kanal bansos | Berita BRIN/Jonatan/ANTARA → VALID; "tarif listrik awal" tak lagi hoaks |
+| B-33 | Celah modus modern lolos VALID: undangan interview palsu minta akomodasi, video konflik daur ulang, fitnah + narkoba, rantai "share link" | Detektor `hoaks_loker` & `hoaks_video_konflik`; KRIMINAL +narkoba/kabur; keyword +kabarnya/diam-diam/share link; "viral" dilepas (kata normal berita) | Probe: loker & video-konflik skor 70 → hoaks (model awalnya valid); regresi eval lain lulus |
 
 ## Keterbatasan sadar (DOKUMEN, bukan bug)
 
@@ -47,7 +50,7 @@
 | L-03 | Model < terlatih penuh = cadel | `ringkasan_hasil` ekstraktif menutupinya; `--pure-think` jujur apa adanya |
 | L-04 | More/Next di RAM 19GB berisiko OOM-killer (SIGKILL) | `select_model` fallback ke Go + pesan jelas |
 | L-05 | DuckDuckGo tidak bisa diakses dari jaringan ini (handshake TLS gagal) → `cari_web_live` selalu `[]` | Web live fail-safe (tanpa crash), tapi belum terbukti memberi hasil; butuh provider/API alternatif atau jaringan tanpa blokir |
-| L-06 | Val klasifier hanya 93 sampel (split sama dgn `train.py`/`eval_verdict.py`) | Selisih 1 sampel ≈ 1,1% — angka akurasi (18 Okt: 95,7%, probe 6/6) dibaca dengan margin ini |
+| L-06 | Val klasifier & sistem hanya 93 sampel (split sama) | Selisih 1 sampel ≈ 1,1% — angka (18 Okt: model 95,7%, sistem 91,4%, probe 6/6) dibaca dengan margin ini; sebagian perbaikan heuristik dipandu pola di val, risiko overfit kecil tapi tetap ada |
 
 ## Cara lapor bug baru (untuk kontributor)
 
