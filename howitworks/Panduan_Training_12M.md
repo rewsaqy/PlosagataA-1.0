@@ -107,7 +107,9 @@ python scripts/pure_chat.py --size Plosagata_12M --ckpt checkpoints/pure-Plosaga
 python scripts/pure_chat.py --size Plosagata_12M --ckpt checkpoints/pure-Plosagata_12M-best.pt --prompt "Kamu bisa bantu apa aja?"
 
 # Uji generasi murni neural network (Pure Think):
-python scripts/pure_chat.py --size Plosagata_12M --ckpt checkpoints/pure-Plosagata_12M-best.pt --pure-think --prompt "user: Bener gak bansos cair hari ini?\nassistant:"
+# Prompt otomatis dibungkus format training (sistem:/konsumen:/assistant:) —
+# cukup tulis pesan mentahnya, jangan ketik "user: ..." sendiri.
+python scripts/pure_chat.py --size Plosagata_12M --ckpt checkpoints/pure-Plosagata_12M-best.pt --pure-think --prompt "Bener gak bansos cair hari ini?"
 ```
 
 ### B. Menjalankan di Antarmuka Web Chatbot

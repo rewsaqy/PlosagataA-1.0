@@ -147,7 +147,7 @@ klaim berita → diproses model + verdict 12M.
 | `/` | Validator: tempel teks / unggah poster → label, skor, riwayat, statistik |
 | `/chat` | Chatbot: sidebar, riwayat tersimpan, tombol cepat, indikator mengetik, badge verdict, tombol salin, dukungan token remote |
 | `/models` | Daftar model + ganti beneran (engine lama dibongkar, sesi fresh) |
-| `/api/check` · `/api/chat` · `/api/history` · `/api/stats` · `/api/models` | API JSON |
+| `/api/check` · `/api/chat` · `/api/chat/stream` (SSE) · `/api/history` · `/api/stats` · `/api/models` | API JSON |
 
 Slash-command di dalam chat: `/models`, `/model <nama>`, `/status`, `/help`.
 
@@ -257,8 +257,9 @@ peramban rumah buka `http://100.x.y.z:5000/chat` dan isi token sekali
 PlosagataA-1.0/
 ├── plosagata/    Model chat murni (config, layers, model, guard, slang)
 ├── hoaxcore/     Klasifier 12M (model, tokenizer, dataset, factcheck, ocr, retrieval)
+├── sagi/         Mesin chat (engine streaming, prompt format training, sesi, sitasi)
 ├── scripts/      Antarmuka baris perintah (train, infer, chat, korpus, ctx7, remote)
-├── web/          app.py, chatbot.py (SagiEngine), templates/
+├── web/          app.py, chatbot.py (shim → sagi), templates/
 ├── data/         Dataset + bank kata
 ├── docs/         ARSITEKTUR.md, PANDUAN_FINETUNE.md
 ├── sagi.sh       Peluncur (mis. SUPER+S di Hyprland)
