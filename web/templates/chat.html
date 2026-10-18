@@ -561,6 +561,82 @@ function renderEmptyState() {
 /* ==========================================================================
    MESSAGE BUBBLE RENDERING (Restrained, Editorial, Clean)
    ========================================================================== */
+function buildVerdictHtml(rawVerdict, rawSources) {
+  if (!rawVerdict) return '';
+  const v = rawVerdict;
+  const label = (v.label || 'meragukan').toLowerCase();
+  const skor = typeof v.skor === 'number' ? v.skor : 50;
+
+  let badgeColor = 'text-amber-400 bg-amber-400/10 border-amber-400/30';
+  let labelText = 'MERAGUKAN';
+  if (label === 'hoaks') {
+    badgeColor = 'text-rose-400 bg-rose-400/10 border-rose-400/30';
+    labelText = 'HOAKS';
+  } else if (label === 'valid') {
+    badgeColor = 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30';
+    labelText = 'VALID';
+  } else if (label === 'fiksi') {
+    badgeColor = 'text-sky-400 bg-sky-400/10 border-sky-400/30';
+    labelText = 'FIKSI';
+  }
+
+  // Compact Source Pills
+  let sourcesHtml = '';
+  if (rawSources) {
+    (rawSources.wikipedia || []).forEach(s => {
+      if (s.url) {
+        sourcesHtml += `
+          <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
+             class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-slate-300">
+            <span class="text-slate-500">Wiki:</span>
+            <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
+            <span class="text-[9px]">↗</span>
+          </a>
+        `;
+      }
+    });
+    (rawSources.web || []).forEach(s => {
+      if (s.url) {
+        sourcesHtml += `
+          <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
+             class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-cyan-300">
+            <span class="text-cyan-500">Web:</span>
+            <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
+            <span class="text-[9px]">↗</span>
+          </a>
+        `;
+      }
+    });
+    (rawSources.cek_fakta || []).forEach(s => {
+      if (s.url) {
+        sourcesHtml += `
+          <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
+             class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-emerald-300">
+            <span class="text-emerald-500">CekFakta:</span>
+            <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
+            <span class="text-[9px]">↗</span>
+          </a>
+        `;
+      }
+    });
+  }
+
+  return `
+    <div class="mb-3 px-3.5 py-2.5 rounded-lg border border-hairline bg-surface-card space-y-2">
+      <div class="flex items-center justify-between text-xs font-mono">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 rounded border text-[10px] font-bold tracking-wide ${badgeColor}">
+            ${labelText}
+          </span>
+          <span class="text-slate-400 text-[11px]">Skor Hoaks: <strong class="text-white">${skor}%</strong></span>
+        </div>
+        <span class="text-[10px] text-slate-500 font-mono">Model 12M + RAG</span>
+      </div>
+      ${sourcesHtml ? `<div class="flex flex-wrap gap-1.5 pt-1 border-t border-hairline">${sourcesHtml}</div>` : ''}
+    </div>
+  `;
+}
+
 function appendBubble(who, htmlContent, meta = '', rawVerdict = null, rawSources = null, shouldAnimate = true) {
   const isUser = who === 'u';
   const row = document.createElement('div');
@@ -574,82 +650,7 @@ function appendBubble(who, htmlContent, meta = '', rawVerdict = null, rawSources
       <div class="text-[10px] font-mono text-slate-600 px-1">${now()}</div>
     `;
   } else {
-    // Generate Verdict Summary Card if verdict exists
-    let verdictHtml = '';
-    if (rawVerdict) {
-      const v = rawVerdict;
-      const label = (v.label || 'meragukan').toLowerCase();
-      const skor = typeof v.skor === 'number' ? v.skor : 50;
-
-      let badgeColor = 'text-amber-400 bg-amber-400/10 border-amber-400/30';
-      let labelText = 'MERAGUKAN';
-      if (label === 'hoaks') {
-        badgeColor = 'text-rose-400 bg-rose-400/10 border-rose-400/30';
-        labelText = 'HOAKS';
-      } else if (label === 'valid') {
-        badgeColor = 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30';
-        labelText = 'VALID';
-      } else if (label === 'fiksi') {
-        badgeColor = 'text-sky-400 bg-sky-400/10 border-sky-400/30';
-        labelText = 'FIKSI';
-      }
-
-      // Compact Source Pills
-      let sourcesHtml = '';
-      if (rawSources) {
-        (rawSources.wikipedia || []).forEach(s => {
-          if (s.url) {
-            sourcesHtml += `
-              <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
-                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-slate-300">
-                <span class="text-slate-500">Wiki:</span>
-                <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
-                <span class="text-[9px]">↗</span>
-              </a>
-            `;
-          }
-        });
-        (rawSources.web || []).forEach(s => {
-          if (s.url) {
-            sourcesHtml += `
-              <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
-                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-cyan-300">
-                <span class="text-cyan-500">Web:</span>
-                <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
-                <span class="text-[9px]">↗</span>
-              </a>
-            `;
-          }
-        });
-        (rawSources.cek_fakta || []).forEach(s => {
-          if (s.url) {
-            sourcesHtml += `
-              <a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer" 
-                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-hairline bg-surface-card hover:bg-surface-cardHover text-[10px] font-mono text-emerald-300">
-                <span class="text-emerald-500">CekFakta:</span>
-                <span class="truncate max-w-[120px]">${esc(s.judul)}</span>
-                <span class="text-[9px]">↗</span>
-              </a>
-            `;
-          }
-        });
-      }
-
-      verdictHtml = `
-        <div class="mb-3 px-3.5 py-2.5 rounded-lg border border-hairline bg-surface-card space-y-2">
-          <div class="flex items-center justify-between text-xs font-mono">
-            <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 rounded border text-[10px] font-bold tracking-wide ${badgeColor}">
-                ${labelText}
-              </span>
-              <span class="text-slate-400 text-[11px]">Skor Hoaks: <strong class="text-white">${skor}%</strong></span>
-            </div>
-            <span class="text-[10px] text-slate-500 font-mono">Model 12M + RAG</span>
-          </div>
-          ${sourcesHtml ? `<div class="flex flex-wrap gap-1.5 pt-1 border-t border-hairline">${sourcesHtml}</div>` : ''}
-        </div>
-      `;
-    }
+    const verdictHtml = buildVerdictHtml(rawVerdict, rawSources);
 
     row.innerHTML = `
       <div class="w-full text-xs sm:text-sm text-slate-200 leading-relaxed space-y-2 font-sans">
@@ -691,6 +692,35 @@ function autoGrow() {
 }
 inp.addEventListener('input', autoGrow);
 
+function bubbleStreaming() {
+  const row = document.createElement('div');
+  row.className = 'w-full flex flex-col items-start space-y-1';
+  row.innerHTML = `
+    <div class="w-full text-xs sm:text-sm text-slate-200 leading-relaxed space-y-2 font-sans">
+      <div class="response-content whitespace-pre-wrap"></div>
+    </div>
+    <div class="stream-meta text-[10px] font-mono text-slate-600 px-1 mt-1"></div>
+  `;
+  const contentEl = row.querySelector('.response-content');
+  const metaEl = row.querySelector('.stream-meta');
+  box.appendChild(row);
+  box.scrollTop = box.scrollHeight;
+  return {
+    el: row,
+    setText(t) {
+      contentEl.textContent = t;
+      box.scrollTop = box.scrollHeight;
+    },
+    finalize(html, metaTag, rawVerdict, rawSources) {
+      contentEl.classList.remove('whitespace-pre-wrap');
+      contentEl.innerHTML = buildVerdictHtml(rawVerdict, rawSources) + html;
+      metaEl.textContent = metaTag;
+      box.scrollTop = box.scrollHeight;
+    },
+    remove() { row.remove(); }
+  };
+}
+
 async function kirim() {
   const text = inp.value.trim();
   if (!text) return;
@@ -712,8 +742,10 @@ async function kirim() {
   box.appendChild(lod);
   box.scrollTop = box.scrollHeight;
 
+  let aliran = null;
   try {
-    const res = await fetch('/api/chat', {
+    aliran = bubbleStreaming();
+    const res = await fetch('/api/chat/stream', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -721,35 +753,49 @@ async function kirim() {
       },
       body: JSON.stringify({ message: text, session: sid })
     });
-    const j = await res.json();
+    if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
     lod.remove();
 
-    if (!j.ok) {
-      const errHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Kendala: ${esc(j.error || 'Gagal memproses.')}</div>`;
-      appendBubble('a', errHtml);
-      pushHistory('a', errHtml);
-      btn.disabled = false;
-      inp.focus();
-      return;
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '', mentah = '', verdict = null, sumber = null, finalEv = null;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let idx;
+      while ((idx = buf.indexOf('\n\n')) !== -1) {
+        const blok = buf.slice(0, idx);
+        buf = buf.slice(idx + 2);
+        if (!blok.startsWith('data: ')) continue;
+        let ev;
+        try { ev = JSON.parse(blok.slice(6)); } catch (_) { continue; }
+        if (ev.type === 'meta') { verdict = ev.verdict || null; sumber = ev.sumber || null; }
+        else if (ev.type === 'token') { mentah += ev.t || ''; aliran.setText(mentah); }
+        else if (ev.type === 'final') { finalEv = ev; }
+        else if (ev.type === 'error') { throw new Error(ev.error || 'Gagal memproses.'); }
+      }
     }
+    if (!finalEv) throw new Error('Koneksi stream terputus.');
 
-    const rawReply = j.reply || '';
-    const formattedHtml = formatMarkdown(rawReply);
-    const metaTag = `${j.model_size || 'Plosagata'} · ${now()}`;
+    const finalText = finalEv.text || mentah;
+    const formattedHtml = formatMarkdown(finalText);
+    const metaTag = `${finalEv.model_size || 'Plosagata'} · ${now()}`;
+    aliran.finalize(formattedHtml, metaTag, verdict, sumber);
+    aliran = null;
+    pushHistory('a', formattedHtml, metaTag, verdict, sumber);
 
-    appendBubble('a', formattedHtml, metaTag, j.verdict || null, j.sumber || null, true);
-    pushHistory('a', formattedHtml, metaTag, j.verdict || null, j.sumber || null);
-
-    if (j.model_size) {
-      modelIndicatorText.innerText = j.model_size;
-      sidebarActiveModel.innerText = j.model_size;
+    if (finalEv.model_size) {
+      modelIndicatorText.innerText = finalEv.model_size;
+      sidebarActiveModel.innerText = finalEv.model_size;
     }
 
   } catch (err) {
     lod.remove();
-    const failHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Server tidak dapat dijangkau. Pastikan server lokal Sagi berjalan.</div>`;
-    appendBubble('a', failHtml);
-    pushHistory('a', failHtml);
+    if (aliran) { aliran.remove(); aliran = null; }
+    const errHtml = `<div class="text-rose-400 font-mono text-xs">⚠️ Kendala: ${esc(err.message || 'Gagal memproses.')}</div>`;
+    appendBubble('a', errHtml);
+    pushHistory('a', errHtml);
   }
 
   btn.disabled = false;

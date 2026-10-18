@@ -1,10 +1,10 @@
-"""Chat dengan GPT murni milikmu (bobot acak -> awalnya ngawur, wajar).
+"""Chat CLI Sagi — mesin yang SAMA dengan web (paket `sagi`).
 
-  python3 pure_chat.py --size Plosagata_Go --prompt "Halo bang!"
-  python3 pure_chat.py --size Plosagata_Go   (interaktif)
+  python3 scripts/pure_chat.py --size Plosagata_Go --prompt "Halo bang!"
+  python3 scripts/pure_chat.py --size Plosagata_12M --ckpt checkpoints/pure-Plosagata_12M-best.pt
 
-Setelah training (lihat train_pure.py), muat checkpoint:
-  python3 pure_chat.py --size Plosagata_Go --ckpt pure-Plosagata_Go.pt --prompt "Halo!"
+Di terminal: /help, /models, /model <nama>, /status — ketik 'keluar' untuk berhenti.
+Format prompt & memori multi-turn kini identik dengan web (sagi.prompt/session).
 """
 import argparse
 import os
@@ -15,48 +15,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)
 
-import torch
-
-from hoaxcore import (
-    WordTokenizer,
-    local_verdict,
-    piece_decode,
-    piece_encode,
-    ringkasan_hasil,
-)
-from plosagata import (
-    CONFIGS,
-    PureGPT,
-    is_news_topic,
-    normalize_slang,
-    sagi_hello,
-    sagi_redirect,
-)
-
-
-def build_tokenizer(vocab_size: int):
-    seeds = ["halo", "hai", "pagi", "bang", "berita", "hoaks", "bener", "gak",
-             "giveaway", "klik", "link", "covid", "vaksin", "pemerintah", "cek"]
-    return WordTokenizer.build(seeds, vocab_size=vocab_size, max_len=256,
-                               seed_file="data/vocab_seed.txt")
-
-
-def ignore_ids_for(tok: WordTokenizer) -> set[int]:
-    # jangan pernah generate token sampah padding/unknown/cls.
-    # <sep> SENGAJA diizinkan sebagai EOS agar generate bisa berhenti.
-    return {i for t, i in tok.vocab.items()
-            if t.startswith("<pad") or t in ("<unk>", "<cls>")}
-
-
-def load_ckpt_vocab(ckpt_path: str):
-    """Muat kamus .vocab.pt pasangan checkpoint (wajib cocok pairs)."""
-    import torch
-    vp = ckpt_path + ".vocab.pt"
-    if ckpt_path and os.path.exists(vp):
-        v = torch.load(vp, map_location="cpu", weights_only=False)
-        if isinstance(v, dict) and len(v) > 100:
-            return v
-    return None
+from plosagata import CONFIGS, PARAMS
+from sagi import SagiEngine
 
 
 def main():
@@ -75,66 +35,37 @@ def main():
                          "kalau tidak output ngawur.")
     a = ap.parse_args()
 
-    cfg = CONFIGS[a.size]
+    if a.pure_think:
+        os.environ["SAGI_PURE_THINK"] = "1"
+    os.environ["SAGI_TEMP"] = str(a.temp)
+    os.environ["SAGI_TOPK"] = str(a.top_k)
+    os.environ["SAGI_NOREPEAT"] = str(a.no_repeat)
+
     if a.size in ("Plosagata_More", "Plosagata_Next"):
         print("[model besar di CPU lambat; untuk serius pakai GPU + checkpoint hasil training]")
 
-    if a.vocab_file and os.path.exists(a.vocab_file):
-        vocab = torch.load(a.vocab_file, map_location="cpu")
-        tok = WordTokenizer(vocab, max_len=cfg.max_len)
-        use_pieces = True  # dict mentah tanpa backend BPE -> longest-match
-        print(f"[vocab dimuat: {a.vocab_file}]")
-    elif a.ckpt and os.path.exists(a.ckpt):
-        # tebak pasangan vocab: X.pt -> X.pt.vocab.pt (format train_pure --out X.pt)
-        # atau X.pt -> X.vocab.pt (format lama), plus varian -best
-        cands = [a.ckpt + ".vocab.pt", a.ckpt.replace(".pt", ".vocab.pt")]
-        if "-best.pt" in a.ckpt:
-            base = a.ckpt.replace("-best.pt", ".pt")
-            cands += [base + ".vocab.pt", base.replace(".pt", ".vocab.pt")]
-        for cand in cands:
-            if os.path.exists(cand):
-                vocab = torch.load(cand, map_location="cpu")
-                tok = WordTokenizer(vocab, max_len=cfg.max_len)
-                use_pieces = True
-                print(f"[vocab otomatis: {cand}]")
-                break
-        else:
-            tok = build_tokenizer(cfg.vocab)
-            use_pieces = False
-            print("[PERINGATAN: vocab pasangan tidak ketemu, pakai tebakan seed — output bisa sampah]")
-    else:
-        tok = build_tokenizer(cfg.vocab)
-        use_pieces = False
-    ign = ignore_ids_for(tok)
-    _model = None
-    sess = {"topik": None}  # memori topik sesi terminal
+    eng = SagiEngine(size=a.size, ckpt=a.ckpt)
 
-    def get_model():
-        nonlocal _model, cfg
-        if _model is None:
-            m = PureGPT(cfg)
-            if a.ckpt and os.path.exists(a.ckpt):
-                try:
-                    m.load_state_dict(torch.load(a.ckpt, map_location="cpu"))
-                    print(f"[ckpt dimuat: {a.ckpt}]")
-                except RuntimeError:
-                    from plosagata import detect_size
-                    pas = detect_size(a.ckpt)
-                    if pas and pas != a.size:
-                        print(f"[ckpt ternyata {pas}, alihkan ukuran dari {a.size}]")
-                        cfg = CONFIGS[pas]
-                        m = PureGPT(cfg)
-                        m.load_state_dict(torch.load(a.ckpt, map_location="cpu"))
-                        print(f"[ckpt dimuat: {a.ckpt}]")
-                    else:
-                        print(f"[ckpt tak cocok (terdeteksi: {pas}), pakai bobot acak]")
-            else:
-                print("[bobot ACAK — output awal ngawur itu normal sebelum training]")
-            _model = m
-        return _model
+    # --vocab-file: vocab mentah tanpa backend BPE (format lama train_pure --out X.pt)
+    if a.vocab_file and os.path.exists(a.vocab_file):
+        import torch
+        from hoaxcore import WordTokenizer
+        vocab = torch.load(a.vocab_file, map_location="cpu")
+        eng.tok = WordTokenizer(vocab, max_len=eng.cfg.max_len)
+        eng.use_pieces = True
+        eng.ign = {i for t, i in eng.tok.vocab.items()
+                   if t.startswith("<pad") or t in ("<unk>", "<cls>")}
+        eng.eos = {eng.tok.sep_id}
+        print(f"[vocab dimuat: {a.vocab_file}]")
+
+    if eng.trained:
+        print(f"[ckpt: {a.ckpt} — bobot dimuat saat balasan pertama]")
+    else:
+        print("[tanpa ckpt] mode template heuristik (bobot saraf belum tersedia).")
+
+    sess = "cli"
 
     def cmd_terminal(text: str) -> str:
-        from plosagata import PARAMS
         parts = text.split()
         cmd = parts[0].lower()
         if cmd in ("/help", "/bantuan"):
@@ -151,70 +82,14 @@ def main():
                         f"(proses ini jalan {a.size})")
             return f"Sudah pakai {a.size}. Lihat: /models"
         if cmd == "/status":
-            return f"Model: {a.size} | topik sesi: {sess.get('topik') or '-'}"
+            return f"Model: {a.size} | topik sesi: {eng.sesi.topik(sess) or '-'}"
         return f"Perintah tak dikenal: {cmd}. Ketik /help."
 
     def answer(prompt: str) -> str:
-        from plosagata import is_follow_up_safe
         if prompt.strip().startswith("/"):
             return cmd_terminal(prompt.strip())
-        clean = normalize_slang(prompt)
-        topic = is_news_topic(clean)
-        klaim, kueri, rujuk = prompt, prompt, False
-        topik = sess.get("topik")
-        if not a.pure_think:
-            if topic == "offtopic":
-                if topik and is_follow_up_safe(clean):
-                    topic, rujuk = "followup", True
-                    klaim, kueri = topik, topik + " " + prompt
-                else:
-                    return sagi_redirect(prompt)
-            elif topic == "news" and topik and len(clean) < 80 and is_follow_up_safe(clean):
-                from plosagata.guard import NEWS_KEYWORDS
-                if not any(k in clean.lower() for k in NEWS_KEYWORDS):
-                    topic, rujuk = "followup", True
-                    klaim, kueri = topik, topik + " " + prompt
-            if topic == "greeting":
-                return sagi_hello(prompt)
-            if topic == "news":
-                sess["topik"] = prompt
-        trained = bool(a.ckpt and os.path.exists(a.ckpt))
-        if not trained and not a.pure_think:
-            # Model belum terlatih (bobot acak) — jawab ekstraktif saja.
-            # Validator 12M = instance tunggal (tidak diduplikat).
-            v = {"label": "meragukan", "probs": [0.33, 0.33, 0.34]}
-            try:
-                from hoaxcore import predict_proba
-                _lab, _pr = predict_proba(klaim)
-                v = {"label": _lab, "probs": _pr}
-            except Exception:
-                pass
-            lv = local_verdict(klaim, v)
-            isi = ringkasan_hasil(
-                label=lv["label_final"],
-                skor=lv["skor_hoaks"],
-                kesimpulan=lv["kesimpulan"],
-                fiksi=lv["sinyal"].get("fiksi_hits"),
-                teks=klaim,
-                sinyal=lv["sinyal"],
-            )
-            return ("Merujuk berita tadi:\n" + isi) if rujuk else isi
-        # mode berpikir-murni (atau topik berita): tokenizer -> model -> decode
-        src = kueri if rujuk else clean
-        if use_pieces:
-            ids, _ = piece_encode(src, tok.vocab, tok.max_len)
-        else:
-            ids, _ = tok.encode(src)
-        real = [i for i in ids if i != tok.pad_id][:64]
-        out = get_model().generate(torch.tensor([real]), max_new=a.max_new,
-                                   temperature=a.temp, top_k=a.top_k,
-                                   no_repeat_ngram=a.no_repeat,
-                                   eos_ids={tok.sep_id},
-                                   ignore_ids=ign)[0].tolist()
-        # BPE: decode via tokenizer (mapping id->kata mentah menghasilkan byte sampah)
-        if use_pieces:
-            return piece_decode(out[len(real):], tok.inv)
-        return tok.decode(out[len(real):])
+        r = eng.reply(prompt, max_new=a.max_new, session_id=sess)
+        return r.get("reply", "")
 
     if a.prompt:
         print(answer(a.prompt))

@@ -76,3 +76,21 @@
 Selesai: semua di Peta Jalan README kecuali training besar.
 Berikutnya: pra-latih More di GPU (korpus 4 GB berjalan) → `pure-Plosagata_More.pt`
 → evaluasi 100 klaim nyata → demo poster → lomba.
+
+## 7. 18 Okt 2026 — hari reset & rombak chat
+
+- Pagi: folder bobot terhapus → semua dilatih ulang dari nol (klasifier val
+  95,7%; sistem end-to-end 91,4%). 25M Browser & eksperimen LS dihentikan —
+  arah semua-ke-12M chat (latihan 8 epoch jalan sendiri di terminal user).
+- Audit mesin chat sebelum demo bobot menemukan 3 bug fondasi:
+  B-35 prompt tak sinkron training (label ternormalisasi `sistem:/konsumen:`
+  + `<sep>` bocor ke prompt), B-36 memori sesi cuma topik, B-37 generate
+  tanpa callback token.
+- Rombak: paket `sagi/` (engine/prompt/session/sources); `web/chatbot.py` jadi
+  shim; endpoint SSE `/api/chat/stream`; bubble chat mengalir token-per-token;
+  blok sitasi "🔎 Verdict · 📚 Sumber" menempel di jawaban teks; CLI
+  `pure_chat.py` memakai mesin yang sama dengan web (satu kebenaran).
+- Uji: `eval_chat` (baru, 2 bagian) LULUS; `eval_topik` + `eval_security`
+  LULUS; SSE lolos curl (template & model). TUI ditunda — web tetap dipakai.
+- Catatan jujur: smoke test yang jalan di proses training malam ini masih
+  versi lama (`user:` mentah) — sudah difix di file untuk run berikutnya.

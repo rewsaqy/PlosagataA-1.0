@@ -26,54 +26,59 @@ scripts/* ──► plosagata.* ──► (torch saja)
    │        ├── ocr_poster (PIL/tesseract, lazy) → teks poster
    │        └── shared     (model+tokenizer) → SATU instance 12M
    │
-   └─► web/* ──► (flask + dua paket di atas)
-            ├── app.py     (routing, token, registry engine, history)
-            ├── chatbot.py (SagiEngine: guard→model→verdict→sumber)
+   ├─► sagi/* ──► mesin chat (dipakai web & CLI)
+   │        ├── engine  → SagiEngine (guard→prompt→verdict→generate streaming)
+   │        ├── prompt  → transkrip format training + pembersih output
+   │        ├── session → memori sesi (topik + riwayat giliran)
+   │        └── sources → normalisasi sumber + blok sitasi
+   │
+   └─► web/* ──► (flask + paket di atas)
+            ├── app.py     (routing, token, registry engine, history, SSE)
+            ├── chatbot.py (shim kompatibilitas → re-export `sagi`)
             └── templates/ (index, chat, models)
 ```
 
 Aturan: `plosagata` tidak boleh import `hoaxcore` (tetap murni).
 `hoaxcore` boleh memakai `plosagata.slang` (satu arah).
-`web` boleh memakai keduanya. `scripts` hanya pemanggil.
+`sagi` (mesin chat) boleh memakai keduanya; `web`/`scripts` memakainya.
 
 ## 1. Siklus hidup satu chat: "Bener gak BLT cair?" (detail penuh)
 
 Ikuti nomornya — tiap panah = pemanggilan fungsi nyata:
 
 ```
-[Browser] POST /api/chat {message, session}
-   │
-[web/app.py:chat_api]
+[Browser] POST /api/chat/stream {message, session}     ← UI kini pakai SSE
+   │      (klien lama tetap dilayani: POST /api/chat → reply())
+[web/app.py:chat_stream_api]
    ├─ _cek_token() → lolos (tanpa token = 401)
-   ├─ teks diawali "/"? → cmd_chat (jalur slash-command, selesai)
+   ├─ teks diawali "/"? → cmd_chat (dibungkus kejadian meta→token→final)
    └─ get_engine() → SagiEngine(Plosagata_Go) [cache _engines]
         │
-[web/chatbot.py:SagiEngine.reply]
-   ├─ 1. normalize_slang: "Bener gak..." (slang→formal, regex \b)
-   ├─ 2. is_news_topic → "news" (stem "cair" + keyword BLT/bansos...
-   │      guard STEM dulu: "mencairkan"→"cair", baru cocok kata-per-kata)
-   ├─ 3. _sesi_get(session_id): slot {topik, aktif}; topik="..." disimpan
-   ├─ 4. verdict() → shared.predict_proba:
-   │      tok.encode → ids[128] → TinyHoaxTransformer → softmax
-   │      → {"label":"meragukan","probs":[.2,.5,.3]}
-   ├─ 5. local_verdict(teks, v): heuristic_signals (keyword×20, caps,
-   │      URL, HP, emoji, fitnah_tokoh +50, fiksi-deteksi) → skor 0-100
-   │      → final_label SATU label (fiksi→biru, ≥60→hoaks, dst)
-   ├─ 6. cari_sumber: RAG lokal (BM25 top-20 → TF-IDF cosine top-3,
-   │      ambang 0.25) → kosong? fallback Wikipedia live + link cek fakta
-   ├─ 7a. Ckpt chat tak termuat → ringkasan_hasil: jawaban ekstraktif
-   │      (verdict + saran; daftar sumber tampil di UI, bukan di teks)
-   │      (ekstraktif, deterministik, tanpa generate)
-   ├─ 7b. Model TERLATIH/pure-think → PureGPT.generate:
-   │      encode → 22×(attention+FFN) per token + KV-cache + EOS stop
-   │      + no-repeat-3gram → decode → teks
-   └─ 8. JSON {reply, topic, verdict{label,skor,kesimpulan}, sumber}
-        → browser render bubble + badge + link sumber
+[sagi/engine.py:SagiEngine.reply_stream]   (generator kejadian SSE)
+   ├─ 0. inspect_security: ancaman? → balasan konstitusional + final
+   ├─ 1. is_news_topic (guard stem: "mencairkan"→"cair") → news/
+   │      greeting/followup/offtopic; follow-up merujuk topik sesi
+   ├─ 2. SesiStore.ambil(session): {topik, giliran[≤16]} — B-36
+   ├─ 3. verdict() → shared.predict_proba → label+probs[3]
+   ├─ 4. local_verdict: heuristic_signals (keyword×20, caps, URL, HP,
+   │      emoji, fitnah_tokoh +50, fiksi) → skor 0-100 → label_final
+   ├─ 5. cari_sumber: RAG → fallback Wikipedia live + link cek fakta
+   │      → kejadian "meta" {topic, verdict, sumber}   (UI: badge)
+   ├─ 6a. tanpa bobot → ringkasan_hasil (template) → 1 kejadian "token"
+   ├─ 6b. TERLATIH → sagi/prompt.bangun_prompt(≤16 giliran riwayat,
+   │        label ternormalisasi "sistem:/konsumen:") → tokenisasi
+   │        (buang <sep>!) → budget max_len−max_new − giliran tua
+   │        → PureGPT.generate(on_token=…) di thread pekerja + antrean
+   │        → kejadian "token" tiap potongan (decode inkremental)
+   ├─ 7. bersihkan_output (potong bocoran peran) + sesi.catat_giliran
+   └─ 8. kejadian "final" {text, security}; blok sitasi
+          "🔎 Verdict · 📚 Sumber" nempel utk news/followup
 ```
 
-Bentuk data antar tahap: `str → str(bersih) → label str → ids[128] int →
-probs[3] float → skor int → JSON`. Tidak ada yang hilang/berubah diam-diam:
-tipe tiap panah diuji eval (`eval_topik`, `eval_fiksi`, `eval_verdict`).
+Bentuk data antar tahap: `str → str(bersih) → label str → ids int →
+probs[3] float → skor int → kejadian SSE meta→token*→final → render`.
+Sejak rombak 18 Okt, bus data UI = SSE; diuji `scripts/eval_chat.py`
+(bagian 1 logika tanpa bobot, bagian 2 opsional dengan ckpt).
 
 ## 2. Siklus validator web: tempel teks + upload poster
 
@@ -157,7 +162,8 @@ Index: build_index.py (chunk 300/50) → data/rag_index/ (gitignore, build lokal
 ## 8. Memori & proses
 
 - Satu proses Flask: 12M SATU instance (`shared.py`), engine chat per ukuran
-  (max 1 aktif + cache), sesi `{topik, aktif}` dibatasi 500 + kadaluarsa 2 jam.
+  (max 1 aktif + cache), sesi `{topik, giliran[≤16], aktif}` dibatasi 500 +
+  kadaluarsa 2 jam (`sagi/session.py:SesiStore`).
 - Thread torch dibatasi setengah core; reloader MATI bawaan (fork+thread=crash).
 - Tanpa GPU: Go ~390 tok/detik train; b1 forward ~7 dtk/token. Jujur di README.
 
@@ -171,7 +177,10 @@ Index: build_index.py (chunk 300/50) → data/rag_index/ (gitignore, build lokal
 | Sampling/anti-ngelantur | `plosagata/model.py` generate args | temp/top_k/no_repeat/eos |
 | Skor/aturan verdict | `hoaxcore/factcheck.py` | bobot `local_verdict`, `final_label` |
 | Sumber internet | `hoaxcore/retrieval.py` + `rag.py` | ambang, fallback |
-| Endpoint web | `web/app.py` | route + `select_model` |
-| Perilaku chat | `web/chatbot.py` | `SagiEngine.reply` |
+| Endpoint web | `web/app.py` | route + `select_model` (+ SSE `/api/chat/stream`) |
+| Perilaku chat | `sagi/engine.py` | `SagiEngine.reply_stream` / `reply` |
+| Format prompt & pembersih | `sagi/prompt.py` | `bangun_prompt`/`bersihkan_output` |
+| Memori percakapan | `sagi/session.py` | `SesiStore` (topik + giliran) |
+| Blok sitasi teks | `sagi/sources.py` | `blok_sitasi`/`kumpulkan_sumber` |
 | Tampilan | `web/templates/` | html/js langsung |
 | Data | `data/` + regenerate | `csv_to_chat` → gabung `train_chat.jsonl` |

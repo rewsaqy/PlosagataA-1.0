@@ -89,11 +89,23 @@ def run_smoke_test(model, tok, device, max_new: int = 45):
     print("🤖 SMOKE TEST GENERASI MODEL PLOSAGATA 12M")
     print("=" * 65)
     model.eval()
-    test_prompts = [
-        "user: Halo Sagi!\nassistant:",
-        "user: Kamu bisa bantu apa aja?\nassistant:",
-        "user: Bener gak vaksin covid mengandung microchip?\nassistant:",
-    ]
+    # Prompt WAJIB setransformasi training (label ternormalisasi: sistem/konsumen).
+    # Lihat sagi/prompt.py — dulu di sini masih "user:" mentah (tidak sinkron).
+    try:
+        from sagi.prompt import bangun_prompt
+        test_prompts = [
+            bangun_prompt("Halo Sagi!"),
+            bangun_prompt("Kamu bisa bantu apa aja?"),
+            bangun_prompt("Bener gak vaksin covid mengandung microchip?"),
+        ]
+    except Exception:
+        test_prompts = [
+            normalize_slang("system: Kamu Sagi, asisten AI cerdas pelurus hoaks dan "
+                            "analis disinformasi digital berbasis Plosagata_Browser "
+                            "(25M Core).\nuser: Halo Sagi!\nassistant:"),
+            normalize_slang("user: Kamu bisa bantu apa aja?\nassistant:"),
+            normalize_slang("user: Bener gak vaksin covid mengandung microchip?\nassistant:"),
+        ]
     ign = {i for t, i in tok.vocab.items() if t.startswith("<pad") or t in ("<unk>", "<cls>")}
     eos = {tok.sep_id}
 
@@ -101,6 +113,9 @@ def run_smoke_test(model, tok, device, max_new: int = 45):
         for p in test_prompts:
             ids, _ = tok.encode(p)
             real = [i for i in ids if i != tok.pad_id][:64]
+            # <sep> = penanda EOS saat training; jangan ditaruh sebelum generasi.
+            if real and real[-1] == tok.sep_id:
+                real = real[:-1]
             t0 = time.time()
             out = model.generate(
                 torch.tensor([real]).to(device),

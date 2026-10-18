@@ -1,4 +1,5 @@
 """Web validator hoaks: teks + upload poster -> model 12M + OCR + fact-check."""
+import json
 import os
 import sys
 import tempfile
@@ -10,7 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 import torch
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, Response, jsonify, render_template, request
 
 from hoaxcore import (
     final_label,
@@ -300,7 +301,7 @@ def cmd_chat(text, session_id=""):
         try:
             eng = _engines.get(ACTIVE["model"])
             if eng and session_id:
-                topik = (eng._sesi.get(session_id) or {}).get("topik") or ""
+                topik = eng.sesi.topik(session_id) or ""
         except Exception:
             pass
         return {"ok": True, "topic": "command",
@@ -334,6 +335,53 @@ def chat_api():
         return jsonify({"ok": True, "model_size": eng.size, **r})
     except Exception as e:
         return jsonify({"ok": False, "error": f"Engine gagal: {e}"}), 500
+
+
+@app.route("/api/chat/stream", methods=["POST"])
+def chat_stream_api():
+    """Versi SSE dari /api/chat: kejadian meta -> token* -> final.
+
+    Dipakai UI chat untuk menampilkan jawaban mengalir token-per-token.
+    """
+    if not _cek_token():
+        return jsonify({"ok": False, "error": "Token salah / hilang."}), 401
+    data = request.get_json(silent=True) or {}
+    text = (data.get("message") or data.get("text") or "").strip()
+    size = data.get("model", "") or ""
+    session_id = (data.get("session", "") or "").strip()
+    if not text:
+        return jsonify({"ok": False, "error": "Pesan kosong."}), 400
+
+    def sse(ev):
+        return "data: " + json.dumps(ev, ensure_ascii=False) + "\n\n"
+
+    def aliran():
+        try:
+            if text.startswith("/"):
+                r = cmd_chat(text, session_id)
+                yield sse({"type": "meta", "topic": r.get("topic"), "verdict": None,
+                           "sumber": None, "model_size": ACTIVE["model"]})
+                yield sse({"type": "token", "t": r.get("reply", "")})
+                yield sse({"type": "final", "text": r.get("reply", ""),
+                           "model_size": ACTIVE["model"], "security": None})
+                return
+            if size:
+                # Minta model eksplisit = pindah beneran (matikan yg lain).
+                s = select_model(size)
+                if not s.get("ok"):
+                    yield sse({"type": "error", "error": s.get("error")})
+                    return
+                eng = get_engine(size)
+            else:
+                eng = get_engine()
+            for ev in eng.reply_stream(text, session_id=session_id):
+                ev.setdefault("model_size", eng.size)
+                yield sse(ev)
+        except Exception as e:
+            yield sse({"type": "error", "error": f"Engine gagal: {str(e)[:200]}"})
+
+    return Response(aliran(), mimetype="text/event-stream",
+                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
 @app.route("/api/check", methods=["POST"])

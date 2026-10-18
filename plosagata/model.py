@@ -59,8 +59,12 @@ class PureGPT(nn.Module):
     @torch.no_grad()
     def generate(self, ids, max_new: int = 50, temperature: float = 0.8,
                  top_k: int = 40, ignore_ids=None, repetition_penalty: float = 1.2,
-                 no_repeat_ngram: int = 3, eos_ids=None):
-        """Generate hemat: KV-cache (O(N) per token, bukan O(N^2)) + berhenti di EOS."""
+                 no_repeat_ngram: int = 3, eos_ids=None, on_token=None):
+        """Generate hemat: KV-cache (O(N) per token, bukan O(N^2)) + berhenti di EOS.
+
+        on_token: callback opsional ``on_token(token_id)`` yang dipanggil tiap
+        token BARU (EOS tidak termasuk) — dipakai streaming SSE di sagi.engine.
+        """
         self.eval()
         ids = ids[:, -self.cfg.max_len:]
         out = ids
@@ -103,6 +107,8 @@ class PureGPT(nn.Module):
             out = torch.cat([out, nxt], dim=1)
             if int(nxt[0, 0]) in stop:
                 break  # EOS: berhenti, jangan ngelantur sampai max_new
+            if on_token is not None:
+                on_token(int(nxt[0, 0]))  # streaming: kabari token baru
             # Decode 1 token memakai cache (posisi absolut, dibatasi max_len).
             Lnow = min(out.shape[1] - 1, self.cfg.max_len - 1)
             ppos = torch.tensor([[Lnow]], device=ids.device)
