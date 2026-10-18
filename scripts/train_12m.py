@@ -267,8 +267,17 @@ def main():
                 optimizer.step()
 
             scheduler.step()
-            total_train_loss += loss.item()
+            loss_val = loss.item()
+            total_train_loss += loss_val
             tokens_seen += (y != -100).sum().item()
+
+            if step % 15 == 0 or step == len(tr_loader):
+                elapsed = time.time() - t_epoch_start
+                rate = step / max(elapsed, 1e-4)
+                eta_s = (len(tr_loader) - step) / rate
+                eta_str = f"{int(eta_s // 60)}m {int(eta_s % 60):02d}s"
+                pct = (step / len(tr_loader)) * 100
+                print(f"  [Epoch {epoch}/{args.epochs} | Step {step:4d}/{len(tr_loader):4d} ({pct:5.1f}%) | Loss: {loss_val:.4f} | ETA: {eta_str}]", flush=True)
 
         avg_train_loss = total_train_loss / len(tr_loader)
 
