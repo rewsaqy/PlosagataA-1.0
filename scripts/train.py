@@ -71,7 +71,7 @@ def train(args):
     print(f"Parameter: {count_params(model):,}")
 
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.01)
-    loss_fn = nn.CrossEntropyLoss()
+    loss_fn = nn.CrossEntropyLoss(label_smoothing=args.label_smoothing)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
 
     best = 0.0
@@ -116,6 +116,8 @@ if __name__ == "__main__":
     p.add_argument("--epochs", type=int, default=10)
     p.add_argument("--batch", type=int, default=16)
     p.add_argument("--lr", type=float, default=3e-4)
+    p.add_argument("--label-smoothing", type=float, default=0.0,
+                   help="Label smoothing (0 = mati; 0.05 = kalibrasi lebih halus)")
     p.add_argument("--vocab-size", type=int, default=5000)
     p.add_argument("--max-len", type=int, default=128)
     train(p.parse_args())

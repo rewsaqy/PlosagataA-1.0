@@ -40,7 +40,7 @@ cat data/chat_hoaks.jsonl data/contoh_chat.jsonl > data/train_chat.jsonl
 
 1. Tambah 1 baris di `plosagata/config.py` dict `CONFIGS`.
 2. Cek parameter: `.venv/bin/python scripts/gpt_pure.py NAMA_BARU`.
-3. Update tabel model di `README.md` + dropdown `web/templates/chat.html`.
+3. Update tabel model di `README.md` + halaman `/models` (daftar otomatis dari `/api/models`).
 4. Semua perintah (`--size ...`) otomatis kenal nama baru — tidak ada yang perlu diubah lagi.
 
 ## 4. Peta dokumen (mulai dari mana?)

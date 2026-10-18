@@ -83,7 +83,7 @@ python scripts/train_12m.py --epochs 10 --batch 32 --device cuda --fp16
 
 ## 4. Hasil Checkpoint & Tokenizer
 
-Setelah pelatihan selesai, skrip otomatis menghasilkan file berikut di folder `checkpoints/` dan membuat salinan di root proyek:
+Setelah pelatihan selesai, skrip otomatis menghasilkan file berikut di folder `checkpoints/` (tanpa salinan otomatis ke root — sejak perbaikan B-24):
 
 | File Checkpoint | Fungsi |
 | :--- | :--- |

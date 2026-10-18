@@ -61,7 +61,8 @@ Ikuti nomornya — tiap panah = pemanggilan fungsi nyata:
    │      → final_label SATU label (fiksi→biru, ≥60→hoaks, dst)
    ├─ 6. cari_sumber: RAG lokal (BM25 top-20 → TF-IDF cosine top-3,
    │      ambang 0.25) → kosong? fallback Wikipedia live + link cek fakta
-   ├─ 7a. Model BELUM terlatih → ringkasan_hasil: verdict + 2 sumber
+   ├─ 7a. Ckpt chat tak termuat → ringkasan_hasil: jawaban ekstraktif
+   │      (verdict + saran; daftar sumber tampil di UI, bukan di teks)
    │      (ekstraktif, deterministik, tanpa generate)
    ├─ 7b. Model TERLATIH/pure-think → PureGPT.generate:
    │      encode → 22×(attention+FFN) per token + KV-cache + EOS stop
@@ -80,7 +81,7 @@ tipe tiap panah diuji eval (`eval_topik`, `eval_fiksi`, `eval_verdict`).
 POST /api/check (form: text + file poster?)
  ├─ ocr_poster(path) → teks poster (Tesseract ind+eng; gagal → "")
  ├─ text + poster_text digabung
- ├─ model_predict → get_model (singleton shared) → label+probs
+ ├─ model_predict → predict_proba (singleton shared) → label+probs
  ├─ local_verdict → skor + label_final + saran
  ├─ simpan _history (deque 20: waktu, cuplikan, label FINAL, skor)
  └─ JSON {input, poster_text, model, verifikasi}

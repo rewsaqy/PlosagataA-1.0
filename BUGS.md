@@ -30,6 +30,13 @@
 | B-21 | Potensi XSS pada link sumber (href dirender dari data, bisa `javascript:`) | `safeUrl()` whitelist `http/https` sebelum render link | render link sumber lewat `safeUrl()` (bee26f6) |
 | B-22 | `localStorage` korup → halaman chat blank (`JSON.parse` melempar saat load) | `try/catch` fallback `[]` + regenerate `sagi_sid` | reload dengan storage korup tetap jalan (bee26f6) |
 | B-23 | `eval_rag` smoke gagal `AssertionError` setelah `cari_sumber` menambah kunci `web` | Assert kunci disinkronkan: `{kueri, wikipedia, web, cek_fakta}` | `eval_rag --mini` lulus lagi |
+| B-24 | Auto-copy hasil training ke root repo (duplikat ±305 MB tiap latihan; file 12M & Browser kembar di root) | Blok `shutil.copy` dihapus dari `train_12m.py` & `train_browser.py`; ckpt kanonik hanya di `checkpoints/` | `grep shutil` = 0 hasil; root bersih |
+| B-25 | `strip_wake` cocok substring: "sagittarius" dianggap panggilan "Sagi" (sisa pesan ikut terpotong) | Regex batas kata `\bsagi\b` (deteksi + strip) | `eval_topik` LULUS; hanya "sagi" utuh yang memicu |
+| B-26 | Fallback `sumber` di `web/chatbot.py` tanpa kunci `web` (bentuk beda dari `cari_sumber`) | Kunci `web: []` ditambahkan — bentuk seragam | `eval_rag --mini` shape LULUS |
+| B-27 | `train_12m.py` memproses 256 token/sampel walau teks pendek (padding statis = komputasi boros) | Potong trailing pad sebelum collate (sama seperti `train_browser.py`) | Batch dinamis per-teks (mekanisme identik dgn train_browser); compile+ruff bersih |
+| B-28 | Alias typo `Plosata_Rowser` (duplikat 25M di CONFIGS/PARAMS/DISPLAY + `gpt_pure.py`) | Dihapus semua; `Plosagata_Browser` satu-satunya nama 25M | `/api/models` = 6 model (dulu 7); `grep Rowser` = 0 |
+| B-29 | REGRESI: `safeUrl()` (fix B-21) hilang saat refactor `chat.html` 18 Okt → href sumber dirender mentah | Dipasang ulang + dipakai di 3 render link sumber (Wiki/Web/CekFakta) | `grep safeUrl` = 4 (1 definisi + 3 pakai) |
+| B-30 | Kode & param mati: stub `llm_crosscheck`, `_cari_ckpt_otomatis`, param `sumber`/`saran` tak terpakai, impor mubazir (`math`/`nn`/`re` ganda) | Dihapus semua; impor & alias dirapikan | `ruff check --select F,E9`: All checks passed |
 
 ## Keterbatasan sadar (DOKUMEN, bukan bug)
 
@@ -40,6 +47,7 @@
 | L-03 | Model < terlatih penuh = cadel | `ringkasan_hasil` ekstraktif menutupinya; `--pure-think` jujur apa adanya |
 | L-04 | More/Next di RAM 19GB berisiko OOM-killer (SIGKILL) | `select_model` fallback ke Go + pesan jelas |
 | L-05 | DuckDuckGo tidak bisa diakses dari jaringan ini (handshake TLS gagal) → `cari_web_live` selalu `[]` | Web live fail-safe (tanpa crash), tapi belum terbukti memberi hasil; butuh provider/API alternatif atau jaringan tanpa blokir |
+| L-06 | Val klasifier hanya 93 sampel (split sama dgn `train.py`/`eval_verdict.py`) | Selisih 1 sampel ≈ 1,1% — angka akurasi (18 Okt: 95,7%, probe 6/6) dibaca dengan margin ini |
 
 ## Cara lapor bug baru (untuk kontributor)
 

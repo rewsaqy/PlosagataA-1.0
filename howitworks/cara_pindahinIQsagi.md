@@ -9,12 +9,10 @@
 
 | File | Isi | Ukuran | Wajib? |
 |---|---|---|---|
-| `pure-Go-sagi-best.pt` | Bobot Go 92M terbaik (val 0.10) = otaknya | ±350 MB | Ya |
-| `pure-Go-sagi-best.pt.vocab.pt` | Kamus pasangan best | KB-an | Ya (tanpa ini output sampah) |
-| `pure-Go-pretrain-best.pt` + `.pt.vocab.pt` | Bobot pretrain Wiki (sebelum instruction-tune) | ±350 MB | Kalau mau tune ulang sendiri |
-| `pure-Plosagata_Go-10ep.pt` + `.pt.vocab.pt` | Bobot lama tanpa pretrain/val (jangan dipakai) | ±350 MB | Tidak |
-| `pure-Plosagata_More.pt` | Bobot More 912M | ±3,6 GB | Kalau training More |
-| `checkpoints/` | Model 12M + vocab | ±90 MB | Ya (validator web pakai ini) |
+| `checkpoints/pure-Plosagata_Browser-best.pt` (+ `.pt.vocab.pt`, `.tokenizer.json`) | Otak chat 25M terbaik (retrain 18 Okt) | ±100 MB | Ya (chat utama) |
+| `checkpoints/pure-Plosagata_12M-best.pt` (+ pasangan vocab/tokenizer) | Otak chat 12M terbaik | ±50 MB | Ya (alternatif super ringan) |
+| `checkpoints/best.pt` + `checkpoints/vocab.json` | Klasifier 12M (juri validator web) | ±46 MB | Ya (validator web pakai ini) |
+| `pure-Go-*` / `pure-Plosagata_More.pt` | Bobot lama Go/More — tidak ada di disk sejak bersih-bersih 18 Okt | ±350 MB–3,6 GB | Kalau punya salinan Drive/Release |
 
 Catatan nama: `--out X.pt` otomatis bikin `X.pt.vocab.pt` di sebelahnya
 (bukan `X.vocab.pt`), dan tiap best baru otomatis dicopykan
@@ -27,12 +25,12 @@ Contoh benar: `pure-Go-sagi-best.pt` ↔ `pure-Go-sagi-best.pt.vocab.pt`.
 ### A. Flashdisk (paling gampang)
 1. Colok, pastikan format **exFAT/NTFS** (klik kanan → Properties).
    FAT32 **menolak** file > 4 GB — More 3,6 GB mepet bahaya.
-2. Copy pasangan best + validator: `pure-Go-sagi-best.pt`,
-   `pure-Go-sagi-best.pt.vocab.pt`, dan folder `checkpoints/`.
+2. Copy ckpt + pasangannya: isi folder `checkpoints/` (bobot `.pt`,
+   `.pt.vocab.pt`, `.tokenizer.json` untuk model yang mau dibawa).
 3. Di komputer tujuan: copy ke **dalam folder proyek** (sejajar `scripts/`, `data/`).
-4. Tes: `.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --prompt "halo"`
+4. Tes: `.venv/bin/python scripts/pure_chat.py --size Plosagata_Browser --ckpt checkpoints/pure-Plosagata_Browser-best.pt --prompt "halo"`
    (vocab pasangan terdeteksi otomatis; kalau mau eksplisit tambah
-   `--vocab-file pure-Go-sagi-best.pt.vocab.pt`).`
+   `--vocab-file checkpoints/pure-Plosagata_Browser-best.pt.vocab.pt`).
 
 ### B. Google Drive
 Upload → download di tujuan → taruh sejajar folder proyek → tes sama seperti di atas.
@@ -51,12 +49,12 @@ Di komputer tujuan (browser): `http://IP-SUMBER:8000` → download file → taru
 ## 3. Verifikasi IQ pindah dengan benar
 
 ```bash
-# 1. Ukuran wajar? (Go ±350MB, More ±3,6GB, vocab KB-an)
-ls -lh pure-*.pt*
+# 1. Ukuran wajar? (Browser ±100MB, 12M ±50MB, vocab KB-an)
+ls -lh checkpoints/pure-*.pt*
 # 2. Sapa (harus identitas Sagi, instan):
-.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --prompt "halo"
+.venv/bin/python scripts/pure_chat.py --size Plosagata_Browser --ckpt checkpoints/pure-Plosagata_Browser-best.pt --prompt "halo"
 # 3. Berita (masih word-salad Indonesia tahap ini, bukan byte sampah):
-.venv/bin/python scripts/pure_chat.py --size Plosagata_Go --ckpt pure-Go-sagi-best.pt --prompt "Bener gak giveaway iPhone klik link ini?"
+.venv/bin/python scripts/pure_chat.py --size Plosagata_Browser --ckpt checkpoints/pure-Plosagata_Browser-best.pt --prompt "Bener gak giveaway iPhone klik link ini?"
 ```
 Gagal langkah 2-3 = salah pasangan vocab atau file korup saat copy → ulangi transfer.
 Tanda khas salah vocab: muncul `[PERINGATAN: vocab pasangan tidak ketemu...]`
@@ -73,12 +71,12 @@ otomatis (`train_pure.py --val-split 0.1`).
 ```
 1. INPUT   user ketik (terminal `sagi` / web /chat) atau upload poster
 2. OCR     poster → teks (hoaxcore/ocr_poster.py, Tesseract)
-3. SLANG   gaul → formal (plosagata/slang.py, 199 entri)
+3. SLANG   gaul → formal (plosagata/slang.py, 2.173 entri)
 4. GUARD   topik? (plosagata/guard.py)
    ├─ sapaan ──────────────→ template identitas Sagi
    ├─ off-topic ───────────→ tolak sopan + ajak balik ke berita
    └─ berita ──────────────→ lanjut ↓
-5. TOKENIZER  teks → angka (hoaxcore/tokenizer.py, BPE + bank 400 kata)
+5. TOKENIZER  teks → angka (hoaxcore/tokenizer.py, BPE + bank 106 ribu kata)
 6. MODEL MURNI (plosagata)  angka → tebak kata berikut, diulang
    (Go 12 layer / More 22 layer / Next 38 layer)
 7. VALIDATOR 12M (hoaxcore) label Valid/Hoaks/Meragukan + probabilitas
